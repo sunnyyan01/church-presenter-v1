@@ -1,0 +1,25 @@
+div.template {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 13vh;
+    text-align: center;
+}
+
+h2 {
+    font-size: 12vh;
+    text-align: center;
+}
+
+.divider {
+    margin: 2vh 0px;
+    height: 1vh;
+    width: 80%;
+    background-color: white;
+}

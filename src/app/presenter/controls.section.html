@@ -1,0 +1,52 @@
+<div class="controls-section">
+    <div class="control-group">
+        <h6 id="control-group-label-slide">Slide Control</h6>
+        <div>
+            <div
+                class="button icon-button"
+                data-action="prev-slide"
+                (click)="onClick($event)"
+            >
+                <img src="icons/up-arrow.svg">
+            </div>
+            <div
+                class="button icon-button"
+                data-action="next-slide"
+                (click)="onClick($event)"
+            >
+                <img src="icons/down-arrow.svg">
+            </div>
+            <div
+                class="button icon-button"
+                data-action="blank"
+                (click)="onClick($event)"
+            >
+                <img src="icons/black-screen.svg">
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <h6 id="control-group-label-setup">Setup</h6>
+        <div>
+            <div
+                class="button icon-button"
+                (click)="openSlideshow()"
+            >
+                <img src="icons/window-plus.svg">
+            </div>
+            <div
+                id="remote-control-btn" class="button icon-button"
+                (click)="openRemoteQr()"
+            >
+                <img src="icons/remote-control.svg">
+                <div id="ws-connection-dot"></div>
+            </div>
+            <div
+                class="button icon-button"
+                (click)="openSettings()"
+            >
+                <img src="icons/settings.svg">
+            </div>
+        </div>
+    </div>
+</div>

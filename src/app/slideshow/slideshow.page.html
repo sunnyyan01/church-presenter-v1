@@ -1,0 +1,18 @@
+<main style="background-image: url('background.svg');">
+    <youtube-player [bc]="playbackBc" [slide]="slide()" [class.hidden]="slide().template != 'youtube'" />
+    @if (slide().template == "welcome") {
+        <welcome-template [slide]="$any(slide())" />
+    }
+    @if (slide().template == "bible") {
+        <bible-template [slide]="$any(slide())" [subslideIdx]="subslideIdx()" />
+    }
+    @if (slide().template == "song") {
+        <song-template [slide]="$any(slide())" [subslideIdx]="subslideIdx()" />
+    }
+    @if (slide().template == "title") {
+        <title-template [slide]="$any(slide())" />
+    }
+    @if (slide().template == "youtube") {
+
+    }
+</main>

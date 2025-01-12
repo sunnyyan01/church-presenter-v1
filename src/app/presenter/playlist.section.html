@@ -1,0 +1,25 @@
+<div class="header">
+    <h1>{{translations.header}}</h1>
+    <p>{{playlist()?.name}}</p>
+    @if(playlist()) {
+        <div class="button icon-button" (click)="savePlaylist()">
+            <img src="icons/save.svg">
+        </div>
+        <div class="button icon-button" (click)="closePlaylist()">
+            <img src="icons/close-square.svg">
+        </div>
+    }
+</div>
+@if (playlist()) {
+    <div class="slides">
+        @for (item of playlist(); track item.id) {
+            <slide
+                [data]="item"
+                (select)="onSlideSelect($event)" [selected]="curSlideId() === item.id ? curSubslideIdx() : -1"
+                (playbackEvent)="onPlaybackEvent($event)"
+            />
+        }
+    </div>
+} @else {
+    <playlist-setup (playlistParsed)="onPlaylistInput($event)" />
+}

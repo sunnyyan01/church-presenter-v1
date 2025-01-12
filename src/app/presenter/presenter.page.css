@@ -1,0 +1,19 @@
+main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: hidden;
+}
+
+playlist-section, preview-section {
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 6px);
+    height: 75vh;
+    margin: 3px;
+}
+
+controls-section {
+    width: 90%;
+    margin: auto;
+}

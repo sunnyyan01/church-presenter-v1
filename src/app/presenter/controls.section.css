@@ -1,0 +1,48 @@
+.controls-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.control-group {
+    padding: 0px 5px;
+    border-right: 1px solid grey;
+}
+.control-group:last-child {
+    border-right: none;
+}
+.control-group h6 {
+    margin: 0px;
+    text-transform: uppercase;
+    font-size: 14px;
+    text-align: center;
+}
+.control-group div {
+    display: flex;
+    flex-direction: row;
+}
+.control-group div .button {
+    margin: 0px 5px;
+    width: 70px;
+    height: 70px;
+}
+
+#remote-control-btn {
+    position: relative;
+}
+#ws-connection-dot {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+}
+#ws-connection-dot[data-status=connected] {
+    background-color: lime;
+}
+#ws-connection-dot[data-status=disconnected] {
+    background-color: red;
+    animation: blinker 2s linear 10;
+}

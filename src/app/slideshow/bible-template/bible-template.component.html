@@ -1,0 +1,9 @@
+<div id="bible-template" class="template bible-template">
+    <div class="top-bar">
+        <h2 id="bible-title-field">{{slide().title}}</h2>
+        <h3 id="bible-location-field">{{slide().location}}</h3>
+    </div>
+    <p id="bible-text-field" class="scrollable">
+        {{slide().subslides[subslideIdx()]}}
+    </p>
+</div>

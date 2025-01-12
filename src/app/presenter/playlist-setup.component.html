@@ -1,0 +1,11 @@
+<section class="playlist-setup-section">
+    <p>{{translations.no_playlist_open}}</p>
+    <div class="button text-button primary" (click)="fileInput.click()">
+        {{translations.open_playlist}}
+    </div>
+    <input #fileInput class="hidden" type="file" accept=".txt,.json" (change)="openPlaylist($event)" />
+    <p>{{translations.or}}</p>
+    <div id="new-playlist-btn" class="button text-button secondary" onclick="newPlaylist()">
+        {{translations.new_playlist}}
+    </div>
+</section>

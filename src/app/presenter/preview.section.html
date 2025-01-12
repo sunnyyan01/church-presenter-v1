@@ -1,0 +1,9 @@
+<div class="preview-section">
+    <h1>{{translations.header}}</h1>
+    @if (!inUse) {
+        <div class="button text-button primary" (click)="setupPreview()">
+            {{translations.setup}}
+        </div>
+    }
+    <video #previewFrame class="preview"></video>
+</div>

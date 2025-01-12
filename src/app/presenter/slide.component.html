@@ -1,0 +1,26 @@
+<div
+    class="slide" [class.selected]="selected() >= 0"
+    (click)="handleSlideClick()"
+>
+    <h4>{{data().template}}</h4>
+    <h2>{{data().preview}}</h2>
+    @for (subslide of data().subslides; track subslide) {
+        <p
+            (click)="handleSubslideClick($event, $index)"
+            [class.selected]="selected() === $index"
+        >
+            {{subslide}}
+        </p>
+    }
+    @if (data().hasPlayback) {
+        <div class="playback-controls">
+            <div class="button icon-button" (click)="playPause($event)">
+                ⏯
+            </div>
+            <div class="button icon-button" (click)="stop($event)">
+                ⏹
+            </div>
+            <p class="time-display"></p>
+        </div>
+    }
+</div>

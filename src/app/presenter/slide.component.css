@@ -1,0 +1,40 @@
+.slide {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 10px 0px;
+}
+.slide.selected {
+    border: 2px solid blue;
+}
+
+.slide > * {
+    margin: 0px;
+}
+
+p {
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0);
+}
+p:hover {
+    border: 1px solid cyan;
+}
+p.selected {
+    background-color: cyan;
+}
+
+.playback-controls {
+    display: flex;
+    flex-direction: row;
+}
+.playback-controls * {
+    margin: 0px 10px;
+}
+.playback-controls .button {
+    margin: 0px;
+}
+.playback-controls > p {
+    margin: auto 0px;
+}
