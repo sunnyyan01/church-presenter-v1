@@ -1,6 +1,6 @@
-import { Component, output } from '@angular/core';
+import { Component, output, signal } from '@angular/core';
 import { Playlist } from '../classes/playlist';
-import { TextReader } from '../classes/utils';
+import { NewPlaylistDialog } from './new-playlist/new-playlist.dialog';
 
 const TEMPLATES: Array<[string, Array<string>]> = [
     ["welcome", ["year", "month", "day"]],
@@ -17,7 +17,7 @@ const SUBSLIDE_TEMPLATES_B = ["embed"];
     selector: 'playlist-setup',
     templateUrl: './playlist-setup.component.html',
     styleUrl: './playlist-setup.component.css',
-
+    imports: [ NewPlaylistDialog ],
 })
 export class PlaylistSetupComponent {
     translations = {
@@ -28,6 +28,8 @@ export class PlaylistSetupComponent {
     }
 
     playlistParsed = output<Playlist>();
+
+    newPlaylistDialogOpen = signal<boolean>(false);
 
     async openPlaylist(e: Event) {
         let input = e.target as HTMLInputElement;
@@ -48,5 +50,13 @@ export class PlaylistSetupComponent {
                 Playlist.fromJson(await file.text(), file.name)
             );
         }
+    }
+
+    newPlaylist() {
+        this.newPlaylistDialogOpen.set(true);
+    }
+    onNewPlaylistSubmit(e: string) {
+        this.playlistParsed.emit(Playlist.fromText(e));
+        this.newPlaylistDialogOpen.set(false);
     }
 }

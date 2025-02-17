@@ -3,6 +3,7 @@ import { PlaylistSection } from './playlist.section';
 import { PreviewSection } from './preview.section';
 import { ControlsSection } from './controls.section';
 import { Playlist } from '../classes/playlist';
+import { PlaybackRequest, PlaybackStatus } from '../classes/playback';
 import { AboutSection } from "./about.section";
 
 @Component({
@@ -18,6 +19,8 @@ export class PresenterPage {
     slideshowBc: BroadcastChannel;
 
     playbackBc: BroadcastChannel;
+    playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
+    playbackStatus = signal<PlaybackStatus>(new PlaybackStatus());
 
     constructor() {
         this.slideshowBc = new BroadcastChannel("slideshow");
@@ -40,6 +43,17 @@ export class PresenterPage {
         }
 
         this.playbackBc = new BroadcastChannel("playback");
+        effect(() => {
+            // console.log(this.playbackRequest());
+            this.playbackBc.postMessage(this.playbackRequest());
+        })
+        this.playbackBc.addEventListener("message", e => {
+            if (e.data.refresh)
+                this.playbackBc.postMessage(this.playbackRequest());
+            if (e.data.timeDisplay) {
+                this.playbackStatus().timeDisplay = e.data.timeDisplay;
+            }
+        })
     }
 
     @HostListener("window:keydown.arrowdown", ["$event"])
@@ -82,6 +96,11 @@ export class PresenterPage {
         }
     }
 
+    @HostListener("window:keydown.b", [])
+    blankSlide() {
+        this.slideshowBc.postMessage({blank: "toggle"});
+    }
+
     onPlaylistControl(e: MouseEvent) {
         let target = e.currentTarget as HTMLElement;
         let action = target?.dataset["action"];
@@ -90,11 +109,7 @@ export class PresenterPage {
         } else if (action == "prev-slide") {
             this.prevSlide(e);
         } else if (action == "blank") {
-
+            this.blankSlide();
         }
-    }
-
-    onPlaybackEvent(e: Record<string, any>) {
-        this.playbackBc.postMessage(e);
     }
 }

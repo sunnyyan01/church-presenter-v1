@@ -1,7 +1,8 @@
 <main>
   <playlist-section #playlistSection [(playlist)]="playlist" [(curSlideId)]="curSlideId"
     [(curSubslideIdx)]="curSubslideIdx"
-    (playbackEvent)="onPlaybackEvent($event)"
+    [(playbackRequest)]="playbackRequest"
+    [(playbackStatus)]="playbackStatus"
   />
   <preview-section />
   <controls-section (playlistControl)="onPlaylistControl($event)" />

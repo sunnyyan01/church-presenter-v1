@@ -3,11 +3,10 @@ import { TextReader } from "./utils";
 
 const dashJoin = (...arr: Array<string>) => arr.filter(x => x).join(" - ");
 
-export class Slide {
+export abstract class Slide {
     template = "";
     id = "";
     idx = -1;
-    subslides: Array<string>;
     preview;
     hasPlayback = false;
 
@@ -15,53 +14,103 @@ export class Slide {
         this.id = data['id'];
         this.idx = data['idx'];
         this.template = data['template'];
-        this.subslides = data['subslides'] || [];
         this.preview = data['preview'] || '';
     }
 
-    get subslideCount(): number {
-        return this.subslides.length;
+    static fromRecord(data: Record<string, any>) {
+        console.log(data['template'])
+        return new SLIDE_CONSTRUCTORS[data['template']](data);
     }
+
+    get subslideCount(): number {
+        return 0;
+    }
+
+    [Symbol.iterator]() {
+        return Object.entries(this).values();
+    }
+
+    abstract resetPreview(): string;
 }
 
 export class WelcomeSlide extends Slide {
-    year = "";
-    month = "";
-    day = "";
+    year;
+    month;
+    day;
 
     constructor(data: Record<string, any>) {
         super(data);
-        this.year = data['year'];
-        this.month = data['month'];
-        this.day = data['day'];
-        if (!data['preview'])
-            this.preview = dashJoin(this.year, this.month, this.day);
+        this.year = data['year'] || "";
+        this.month = data['month'] || "";
+        this.day = data['day'] || "";
+        if (!data['preview']) this.resetPreview();
+    }
+
+    resetPreview() {
+        this.preview = dashJoin(this.year, this.month, this.day);
+        return this.preview;
     }
 }
 
 export class BibleSlide extends Slide {
     title = "";
     location = "";
+    version = "";
+    subslides: Array<string>;
 
     constructor(data: Record<string, any>) {
         super(data);
-        this.title = data['title'];
-        this.location = data['location'];
-        if (!this.preview)
-            this.preview = dashJoin(this.title, this.location);
+        this.title = data['title'] || "";
+        this.location = data['location'] || "";
+        this.version = data['version'] || "";
+        this.subslides = data['subslides'] || [];
+        if (!this.preview) this.resetPreview();
+    }
+
+    override get subslideCount(): number {
+        return this.subslides.length;
+    }
+
+    resetPreview() {
+        this.preview = dashJoin(this.title, this.location);
+        return this.preview;
+    }
+
+    toTitleSlide() {
+        return new TitleSlide({
+            title: this.title,
+            subtitle: this.location,
+        })
     }
 }
 
 export class SongSlide extends Slide {
     title = "";
     name = "";
+    subslides: Array<string>;
 
     constructor(data: Record<string, any>) {
         super(data);
-        this.title = data['title'];
-        this.name = data['name'];
-        if (!this.preview)
-            this.preview = dashJoin(this.title, this.name);
+        this.title = data['title'] || "";
+        this.name = data['name'] || "";
+        this.subslides = data['subslides'] || [];
+        if (!this.preview) this.resetPreview();
+    }
+
+    override get subslideCount(): number {
+        return this.subslides.length;
+    }
+
+    override resetPreview() {
+        this.preview = dashJoin(this.title, this.name);
+        return this.preview;
+    }
+
+    toTitleSlide() {
+        return new TitleSlide({
+            title: this.title,
+            subtitle: this.name,
+        })
     }
 }
 
@@ -73,8 +122,12 @@ export class TitleSlide extends Slide {
         super(data);
         this.title = data['title'] || "";
         this.subtitle = data['subtitle'] || "";
-        if (!this.preview)
-            this.preview = dashJoin(this.title, this.subtitle);
+        if (!this.preview) this.resetPreview();
+    }
+
+    override resetPreview() {
+        this.preview = dashJoin(this.title, this.subtitle);
+        return this.preview;
     }
 }
 
@@ -84,13 +137,18 @@ export class EmbedSlide extends Slide {
 
     constructor(data: Record<string,any>) {
         super(data);
-        this.url = data['url'];
+        this.url = data['url'] || "";
         this._subslideCount = data['subslideCount'] || 0;
-        if (!this.preview) this.preview = this.url;
+        if (!this.preview) this.resetPreview();
     }
 
     override get subslideCount(): number {
         return this._subslideCount;
+    }
+
+    override resetPreview() {
+        this.preview = this.url;
+        return this.preview;
     }
 }
 
@@ -103,10 +161,16 @@ export class YoutubeSlide extends Slide {
 
     constructor(data: Record<string,any>) {
         super(data);
-        this.videoId = data['videoId'];
-        this.start = data['start'];
-        this.end = data['end'];
+        this.videoId = data['videoId'] || "";
+        this.start = data['start'] || "";
+        this.end = data['end'] || "";
         this.subtitles = data['subtitles'] || "";
+        if (!this.preview) this.resetPreview();
+    }
+
+    override resetPreview() {
+        this.preview = this.videoId;
+        return this.preview;
     }
 }
 
@@ -114,9 +178,13 @@ export class BlankSlide extends Slide {
     constructor() {
         super({"template": "blank"});
     }
+
+    override resetPreview(): string {
+        return this.preview;
+    }
 }
 
-const SLIDE_CONSTRUCTORS: Record<string, any> = {
+export const SLIDE_CONSTRUCTORS: Record<string, any> = {
     welcome: WelcomeSlide,
     bible: BibleSlide,
     song: SongSlide,
@@ -126,7 +194,7 @@ const SLIDE_CONSTRUCTORS: Record<string, any> = {
     blank: BlankSlide,
 }
 
-const TEMPLATES: Array<[string, Array<string>]> = [
+export const TEMPLATES: Array<[string, Array<string>]> = [
     ["welcome", ["year", "month", "day"]],
     ["bible", ["title", "location"]],
     ["song", ["title", "name"]],
@@ -140,25 +208,59 @@ const SUBSLIDE_TEMPLATES_B = ["embed"];
 export class Playlist {
     nextId = 0;
     slides: Record<string, Slide> = {};
+    slideOrder: Array<string> = [];
     name = "";
 
     [Symbol.iterator]() {
-        return Object.values(this.slides).values();
+        return this.slideOrder.map(id => this.slides[id]).values();
     }
 
     byId(id: string) {
         return this.slides[id];
     }
     byIdx(idx: number) {
-        return Object.values(this.slides)[idx];
+        return this.slides[this.slideOrder[idx]];
     }
 
     pushSlide(slide: Record<string, any>) {
         let curId = this.nextId++;
         slide['id'] = curId.toString();
-        slide['idx'] = curId;
         let constructor = SLIDE_CONSTRUCTORS[slide['template']];
         this.slides[curId] = new constructor(slide);
+        if (slide['idx']) {
+            this.slideOrder.splice(slide['idx'], 0, slide['id']);
+        } else {
+            this.slideOrder.push(slide['id']);
+        }
+    }
+
+    replaceSlide(slide: Record<string, any>) {
+        let constructor = SLIDE_CONSTRUCTORS[slide['template']];
+        this.slides[slide['id']] = new constructor(slide);
+    }
+
+    moveSlide(slideId: string, direction: 1 | -1) {
+        let slide = this.byId(slideId);
+        let curIdx = slide.idx;
+        if (direction == -1 && curIdx == 0) return;
+        if (direction == 1 && curIdx == this.slideOrder.length - 1) return;
+        let newIdx = curIdx + direction;
+
+        let temp = this.slideOrder[curIdx];
+        this.slideOrder[curIdx] = this.slideOrder[newIdx];
+        this.slideOrder[newIdx] = temp;
+
+        this.byIdx(curIdx).idx = curIdx;
+        this.byIdx(newIdx).idx = newIdx;
+    }
+
+    toJson(space: number | string) {
+        let slides: Array<Record<string, any>> = this.slideOrder.map(id => this.slides[id]);
+        for (let slide of slides) {
+            delete slide['id'];
+            delete slide['idx'];
+        }
+        return JSON.stringify(slides, undefined, space);
     }
 
     static fromText(text: string) {
@@ -176,6 +278,16 @@ export class Playlist {
             let positionalsMatched = 0;
 
             curSlide['template'] = templateName;
+
+            for (let arg of args) {
+                if (arg.includes("=")) {
+                    let [key, val] = arg.split("=");
+                    curSlide[key] = val;
+                } else {
+                    let key = positionalArgs[positionalsMatched++];
+                    curSlide[key] = arg;
+                }
+            }
 
             if (SUBSLIDE_TEMPLATES_A.includes(templateName)) {
                 curSlide['subslides'] = ["<Title Subslide>"];
@@ -197,6 +309,8 @@ export class Playlist {
                     .map(key => curSlide[key])
                     .join(" - ");
             }
+
+            console.log(curSlide);
 
             playlist.pushSlide(curSlide);
             curSlide = {};

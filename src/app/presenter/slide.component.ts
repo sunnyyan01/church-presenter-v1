@@ -9,14 +9,15 @@ import { Slide, YoutubeSlide } from '../classes/playlist';
 export class SlideComponent {
     data = input.required<Slide>();
     selected = input<number>(-1);
+    playbackTimer = input<string>("");
 
     select = output<[string, number]>();
-    playbackEvent = output<Record<string, any>>();
+    playbackEvent = output<string>();
 
     handleSlideClick() {
         this.select.emit([this.data().id, 0]);
         if (this.data().hasPlayback) {
-            this.playbackEvent.emit({slide: this.data()});
+            this.playbackEvent.emit("cue");
         }
     }
     handleSubslideClick(e: Event, subslideIdx: number) {
@@ -24,14 +25,18 @@ export class SlideComponent {
         this.select.emit([this.data().id, subslideIdx]);
     }
 
-    playPause(e: MouseEvent) {
+    play(e: MouseEvent) {
         e.stopPropagation();
         if (this.selected() == -1)
-            this.playbackEvent.emit((this.data() as YoutubeSlide).videoId);
-        this.playbackEvent.emit({playPause: 1});
+            this.playbackEvent.emit("cue");
+        this.playbackEvent.emit("play");
+    }
+    pause(e: MouseEvent) {
+        e.stopPropagation();
+        this.playbackEvent.emit("pause");
     }
     stop(e: MouseEvent) {
         e.stopPropagation();
-        this.playbackEvent.emit({stop: 1});
+        this.playbackEvent.emit("stop");
     }
 }

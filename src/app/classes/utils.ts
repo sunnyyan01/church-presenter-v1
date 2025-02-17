@@ -42,3 +42,23 @@ export class FormatString {
         return str;
     }
 }
+
+export function nextSunday() {
+    let date = new Date();
+    let sunOffset = (7 - date.getDay()) % 7;
+    let dayOfMonth = date.getDate();
+    date.setDate(dayOfMonth + sunOffset);
+    return (
+        date.getDate().toString().padStart(2, '0') +
+        (date.getMonth()+1).toString().padStart(2, '0') +
+        date.getFullYear().toString()
+    );
+}
+
+export function timeConvert(sec: number) {
+    return (
+        Math.trunc(sec / 60) +
+        ":" +
+        Math.trunc(sec % 60).toString().padStart(2, "0")
+    );
+}

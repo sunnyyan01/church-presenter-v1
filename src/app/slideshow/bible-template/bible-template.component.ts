@@ -1,5 +1,5 @@
-import { Component, input } from '@angular/core';
-import { BibleSlide } from '../../classes/playlist';
+import { Component, computed, input } from '@angular/core';
+import { BibleSlide, TitleSlide } from '../../classes/playlist';
 
 @Component({
   selector: 'bible-template',
@@ -9,7 +9,5 @@ import { BibleSlide } from '../../classes/playlist';
 })
 export class BibleTemplateComponent {
   slide = input.required<BibleSlide>();
-  // title = computed(() => (this.slide() as BibleSlide).title);
-  // loc = computed(() => (this.slide() as BibleSlide))
   subslideIdx = input.required<number>();
 }

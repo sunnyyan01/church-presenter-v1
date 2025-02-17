@@ -4,7 +4,7 @@
 >
     <h4>{{data().template}}</h4>
     <h2>{{data().preview}}</h2>
-    @for (subslide of data().subslides; track subslide) {
+    @for (subslide of $any(data()).subslides; track subslide) {
         <p
             (click)="handleSubslideClick($event, $index)"
             [class.selected]="selected() === $index"
@@ -14,13 +14,16 @@
     }
     @if (data().hasPlayback) {
         <div class="playback-controls">
-            <div class="button icon-button" (click)="playPause($event)">
-                ⏯
+            <div class="button icon-button" (click)="play($event)">
+                ▶️
+            </div>
+            <div class="button icon-button" (click)="pause($event)">
+                ⏸️
             </div>
             <div class="button icon-button" (click)="stop($event)">
                 ⏹
             </div>
-            <p class="time-display"></p>
+            <p class="time-display">{{playbackTimer()}}</p>
         </div>
     }
 </div>

@@ -9,3 +9,9 @@
 p:first-child {
     margin-bottom: 10px;
 }
+
+new-playlist-dialog {
+    position: absolute;
+    left: calc((100vw - 800px) / 2);
+    top: calc((100vh - 500px) / 2);
+}

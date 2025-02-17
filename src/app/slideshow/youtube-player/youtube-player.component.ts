@@ -1,73 +1,86 @@
-import { afterRender, Component, effect, input, signal } from '@angular/core';
+import { afterRender, Component, computed, effect, input, signal } from '@angular/core';
 import { Slide, YoutubeSlide } from '../../classes/playlist';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { timeConvert } from '../../classes/utils';
 
 declare var YT: any;
 
 @Component({
-  selector: 'youtube-player',
-  imports: [],
-  templateUrl: './youtube-player.component.html',
-  styleUrl: './youtube-player.component.css'
+    selector: 'youtube-player',
+    imports: [],
+    templateUrl: './youtube-player.component.html',
+    styleUrl: './youtube-player.component.css'
 })
 export class YoutubePlayer {
-  bc = input.required<BroadcastChannel>();
-  slide = input.required<Slide>();
-  playbackSlide = signal<YoutubeSlide | undefined>(undefined);
-  player: any;
-  playerReady = false;
+    bc = input.required<BroadcastChannel>();
+    slide = input.required<Slide>();
+    playbackSlide = signal<YoutubeSlide | undefined>(undefined);
+    embedUrl = signal<SafeUrl | undefined>(undefined);
+    player: any;
+    playerReady = false;
+    playbackTimerInterval: any;
 
-  constructor() {
-    effect(() => {
-      this.bc().addEventListener("message", e => {
-        let {slide, playPause, stop} = e.data;
-        if (slide) {
-          this.playbackSlide.set(slide);
-        }
-        if (playPause) {
-          this.playPauseVideo();
-        } else if (stop) {
-          this.player.stopVideo();
-        }
-      })
-    })
+    constructor() {
+        effect(() => {
+            this.bc().addEventListener("message", e => {
+                console.log(e.data);
+                let { slide, playRequest } = e.data;
+                if (slide) {
+                    this.playbackSlide.set(slide);
+                }
+                if (playRequest == 'play') {
+                    this.player.playVideo();
+                } else if (playRequest == 'pause') {
+                    this.player.pauseVideo();
+                } else { // stop
+                    this.player.stopVideo();
+                }
+            })
+        })
 
-    effect(() => this.cueVideo(this.playbackSlide()));
-
-    afterRender(() => {
-      if (this.playerReady) return;
-      this.player = new YT.Player(
-        'youtube-player', {
-          height: window.innerHeight.toString(),
-          width: window.innerWidth.toString(),
-          events: {
-            onReady: () => {
-              this.playerReady = true;
-              this.cueVideo(this.playbackSlide());
-            }
-          }
-        }
-      );
-    })
-  }
-
-  
-
-  cueVideo(slide: YoutubeSlide | undefined) {
-    if (!this.playerReady || !slide) return;
-    if (this.player.getVideoUrl().includes(slide.videoId)) return;
-    let startSeconds = slide.start ? parseFloat(slide.start) : undefined;
-    let endSeconds = slide.end ? parseFloat(slide.end) : undefined;
-    this.player.cueVideoById({
-      videoId: this.playbackSlide()?.videoId,
-      startSeconds, endSeconds
-    });
-  }
-
-  playPauseVideo() {
-    if (this.player.getPlayerState() === YT.PlayerState.PLAYING) {
-      this.player.pauseVideo();
-    } else {
-        this.player.playVideo();
+        effect(() => this.cueVideo(this.playbackSlide()));
     }
-  }
+
+    cueVideo(slide: YoutubeSlide | undefined) {
+        if (!slide) return;
+        if (this.player?.getVideoUrl().includes(slide.videoId)) return;
+
+        let startSeconds = slide.start ? parseFloat(slide.start) : undefined;
+        let endSeconds = slide.end ? parseFloat(slide.end) : undefined;
+
+        if (this.playerReady) {
+            this.player.cueVideoById({
+                videoId: this.playbackSlide()?.videoId,
+                startSeconds, endSeconds
+            });
+        } else {
+            this.player = new YT.Player('youtube-player', {
+                events: {
+                    onReady: (e: Event) => {
+                        this.playerReady = true;
+                        let player = e.target as any;
+                        player.cueVideoById({
+                            videoId: this.playbackSlide()?.videoId,
+                            startSeconds, endSeconds
+                        });
+                        // console.log("cued");
+                    },
+                    onStateChange: (e: any) => {
+                        if (e.data === YT.PlayerState.PLAYING) {
+                            this.playbackTimerInterval = setInterval(() => {
+                                let cur = timeConvert( this.player.getCurrentTime() );
+                                let len = timeConvert( this.player.getDuration() );
+                                this.bc().postMessage({timeDisplay: `${cur} / ${len}`});
+                            }, 1000)
+                        } else if (this.playbackTimerInterval) {
+                            clearInterval(this.playbackTimerInterval);
+                        }
+                    }
+                },
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+            // console.log("player created");
+        }
+    }
 }
