@@ -56,10 +56,10 @@ export class PresenterPage {
         })
     }
 
-    @HostListener("window:keydown.arrowdown", ["$event"])
-    @HostListener("window:keydown.control.arrowdown", ["$event"])
-    @HostListener("window:keydown.arrowright", ["$event"])
-    @HostListener("window:keydown.control.arrowright", ["$event"])
+    @HostListener("keydown.arrowdown", ["$event"])
+    @HostListener("keydown.control.arrowdown", ["$event"])
+    @HostListener("keydown.arrowright", ["$event"])
+    @HostListener("keydown.control.arrowright", ["$event"])
     nextSlide(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
 
@@ -76,10 +76,10 @@ export class PresenterPage {
         }
     }
 
-    @HostListener("window:keydown.arrowup", ["$event"])
-    @HostListener("window:keydown.control.arrowup", ["$event"])
-    @HostListener("window:keydown.arrowleft", ["$event"])
-    @HostListener("window:keydown.control.arrowleft", ["$event"])
+    @HostListener("keydown.arrowup", ["$event"])
+    @HostListener("keydown.control.arrowup", ["$event"])
+    @HostListener("keydown.arrowleft", ["$event"])
+    @HostListener("keydown.control.arrowleft", ["$event"])
     prevSlide(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
 
@@ -96,7 +96,7 @@ export class PresenterPage {
         }
     }
 
-    @HostListener("window:keydown.b", [])
+    @HostListener("keydown.b", [])
     blankSlide() {
         this.slideshowBc.postMessage({blank: "toggle"});
     }

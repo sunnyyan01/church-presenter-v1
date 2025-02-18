@@ -1,0 +1,47 @@
+@if (!isHidden()) {
+<th class="key-field">{{friendlyKey()}}</th>
+<td class="value-field">
+    @if (key() == 'template') {
+        <select [(value)]="val" (change)="onChange($event)">
+            <option value="welcome">Welcome</option>
+            <option value="bible">Bible</option>
+            <option value="song">Song</option>
+            <option value="title">Title</option>
+            <option value="embed">Embed</option>
+            <option value="youtube">Youtube</option>
+        </select>
+    } @else if (key() == 'version') {
+        <select [(value)]="val" (change)="onChange($event)">
+            <option selected>(default)</option>
+            <option value="CUVMPS">Chinese Union Version (Modern Punct., Simplified) (CUVMPS)</option>
+            <option value="CUVMPT">Chinese Union Version (Modern Punct., Traditional) (CUVMPT)</option>
+            <option value="NIV">New Intl Version (NIV)</option>
+        </select>
+    } @else if (key() == 'subslides') {
+        <textarea
+            rows="15"
+            [value]="val().slice(1).join('N\n')"
+            (change)="onChange($event)"
+        >
+        </textarea>
+    } @else if (key() == 'subtitles') {
+        <select [(value)]="val" (change)="onChange($event)">
+            <option value="">None</option>
+            <option value="en">English</option>
+            <option value="zh">Chinese</option>
+            <option disabled>Use JSON editor for other languages</option>
+        </select>
+    } @else {
+        <input type="text" [value]="val()" (change)="onChange($event)" />
+    }
+    <div class="loading-backdrop" [class.hidden]="!loading()">
+        <div class="loading-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <p>Please wait...</p>
+    </div>
+</td>
+@if (autoAvail()) {
+    <td class="auto-field">
+        <button class="small" (click)="auto()">Auto</button>
+    </td>
+}
+}

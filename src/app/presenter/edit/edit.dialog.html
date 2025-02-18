@@ -1,0 +1,19 @@
+<div class="dialog-inner">
+    <h1>Edit Slide</h1>
+    <table>
+    <tbody>
+        @for (field of slideEntries().values(); track field[0]) {
+            <tr edit-field [field]="field" [slide]="$any(slide())" (valChange)="onChange(field[0], $event)">
+            </tr>
+        }
+    </tbody>
+    </table>
+    <div class="buttons">
+        <div class="button text-button large primary" (click)="onSave()">
+            Save
+        </div>
+        <div class="button text-button large secondary" (click)="onClose()">
+            Cancel
+        </div>
+    </div>
+</div>

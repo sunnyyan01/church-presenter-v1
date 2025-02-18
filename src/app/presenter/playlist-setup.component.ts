@@ -56,7 +56,7 @@ export class PlaylistSetupComponent {
         this.newPlaylistDialogOpen.set(true);
     }
     onNewPlaylistSubmit(e: string) {
-        this.playlistParsed.emit(Playlist.fromText(e));
+        if (e) this.playlistParsed.emit(Playlist.fromText(e));
         this.newPlaylistDialogOpen.set(false);
     }
 }

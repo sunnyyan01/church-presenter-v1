@@ -1,0 +1,28 @@
+.dialog-inner {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 800px;
+    height: 500px;
+    padding: 20px;
+    background-color: white;
+    border: 2px solid grey;
+    border-radius: 20px;
+    z-index: 2;
+}
+
+textarea {
+    width: 90%;
+    height: 400px;
+    margin: 10px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+}
+.buttons .button {
+    margin: 10px;
+    width: 150px;
+}

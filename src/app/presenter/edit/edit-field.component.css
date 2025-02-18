@@ -1,0 +1,15 @@
+th.key-field {
+    text-align: left;
+}
+td.value-field {
+    width: 600px;
+    padding: 0px 20px;
+}
+td.value-field > * {
+    box-sizing:border-box;
+    width: 100%;
+}
+
+textarea {
+    resize: none;
+}

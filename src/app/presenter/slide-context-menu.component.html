@@ -1,0 +1,20 @@
+<div class="context-menu" #contextMenuRoot (blur)="onAction()">
+    <div class="button text-button secondary" data-action="edit" (click)="onAction($event)">
+        Edit
+    </div>
+    <div class="button text-button secondary" data-action="move-up" (click)="onAction($event)">
+        Move Up
+    </div>
+    <div class="button text-button secondary" data-action="move-down" (click)="onAction($event)">
+        Move Dn
+    </div>
+    <div class="button text-button secondary" data-action="insert-above" (click)="onAction($event)">
+        Insert Up
+    </div>
+    <div class="button text-button secondary" data-action="insert-below" (click)="onAction($event)">
+        Insert Dn
+    </div>
+    <div class="button text-button secondary" data-action="delete" (click)="onAction($event)">
+        Delete
+    </div>
+</div>

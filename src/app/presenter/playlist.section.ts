@@ -92,7 +92,7 @@ export class PlaylistSection {
         }
     }
     
-    @HostListener("window:keydown.control.e")
+    @HostListener("keydown.control.e")
     openEditDialog(slideId?: string) {
         this.editSlideInput.set(
             new EditDialogInput(
@@ -126,8 +126,8 @@ export class PlaylistSection {
     moveSlide(slideId: string, direction: 1 | -1) {
         this.playlist()?.moveSlide(slideId, direction);
     }
-    @HostListener("window:keydown.control.shift.arrowup", ['-1'])
-    @HostListener("window:keydown.control.shift.arrowdown", ['1'])
+    @HostListener("keydown.control.shift.arrowup", ['-1'])
+    @HostListener("keydown.control.shift.arrowdown", ['1'])
     moveCurSlide(direction: 1 | -1) {
         this.moveSlide(this.curSlideId(), direction);
     }
