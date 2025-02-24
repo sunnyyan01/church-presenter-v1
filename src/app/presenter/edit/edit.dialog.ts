@@ -28,7 +28,10 @@ export class EditDialog {
         if (key == "template") {
             if (val == "") return;
             let constructor = SLIDE_CONSTRUCTORS[val];
-            let newSlide = new constructor(this.slide());
+            let newSlide = new constructor({
+                ...this.slide(),
+                template: val,
+            });
             this.slide.set(newSlide);
         } else {
             this.slide.update(s => ({ ...s, [key]: val }));

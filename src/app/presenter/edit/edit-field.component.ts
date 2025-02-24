@@ -62,6 +62,8 @@ export class EditField {
 
     autoPreview() {
         let template = TEMPLATES.find(t => t[0] == this.slide()['template']) as [string, string[]];
+        console.log(this.slide()['template'])
+        console.log(template)
         let tFields = template[1];
         let preview = tFields
             .map(f => this.slide()[f])

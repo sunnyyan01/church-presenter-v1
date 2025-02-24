@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, input, output, ViewChild } from "@angular/core";
 import { bibleLookup } from "../../api/bible";
+import { nextSunday } from "../../classes/utils";
 
 @Component({
     selector: 'new-playlist-dialog',
@@ -10,11 +11,11 @@ export class NewPlaylistDialog {
     @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
     submit = output<string>();
 
-    extendSelection(text: string, start: number, end: number) {
-        while (start > 0 && text[start - 1] != "\n") {
+    extendSelection(text: string, start: number, end: number, to: string | RegExp) {
+        while (start > 0 && !text[start - 1].match(to)) {
             start--;
         }
-        while (end < text.length && text[end + 1] != "\n") {
+        while (end <= text.length && !text.slice(end, end+1).match(to)) {
             end++;
         }
         return [start, end];
@@ -25,19 +26,20 @@ export class NewPlaylistDialog {
         e.preventDefault();
         
         let {value, selectionStart, selectionEnd} = this.textarea.nativeElement;
-        let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd);
+        let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd, "\n");
         let line = value.slice(lineStart, lineEnd);
         let match = /1,[^,]+,([^,]+)/.exec(line);
         let match2 = /version=(.+)(,|$)/.exec(line);
         if (match) {
             let text = await bibleLookup(match[1], match2 ? match2[1] : "");
-            let toReplace = line + "\n" + text.trim() + "E\n";
+            let toReplace = line + "\n" + text.trim() + "E";
             this.textarea.nativeElement.setRangeText(toReplace, lineStart, lineEnd);
             let newEnd = lineStart + toReplace.length;
             this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);
         }
     }
 
+    @HostListener("keydown.control.`", ["$event"])
     @HostListener("keydown.control.1", ["$event"])
     @HostListener("keydown.control.2", ["$event"])
     @HostListener("keydown.control.3", ["$event"])
@@ -46,18 +48,37 @@ export class NewPlaylistDialog {
     autoType(e: KeyboardEvent) {
         e.preventDefault();
         
+        let template = e.key == '`' ? '0' : e.key;
+        
         let {value, selectionStart, selectionEnd} = this.textarea.nativeElement;
-        let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd);
+        let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd, "\n");
         let line = value.slice(lineStart, lineEnd);
-        let match = /^[0-9],/.exec(line);
-        if (match) {
-            line = line.replace(/^[0-9],/, e.key + ",");
+        
+        if (template == '0' && !line) {
+            let [year, month, day] = nextSunday();
+            line = `0,${year},${month},${day}`;
         } else {
-            line = e.key + "," + line;
+            let match = /^[0-9],/.exec(line);
+            if (match) {
+                line = line.replace(/^[0-9],/, template + ",");
+            } else {
+                line = template + "," + line;
+            }
         }
+
         this.textarea.nativeElement.setRangeText(line, lineStart, lineEnd);
         let newEnd = lineStart + line.length;
         this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);
+    }
+
+    @HostListener("keydown.control.,", ["$event"])
+    autoComma(e: KeyboardEvent) {
+        e.preventDefault();
+
+        let {value, selectionStart, selectionEnd} = this.textarea.nativeElement;
+        let [newStart, newEnd] = this.extendSelection(value, selectionStart, selectionEnd, /[A-Za-z0-9\u4E00-\u9FFF]/u);
+        this.textarea.nativeElement.setRangeText(",", newStart, newEnd);
+        this.textarea.nativeElement.setSelectionRange(newStart + 1, newStart + 1);
     }
 
     @HostListener("keydown", ["$event"])

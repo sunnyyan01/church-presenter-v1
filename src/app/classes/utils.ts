@@ -48,11 +48,11 @@ export function nextSunday() {
     let sunOffset = (7 - date.getDay()) % 7;
     let dayOfMonth = date.getDate();
     date.setDate(dayOfMonth + sunOffset);
-    return (
-        date.getDate().toString().padStart(2, '0') +
-        (date.getMonth()+1).toString().padStart(2, '0') +
-        date.getFullYear().toString()
-    );
+    return [
+        date.getFullYear().toString(),
+        (date.getMonth()+1).toString(),
+        date.getDate().toString()
+    ];
 }
 
 export function timeConvert(sec: number) {

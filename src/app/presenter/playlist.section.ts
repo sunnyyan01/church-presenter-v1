@@ -5,7 +5,6 @@ import { SlideComponent } from "./slide.component";
 import { SlideContextMenu } from "./slide-context-menu.component";
 import { EditDialog } from "./edit/edit.dialog";
 import { EditDialogInput, EditDialogOutput } from "../classes/edit";
-import { nextSunday } from "../classes/utils";
 import { PlaybackRequest, PlaybackStatus } from "../classes/playback";
 
 @Component({
