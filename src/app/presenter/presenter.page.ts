@@ -44,7 +44,6 @@ export class PresenterPage {
 
         this.playbackBc = new BroadcastChannel("playback");
         effect(() => {
-            // console.log(this.playbackRequest());
             this.playbackBc.postMessage(this.playbackRequest());
         })
         this.playbackBc.addEventListener("message", e => {
@@ -56,30 +55,31 @@ export class PresenterPage {
         })
     }
 
-    @HostListener("keydown.arrowdown", ["$event"])
-    @HostListener("keydown.control.arrowdown", ["$event"])
-    @HostListener("keydown.arrowright", ["$event"])
-    @HostListener("keydown.control.arrowright", ["$event"])
+    @HostListener("window:keydown.arrowdown", ["$event"])
+    @HostListener("window:keydown.control.arrowdown", ["$event"])
+    @HostListener("window:keydown.arrowright", ["$event"])
+    @HostListener("window:keydown.control.arrowright", ["$event"])
     nextSlide(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
 
         let curSlide = this.playlist()?.byId(this.curSlideId())
         if (!curSlide) return;
 
-        if (!e.ctrlKey && this.curSubslideIdx() + 1 < curSlide.subslideCount) {
+        if (!e.ctrlKey && this.curSubslideIdx() < curSlide.subslideCount) {
             this.curSubslideIdx.update(x => x + 1);
         } else {
             let nextSlide = this.playlist()?.byIdx(curSlide.idx + 1);
+            console.log(curSlide.idx+1);
             if (!nextSlide) return;
             this.curSlideId.set(nextSlide.id);
             this.curSubslideIdx.set(0);
         }
     }
 
-    @HostListener("keydown.arrowup", ["$event"])
-    @HostListener("keydown.control.arrowup", ["$event"])
-    @HostListener("keydown.arrowleft", ["$event"])
-    @HostListener("keydown.control.arrowleft", ["$event"])
+    @HostListener("window:keydown.arrowup", ["$event"])
+    @HostListener("window:keydown.control.arrowup", ["$event"])
+    @HostListener("window:keydown.arrowleft", ["$event"])
+    @HostListener("window:keydown.control.arrowleft", ["$event"])
     prevSlide(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
 
@@ -96,7 +96,7 @@ export class PresenterPage {
         }
     }
 
-    @HostListener("keydown.b", [])
+    @HostListener("window:keydown.b", [])
     blankSlide() {
         this.slideshowBc.postMessage({blank: "toggle"});
     }

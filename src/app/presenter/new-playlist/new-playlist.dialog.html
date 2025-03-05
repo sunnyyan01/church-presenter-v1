@@ -3,6 +3,12 @@
 
     <textarea #textarea></textarea>
 
+    @if(errorMessage()) {
+        <div class="error-toast">
+            {{errorMessage()}}
+        </div>
+    }
+
     <div class="buttons">
         <div class="button text-button large primary" (click)="onSubmit()">
             Done

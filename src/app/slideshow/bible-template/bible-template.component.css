@@ -20,6 +20,11 @@
 .top-bar h3::first-line {
     font-size: 10vh;
 }
+
+.bible-template {
+    width: 100%;
+}
+
 .bible-template p {
     width: 100%;
     white-space: pre-line;

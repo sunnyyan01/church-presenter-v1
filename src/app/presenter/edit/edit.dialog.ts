@@ -1,5 +1,5 @@
-import { Component, computed, effect, input, output, signal } from '@angular/core';
-import { Slide, SLIDE_CONSTRUCTORS } from '../../classes/playlist';
+import { Component, computed, effect, HostListener, input, output, signal } from '@angular/core';
+import { SLIDE_CONSTRUCTORS } from '../../classes/playlist';
 import { EditField } from './edit-field.component';
 import { EditDialogInput, EditDialogOutput } from '../../classes/edit';
 
@@ -47,5 +47,10 @@ export class EditDialog {
     }
     onClose() {
         this.close.emit(null);
+    }
+
+    @HostListener("keydown", ["$event"])
+    stopBubbling(e: KeyboardEvent) {
+        e.stopPropagation();
     }
 }

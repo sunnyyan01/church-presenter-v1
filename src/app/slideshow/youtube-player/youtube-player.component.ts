@@ -23,7 +23,6 @@ export class YoutubePlayer {
     constructor() {
         effect(() => {
             this.bc().addEventListener("message", e => {
-                console.log(e.data);
                 let { slide, playRequest } = e.data;
                 if (slide) {
                     this.playbackSlide.set(slide);

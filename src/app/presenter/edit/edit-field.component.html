@@ -20,7 +20,7 @@
     } @else if (key() == 'subslides') {
         <textarea
             rows="15"
-            [value]="val().slice(1).join('N\n')"
+            [value]="val().join('N\n')"
             (change)="onChange($event)"
         >
         </textarea>

@@ -9,6 +9,7 @@ const FRIENDLY_NAMES: Record<string, string> = {
     subtitles: "Subtitles",
     template: "Template",
     title: "Title",
+    name: "Name",
     version: "Version",
     year: "Year",
     month: "Month",
@@ -53,7 +54,6 @@ export class EditField {
         let val = (e.target as HTMLInputElement).value;
         if (this.key() == 'subslides') {
             let subslides = val.split(/N\n?/);
-            subslides.unshift("<Title Slide>");
             this.valChange.emit(subslides);
         } else {
             this.valChange.emit(val);
@@ -62,8 +62,6 @@ export class EditField {
 
     autoPreview() {
         let template = TEMPLATES.find(t => t[0] == this.slide()['template']) as [string, string[]];
-        console.log(this.slide()['template'])
-        console.log(template)
         let tFields = template[1];
         let preview = tFields
             .map(f => this.slide()[f])
@@ -86,7 +84,7 @@ export class EditField {
         let resp = await fetch(url + "?" + search.toString());
         let text = await resp.text();
         if (resp.ok) {
-            this.valChange.emit(["<Title Slide>", text]);
+            this.valChange.emit([text]);
         } else {
             alert("Error: " + text);
             throw new Error(text);

@@ -1,4 +1,3 @@
-import { Type } from "@angular/core";
 import { TextReader } from "./utils";
 
 const dashJoin = (...arr: Array<string>) => arr.filter(x => x).join(" - ");
@@ -18,7 +17,6 @@ export abstract class Slide {
     }
 
     static fromRecord(data: Record<string, any>) {
-        console.log(data['template'])
         return new SLIDE_CONSTRUCTORS[data['template']](data);
     }
 
@@ -202,8 +200,6 @@ export const TEMPLATES: Array<[string, Array<string>]> = [
     ["embed", ["url"]],
     ["youtube", ["videoId"]],
 ]
-const SUBSLIDE_TEMPLATES_A = ["bible", "song"];
-const SUBSLIDE_TEMPLATES_B = ["embed"];
 
 export class Playlist {
     nextId = 0;
@@ -212,7 +208,8 @@ export class Playlist {
     name = "";
 
     [Symbol.iterator]() {
-        return this.slideOrder.map(id => this.slides[id]).values();
+        let x = this.slideOrder.map(id => this.slides[id])
+        return x.values();
     }
 
     byId(id: string) {
@@ -225,6 +222,7 @@ export class Playlist {
     pushSlide(slide: Record<string, any>) {
         let curId = this.nextId++;
         slide['id'] = curId.toString();
+        if (!slide['idx']) slide['idx'] = this.slideOrder.length;
         let constructor = SLIDE_CONSTRUCTORS[slide['template']];
         this.slides[curId] = new constructor(slide);
         if (slide['idx']) {
@@ -254,66 +252,132 @@ export class Playlist {
         this.byIdx(newIdx).idx = newIdx;
     }
 
+    deleteSlide(slideId: string) {
+        let idx = this.byId(slideId).idx;
+        delete this.slides[slideId];
+        this.slideOrder.splice(idx, 1);
+        for (let i = 0; i < this.slideOrder.length; i++) {
+            let id = this.slideOrder[i];
+            this.slides[id].idx = i;
+        }
+    }
+
     toJson(space: number | string) {
         let slides: Array<Record<string, any>> = this.slideOrder.map(id => this.slides[id]);
-        for (let slide of slides) {
+        for (let slide of structuredClone(slides)) {
             delete slide['id'];
             delete slide['idx'];
         }
         return JSON.stringify(slides, undefined, space);
     }
 
-    static fromText(text: string) {
-        let playlist = new Playlist();
+    toText() {
+        let slides: Array<Record<string, any>> = this.slideOrder.map(id => this.slides[id]);
+        let text = "";
+
+        for (let slide of structuredClone(slides)) {
+            delete slide['id'];
+            delete slide['idx'];
+
+            let templateNum = TEMPLATES.findIndex(t => t[0] == slide['template']);
+
+            let args = [ templateNum.toString() ];
+
+            // Positional args
+            for (let arg of TEMPLATES[templateNum][1]) {
+                args.push(slide[arg]);
+                delete slide[arg];
+            }
+
+            // Keyword args
+            for (let [key, val] of Object.entries(slide)) {
+                if (key == 'subslides') continue;
+                args.push(`${key}=${val}`);
+            }
+
+            text += args.join(",") + "\n";
+
+            // Subslides
+            if (slide['subslides']) {
+                text += "S\n";
+                for (let subslide of slide['subslides']) {
+                    text += subslide + "N\n";
+                }
+                text += "E\n";
+            }
+        }
+
+        return text;
+    }
+
+    static fromText(text: string, name?: string) {
+        let playlist = new this();
+        playlist.name = name || "";
 
         let reader = new TextReader(text);
         let curSlide: Record<string, any> = {};
+        let subslide = [];
+        let readingSubslides = false;
         while (reader.canRead) {
-            let readResult = reader.read().match(/(\\.|[^,])+/g);
-            if (!readResult) throw new Error();
-            let [template, ...args] = readResult;
-            let templateNum = parseInt(template);
+            let line = reader.read();
 
-            let [templateName, positionalArgs] = TEMPLATES[templateNum];
-            let positionalsMatched = 0;
-
-            curSlide['template'] = templateName;
-
-            for (let arg of args) {
-                if (arg.includes("=")) {
-                    let [key, val] = arg.split("=");
-                    curSlide[key] = val;
+            if (readingSubslides) {
+                if (line == "E") {
+                    curSlide['subslides'].push(subslide.join("\n"));
+                    readingSubslides = false;
                 } else {
-                    let key = positionalArgs[positionalsMatched++];
-                    curSlide[key] = arg;
+                    if (line.endsWith("N")) {
+                        subslide.push(line.trim().replace(/N$/,""));
+                        curSlide['subslides'].push(subslide.join("\n"));
+                        subslide = [];
+                    } else {
+                        subslide.push(line.trim());
+                    }
+                }
+            } else if (line == "S") {
+                readingSubslides = true;
+                curSlide['subslides'] = [];
+            } else {
+                // Push last slide
+                if (curSlide['template']) {
+                    playlist.pushSlide(curSlide);
+                    curSlide = {};
+                }
+
+                // Reading slide line
+                let readResult = line.match(/(\\.|[^,])+/g);
+                if (!readResult)
+                    throw new Error(`Error reading line ${reader.idx}`);
+                let [template, ...args] = readResult;
+                let templateNum = parseInt(template);
+
+                let [templateName, positionalArgs] = TEMPLATES[templateNum];
+                let positionalsMatched = 0;
+
+                curSlide['template'] = templateName;
+
+                for (let arg of args) {
+                    if (arg.includes("=")) {
+                        let [key, val] = arg.split("=");
+                        curSlide[key] = val;
+                    } else {
+                        let key = positionalArgs[positionalsMatched++];
+                        curSlide[key] = arg;
+                    }
+                }
+
+                if (!curSlide['preview']) {
+                    curSlide['preview'] = positionalArgs
+                        .slice(0, positionalsMatched)
+                        .map(key => curSlide[key])
+                        .join(" - ");
                 }
             }
+        }
 
-            if (SUBSLIDE_TEMPLATES_A.includes(templateName)) {
-                curSlide['subslides'] = ["<Title Subslide>"];
-                let subslide = "";
-                do {
-                    subslide += reader.read() + "\n";
-                    if (reader.lastRead?.match(/(N|E)$/)) {
-                        curSlide['subslides'].push(subslide.slice(0, -2)); // Remove N|E and \n
-                        subslide = "";
-                    }
-                } while (!reader.lastRead?.endsWith("E"));
-            } else if (SUBSLIDE_TEMPLATES_B.includes(templateName)) {
-                curSlide['numSubslides'] = 1;
-            }
-
-            if (!curSlide['preview']) {
-                curSlide['preview'] = positionalArgs
-                    .slice(0, positionalsMatched)
-                    .map(key => curSlide[key])
-                    .join(" - ");
-            }
-
-            console.log(curSlide);
-
+        // Push last slide
+        if (curSlide['template']) {
             playlist.pushSlide(curSlide);
-            curSlide = {};
         }
 
         return playlist;
@@ -326,6 +390,7 @@ export class Playlist {
         for (let slide of slides) {
             playlist.pushSlide(slide);
         }
+        console.log(playlist);
         return playlist;
     }
 }

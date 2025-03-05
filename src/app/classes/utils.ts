@@ -12,6 +12,12 @@ export class TextReader {
         this.lastRead = null;
     }
 
+    peek() {
+        if (!this.canRead)
+            throw Error(`Cannot read past end of file`);
+        return this.lines[this.idx + 1];
+    }
+
     read() {
         if (!this.canRead)
             throw Error(`Cannot read past end of file`);

@@ -1,6 +1,7 @@
 <section class="playlist-setup-section">
     <new-playlist-dialog
         [class.hidden]="!newPlaylistDialogOpen()"
+        [errorMessage]="newPlaylistDialogErr()"
         (submit)="onNewPlaylistSubmit($event)"
     />
     <p>{{translations.no_playlist_open}}</p>

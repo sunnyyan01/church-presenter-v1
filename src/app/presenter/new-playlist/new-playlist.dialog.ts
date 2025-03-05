@@ -9,6 +9,7 @@ import { nextSunday } from "../../classes/utils";
 })
 export class NewPlaylistDialog {
     @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
+    errorMessage = input<string>("");
     submit = output<string>();
 
     extendSelection(text: string, start: number, end: number, to: string | RegExp) {
@@ -32,7 +33,7 @@ export class NewPlaylistDialog {
         let match2 = /version=(.+)(,|$)/.exec(line);
         if (match) {
             let text = await bibleLookup(match[1], match2 ? match2[1] : "");
-            let toReplace = line + "\n" + text.trim() + "E";
+            let toReplace = line + "\nS\n  " + text.trim().replaceAll("\n", "\n  ") + "\nE";
             this.textarea.nativeElement.setRangeText(toReplace, lineStart, lineEnd);
             let newEnd = lineStart + toReplace.length;
             this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);

@@ -2,7 +2,7 @@
     <h1>{{translations.header}}</h1>
     <p>{{playlist()?.name}}</p>
     @if(playlist()) {
-        <div class="button icon-button" (click)="savePlaylist()">
+        <div class="button icon-button" (click)="savePlaylist($event)">
             <img src="icons/save.svg">
         </div>
         <div class="button icon-button" (click)="closePlaylist()">

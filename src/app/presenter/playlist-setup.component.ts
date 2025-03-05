@@ -2,17 +2,6 @@ import { Component, output, signal } from '@angular/core';
 import { Playlist } from '../classes/playlist';
 import { NewPlaylistDialog } from './new-playlist/new-playlist.dialog';
 
-const TEMPLATES: Array<[string, Array<string>]> = [
-    ["welcome", ["year", "month", "day"]],
-    ["bible", ["title", "location"]],
-    ["song", ["title", "name"]],
-    ["title", ["title", "subtitle"]],
-    ["embed", ["url"]],
-    ["youtube", ["videoId"]],
-]
-const SUBSLIDE_TEMPLATES_A = ["bible", "song"];
-const SUBSLIDE_TEMPLATES_B = ["embed"];
-
 @Component({
     selector: 'playlist-setup',
     templateUrl: './playlist-setup.component.html',
@@ -30,6 +19,7 @@ export class PlaylistSetupComponent {
     playlistParsed = output<Playlist>();
 
     newPlaylistDialogOpen = signal<boolean>(false);
+    newPlaylistDialogErr = signal<string>("");
 
     async openPlaylist(e: Event) {
         let input = e.target as HTMLInputElement;
@@ -37,17 +27,18 @@ export class PlaylistSetupComponent {
         if (!input.files) return;
         
         let file = input.files[0];
+        let fileName = file.name.replace(/\..+?$/,"");
         if (file.type === "text/plain") {
             let text = await file.text();
             try {
-                this.playlistParsed.emit(Playlist.fromText(text));
+                this.playlistParsed.emit(Playlist.fromText(text, fileName));
             } catch (e: any) {
                 console.error(e);
                 throw new Error(`Error parsing playlist line: ${e.message}`)
             }
         } else if (file.type == "application/json") {
             this.playlistParsed.emit(
-                Playlist.fromJson(await file.text(), file.name)
+                Playlist.fromJson(await file.text(), fileName)
             );
         }
     }
@@ -56,7 +47,14 @@ export class PlaylistSetupComponent {
         this.newPlaylistDialogOpen.set(true);
     }
     onNewPlaylistSubmit(e: string) {
-        if (e) this.playlistParsed.emit(Playlist.fromText(e));
+        if (e) {
+            try {
+                this.playlistParsed.emit(Playlist.fromText(e));
+            } catch (err: any) {
+                this.newPlaylistDialogErr.set(err.message);
+                throw err;
+            }
+        }
         this.newPlaylistDialogOpen.set(false);
     }
 }

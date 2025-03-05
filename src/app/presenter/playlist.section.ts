@@ -36,9 +36,10 @@ export class PlaylistSection {
         this.playlist.set(playlist);
     }
 
-    savePlaylist() {
-        let json = this.playlist()?.toJson(2) as string;
-        let file = new File([json], this.playlist()?.name as string);
+    savePlaylist(e: MouseEvent) {
+        let content = e.ctrlKey ? this.playlist()?.toJson(2) : this.playlist()?.toText();
+        let type = e.ctrlKey ? "application/json" : "text/plain";
+        let file = new File([content!], this.playlist()?.name!, {type});
         let url = URL.createObjectURL(file);
         let a = document.createElement("a");
         a.href = url;
@@ -54,6 +55,7 @@ export class PlaylistSection {
 
     onSlideSelect(e: [string, number]) {
         let [slideId, subslideIdx] = e;
+        console.log(e);
         this.curSlideId.set(slideId);
         this.curSubslideIdx.set(subslideIdx);
     }
@@ -74,7 +76,7 @@ export class PlaylistSection {
         let [slideId, action] = e;
         switch (action) {
             case "edit":
-                this.openEditDialog(slideId);
+                this.openEditDialog(undefined, slideId);
                 break;
             case "move-up":
                 this.moveSlide(slideId, -1);
@@ -88,11 +90,16 @@ export class PlaylistSection {
             case "insert-below":
                 this.openInsertDialog(slideId, 1);
                 break;
+            case "delete":
+                this.playlist()?.deleteSlide(slideId);
+                break;
         }
     }
     
-    @HostListener("keydown.control.e")
-    openEditDialog(slideId?: string) {
+    @HostListener("window:keydown.control.e", ["$event"])
+    openEditDialog(e?: KeyboardEvent, slideId?: string) {
+        if (e) e.preventDefault();
+
         this.editSlideInput.set(
             new EditDialogInput(
                 "edit",
@@ -125,8 +132,8 @@ export class PlaylistSection {
     moveSlide(slideId: string, direction: 1 | -1) {
         this.playlist()?.moveSlide(slideId, direction);
     }
-    @HostListener("keydown.control.shift.arrowup", ['-1'])
-    @HostListener("keydown.control.shift.arrowdown", ['1'])
+    @HostListener("window:keydown.control.shift.arrowup", ['-1'])
+    @HostListener("window:keydown.control.shift.arrowdown", ['1'])
     moveCurSlide(direction: 1 | -1) {
         this.moveSlide(this.curSlideId(), direction);
     }

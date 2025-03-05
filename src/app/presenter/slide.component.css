@@ -3,10 +3,11 @@
     border: 1px solid black;
     border-radius: 20px;
     cursor: pointer;
-    margin: 10px 0px;
+    margin: 11px 1px;
 }
 .slide.selected {
     border: 2px solid blue;
+    margin: 10px 0px;
 }
 
 .slide > * {

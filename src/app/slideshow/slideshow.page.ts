@@ -29,7 +29,7 @@ export class SlideshowPage {
             if (newSlide && newSlide['template']) {
                 this.slideRecord.set(newSlide);
             }
-            if (newSubslideIdx) this.subslideIdx.set(newSubslideIdx);
+            if (newSubslideIdx >= 0) this.subslideIdx.set(newSubslideIdx);
             if (blank) this.blank.update(x => !x);
         }
 

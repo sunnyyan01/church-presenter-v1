@@ -6,8 +6,8 @@
     <h2>{{data().preview}}</h2>
     @for (subslide of $any(data()).subslides; track subslide) {
         <p
-            (click)="handleSubslideClick($event, $index)"
-            [class.selected]="selected() === $index"
+            (click)="handleSubslideClick($event, $index + 1)"
+            [class.selected]="selected() === $index + 1"
         >
             {{subslide}}
         </p>
