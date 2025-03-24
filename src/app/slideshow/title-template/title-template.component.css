@@ -10,11 +10,13 @@ div.template {
 h1 {
     font-size: 13vh;
     text-align: center;
+    white-space: pre;
 }
 
 h2 {
     font-size: 12vh;
     text-align: center;
+    white-space: pre;
 }
 
 .divider {

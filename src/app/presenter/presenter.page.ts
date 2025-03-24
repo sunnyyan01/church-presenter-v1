@@ -13,7 +13,7 @@ import { AboutSection } from "./about.section";
     styleUrl: './presenter.page.css'
 })
 export class PresenterPage {
-    playlist = signal<Playlist | null>(null);
+    playlist = signal<Playlist | null>(null, {equal: () => false});
     curSlideId = signal<string>("");
     curSubslideIdx = signal<number>(0);
     slideshowBc: BroadcastChannel;
@@ -55,6 +55,14 @@ export class PresenterPage {
         })
     }
 
+    onPlaylistUpdate(slideId: string) {
+        if (this.curSlideId() == slideId) {
+            this.slideshowBc.postMessage({
+                slide: this.playlist()?.byId(this.curSlideId())
+            });
+        }
+    }
+
     @HostListener("window:keydown.arrowdown", ["$event"])
     @HostListener("window:keydown.control.arrowdown", ["$event"])
     @HostListener("window:keydown.arrowright", ["$event"])
@@ -69,7 +77,6 @@ export class PresenterPage {
             this.curSubslideIdx.update(x => x + 1);
         } else {
             let nextSlide = this.playlist()?.byIdx(curSlide.idx + 1);
-            console.log(curSlide.idx+1);
             if (!nextSlide) return;
             this.curSlideId.set(nextSlide.id);
             this.curSubslideIdx.set(0);

@@ -1,23 +1,31 @@
-import { TextReader } from "./utils";
+import { OrderedDict, TextReader } from "./utils";
 
 const dashJoin = (...arr: Array<string>) => arr.filter(x => x).join(" - ");
 
-export abstract class Slide {
-    template = "";
-    id = "";
-    idx = -1;
-    preview;
-    hasPlayback = false;
+export abstract class PlaylistItem {
+    type = "";
+    subtype = "";
 
     constructor(data: Record<string, any>) {
-        this.id = data['id'];
-        this.idx = data['idx'];
-        this.template = data['template'];
-        this.preview = data['preview'] || '';
+        this.type = data['type'];
+        this.subtype = data['subtype'];
     }
 
     static fromRecord(data: Record<string, any>) {
-        return new SLIDE_CONSTRUCTORS[data['template']](data);
+        return new CONSTRUCTORS[data['type'] + data['subtype']](data);
+    }
+}
+
+export abstract class Slide extends PlaylistItem {
+    id = "";
+    idx = -1;
+    preview;
+
+    constructor(data: Record<string, any>) {
+        super(data);
+        this.id = data['id'];
+        this.idx = data['idx'];
+        this.preview = data['preview'] || '';
     }
 
     get subslideCount(): number {
@@ -150,12 +158,36 @@ export class EmbedSlide extends Slide {
     }
 }
 
-export class YoutubeSlide extends Slide {
+export class BlankSlide extends Slide {
+    constructor() {
+        super({"subtype": "blank"});
+    }
+
+    override resetPreview(): string {
+        return this.preview;
+    }
+}
+
+export abstract class Media extends PlaylistItem {
+    id = "";
+    idx = -1;
+    preview = "";
+
+    constructor(data: Record<string,any>) {
+        super(data);
+        this.id = data['id'];
+        this.idx = data['idx'];
+        this.preview = data['preview'] || '';
+    }
+
+    abstract resetPreview(): string;
+}
+
+export class YoutubeMedia extends Media {
     videoId;
     start;
     end;
     subtitles;
-    override hasPlayback = true;
 
     constructor(data: Record<string,any>) {
         super(data);
@@ -172,125 +204,81 @@ export class YoutubeSlide extends Slide {
     }
 }
 
-export class BlankSlide extends Slide {
-    constructor() {
-        super({"template": "blank"});
-    }
-
-    override resetPreview(): string {
-        return this.preview;
-    }
+export const CONSTRUCTORS: Record<string, any> = {
+    slidewelcome: WelcomeSlide,
+    slidebible: BibleSlide,
+    slidesong: SongSlide,
+    slidetitle: TitleSlide,
+    slideembed: EmbedSlide,
+    slideblank: BlankSlide,
+    mediayoutube: YoutubeMedia,
 }
 
-export const SLIDE_CONSTRUCTORS: Record<string, any> = {
-    welcome: WelcomeSlide,
-    bible: BibleSlide,
-    song: SongSlide,
-    title: TitleSlide,
-    embed: EmbedSlide,
-    youtube: YoutubeSlide,
-    blank: BlankSlide,
-}
-
-export const TEMPLATES: Array<[string, Array<string>]> = [
-    ["welcome", ["year", "month", "day"]],
-    ["bible", ["title", "location"]],
-    ["song", ["title", "name"]],
-    ["title", ["title", "subtitle"]],
-    ["embed", ["url"]],
-    ["youtube", ["videoId"]],
+export const TEMPLATES: Array<[string, string, Array<string>]> = [
+    ["slide", "welcome", ["year", "month", "day"]],
+    ["slide", "bible", ["title", "location"]],
+    ["slide", "song", ["title", "name"]],
+    ["slide", "title", ["title", "subtitle"]],
+    ["slide", "embed", ["url"]],
+    ["media", "youtube", ["videoId"]],
 ]
 
 export class Playlist {
     nextId = 0;
-    slides: Record<string, Slide> = {};
-    slideOrder: Array<string> = [];
+    slides: OrderedDict<Slide> = new OrderedDict<Slide>();
+    media: OrderedDict<Media> = new OrderedDict<Media>();
     name = "";
 
-    [Symbol.iterator]() {
-        let x = this.slideOrder.map(id => this.slides[id])
-        return x.values();
+    push(item: PlaylistItem) {
+        if (item.type == "slide")
+            this.slides.push(item as Slide);
+        else /* media */
+            this.media.push(item as Media);
     }
-
-    byId(id: string) {
-        return this.slides[id];
-    }
-    byIdx(idx: number) {
-        return this.slides[this.slideOrder[idx]];
-    }
-
-    pushSlide(slide: Record<string, any>) {
-        let curId = this.nextId++;
-        slide['id'] = curId.toString();
-        if (!slide['idx']) slide['idx'] = this.slideOrder.length;
-        let constructor = SLIDE_CONSTRUCTORS[slide['template']];
-        this.slides[curId] = new constructor(slide);
-        if (slide['idx']) {
-            this.slideOrder.splice(slide['idx'], 0, slide['id']);
-        } else {
-            this.slideOrder.push(slide['id']);
-        }
-    }
-
-    replaceSlide(slide: Record<string, any>) {
-        let constructor = SLIDE_CONSTRUCTORS[slide['template']];
-        this.slides[slide['id']] = new constructor(slide);
-    }
-
-    moveSlide(slideId: string, direction: 1 | -1) {
-        let slide = this.byId(slideId);
-        let curIdx = slide.idx;
-        if (direction == -1 && curIdx == 0) return;
-        if (direction == 1 && curIdx == this.slideOrder.length - 1) return;
-        let newIdx = curIdx + direction;
-
-        let temp = this.slideOrder[curIdx];
-        this.slideOrder[curIdx] = this.slideOrder[newIdx];
-        this.slideOrder[newIdx] = temp;
-
-        this.byIdx(curIdx).idx = curIdx;
-        this.byIdx(newIdx).idx = newIdx;
-    }
-
-    deleteSlide(slideId: string) {
-        let idx = this.byId(slideId).idx;
-        delete this.slides[slideId];
-        this.slideOrder.splice(idx, 1);
-        for (let i = 0; i < this.slideOrder.length; i++) {
-            let id = this.slideOrder[i];
-            this.slides[id].idx = i;
-        }
+    replace(item: PlaylistItem) {
+        if (item.type == "slide")
+            this.slides.replace(item as Slide);
+        else /* media */
+            this.media.replace(item as Media);
     }
 
     toJson(space: number | string) {
-        let slides: Array<Record<string, any>> = this.slideOrder.map(id => this.slides[id]);
-        for (let slide of structuredClone(slides)) {
-            delete slide['id'];
-            delete slide['idx'];
+        let items: Array<Record<string, any>> = [
+            ...this.slides,
+            ...this.media,
+        ];
+        for (let item of structuredClone(items)) {
+            delete item['id'];
+            delete item['idx'];
         }
-        return JSON.stringify(slides, undefined, space);
+        return JSON.stringify(items, undefined, space);
     }
 
     toText() {
-        let slides: Array<Record<string, any>> = this.slideOrder.map(id => this.slides[id]);
+        let items: Array<Record<string, any>> = [
+            ...this.slides,
+            ...this.media,
+        ];
         let text = "";
 
-        for (let slide of structuredClone(slides)) {
-            delete slide['id'];
-            delete slide['idx'];
+        for (let item of structuredClone(items)) {
+            delete item['id'];
+            delete item['idx'];
 
-            let templateNum = TEMPLATES.findIndex(t => t[0] == slide['template']);
+            let templateNum = TEMPLATES.findIndex(
+                t => t[0] == item['type'] && t[1] == item['subtype']
+            );
 
             let args = [ templateNum.toString() ];
 
             // Positional args
             for (let arg of TEMPLATES[templateNum][1]) {
-                args.push(slide[arg]);
-                delete slide[arg];
+                args.push(item[arg]);
+                delete item[arg];
             }
 
             // Keyword args
-            for (let [key, val] of Object.entries(slide)) {
+            for (let [key, val] of Object.entries(item)) {
                 if (key == 'subslides') continue;
                 args.push(`${key}=${val}`);
             }
@@ -298,9 +286,9 @@ export class Playlist {
             text += args.join(",") + "\n";
 
             // Subslides
-            if (slide['subslides']) {
+            if (item['subslides']) {
                 text += "S\n";
-                for (let subslide of slide['subslides']) {
+                for (let subslide of item['subslides']) {
                     text += subslide + "N\n";
                 }
                 text += "E\n";
@@ -315,7 +303,7 @@ export class Playlist {
         playlist.name = name || "";
 
         let reader = new TextReader(text);
-        let curSlide: Record<string, any> = {};
+        let curItem: Record<string, any> = {};
         let subslide = [];
         let readingSubslides = false;
         while (reader.canRead) {
@@ -323,12 +311,12 @@ export class Playlist {
 
             if (readingSubslides) {
                 if (line == "E") {
-                    curSlide['subslides'].push(subslide.join("\n"));
+                    curItem['subslides'].push(subslide.join("\n"));
                     readingSubslides = false;
                 } else {
                     if (line.endsWith("N")) {
                         subslide.push(line.trim().replace(/N$/,""));
-                        curSlide['subslides'].push(subslide.join("\n"));
+                        curItem['subslides'].push(subslide.join("\n"));
                         subslide = [];
                     } else {
                         subslide.push(line.trim());
@@ -336,12 +324,12 @@ export class Playlist {
                 }
             } else if (line == "S") {
                 readingSubslides = true;
-                curSlide['subslides'] = [];
+                curItem['subslides'] = [];
             } else {
                 // Push last slide
-                if (curSlide['template']) {
-                    playlist.pushSlide(curSlide);
-                    curSlide = {};
+                if (curItem['type']) {
+                    playlist.push(PlaylistItem.fromRecord(curItem));
+                    curItem = {};
                 }
 
                 // Reading slide line
@@ -351,33 +339,34 @@ export class Playlist {
                 let [template, ...args] = readResult;
                 let templateNum = parseInt(template);
 
-                let [templateName, positionalArgs] = TEMPLATES[templateNum];
+                let [type, subtype, positionalArgs] = TEMPLATES[templateNum];
                 let positionalsMatched = 0;
 
-                curSlide['template'] = templateName;
+                curItem['type'] = type;
+                curItem['subtype'] = subtype;
 
                 for (let arg of args) {
                     if (arg.includes("=")) {
                         let [key, val] = arg.split("=");
-                        curSlide[key] = val;
+                        curItem[key] = val;
                     } else {
                         let key = positionalArgs[positionalsMatched++];
-                        curSlide[key] = arg;
+                        curItem[key] = arg;
                     }
                 }
 
-                if (!curSlide['preview']) {
-                    curSlide['preview'] = positionalArgs
+                if (!curItem['preview']) {
+                    curItem['preview'] = positionalArgs
                         .slice(0, positionalsMatched)
-                        .map(key => curSlide[key])
+                        .map(key => curItem[key])
                         .join(" - ");
                 }
             }
         }
 
         // Push last slide
-        if (curSlide['template']) {
-            playlist.pushSlide(curSlide);
+        if (curItem['type']) {
+            playlist.push(PlaylistItem.fromRecord(curItem));
         }
 
         return playlist;
@@ -387,10 +376,9 @@ export class Playlist {
         let playlist = new this();
         playlist.name = name || "";
         let slides: Array<Record<string,any>> = Object.values(JSON.parse(json));
-        for (let slide of slides) {
-            playlist.pushSlide(slide);
+        for (let item of slides) {
+            playlist.push(PlaylistItem.fromRecord(item));
         }
-        console.log(playlist);
         return playlist;
     }
 }

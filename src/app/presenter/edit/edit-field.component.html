@@ -1,14 +1,17 @@
 @if (!isHidden()) {
 <th class="key-field">{{friendlyKey()}}</th>
 <td class="value-field">
-    @if (key() == 'template') {
+    @if (key() == 'subtype') {
         <select [(value)]="val" (change)="onChange($event)">
-            <option value="welcome">Welcome</option>
-            <option value="bible">Bible</option>
-            <option value="song">Song</option>
-            <option value="title">Title</option>
-            <option value="embed">Embed</option>
-            <option value="youtube">Youtube</option>
+            @if (slide()['type'] == 'slide') {
+                <option value="welcome">Welcome</option>
+                <option value="bible">Bible</option>
+                <option value="song">Song</option>
+                <option value="title">Title</option>
+                <option value="embed">Embed</option>
+            } @else {
+                <option value="youtube">Youtube</option>
+            }
         </select>
     } @else if (key() == 'version') {
         <select [(value)]="val" (change)="onChange($event)">
@@ -32,7 +35,13 @@
             <option disabled>Use JSON editor for other languages</option>
         </select>
     } @else {
-        <input type="text" [value]="val()" (change)="onChange($event)" />
+        <div
+            class="text-input"
+            contenteditable="plaintext-only"
+            (blur)="onChange($event)"
+            [innerHTML]="val()"
+        >
+        </div>
     }
     <div class="loading-backdrop" [class.hidden]="!loading()">
         <div class="loading-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>

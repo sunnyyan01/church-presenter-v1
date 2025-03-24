@@ -10,6 +10,12 @@ td.value-field > * {
     width: 100%;
 }
 
+.text-input {
+    border: 1px solid grey;
+    padding: 1px 3px;
+    font-size: 14px;
+}
+
 textarea {
     resize: none;
 }

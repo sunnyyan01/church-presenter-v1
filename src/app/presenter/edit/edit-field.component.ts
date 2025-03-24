@@ -7,15 +7,18 @@ const FRIENDLY_NAMES: Record<string, string> = {
     subslides: "Subslides",
     subtitle: "Subtitle",
     subtitles: "Subtitles",
-    template: "Template",
+    subtype: "Subtype",
     title: "Title",
     name: "Name",
     version: "Version",
     year: "Year",
     month: "Month",
     day: "Day",
+    videoId: "Video ID",
+    start: "Start",
+    end: "End",
 }
-const HIDDEN_FIELDS: Array<string> = ['id', 'idx', 'hasPlayback', ]
+const HIDDEN_FIELDS: Array<string> = ['id', 'idx', 'type', ]
 const AUTO_FIELDS: Array<string> = [
     'start',
     'end',
@@ -37,7 +40,7 @@ export class EditField {
     val = signal<any>(null);
     isHidden = computed(() => HIDDEN_FIELDS.includes(this.field()[0]));
     autoAvail = computed(() => (
-        (this.slide()['template'] == 'bible' && this.field()[0] == 'subslides') ||
+        (this.slide()['subtype'] == 'bible' && this.field()[0] == 'subslides') ||
         AUTO_FIELDS.includes(this.field()[0])
     ));
     loading = signal<boolean>(false);
@@ -51,9 +54,19 @@ export class EditField {
     }
 
     onChange(e: Event) {
-        let val = (e.target as HTMLInputElement).value;
+        let target = e.target as HTMLElement;
+        let val;
+        switch (target.tagName) {
+            case "INPUT":
+            case "SELECT":
+            case "TEXTAREA":
+                val = (target as HTMLInputElement).value;
+                break;
+            default:
+                val = target.textContent;
+        }
         if (this.key() == 'subslides') {
-            let subslides = val.split(/N\n?/);
+            let subslides = val!.split(/N\n?/);
             this.valChange.emit(subslides);
         } else {
             this.valChange.emit(val);
@@ -61,8 +74,10 @@ export class EditField {
     }
 
     autoPreview() {
-        let template = TEMPLATES.find(t => t[0] == this.slide()['template']) as [string, string[]];
-        let tFields = template[1];
+        let template = TEMPLATES.find(
+            t => t[0] == this.slide()['type'] && t[1] == this.slide()['subtype']
+        );
+        let tFields = template![2];
         let preview = tFields
             .map(f => this.slide()[f])
             .filter(x => x)
@@ -91,6 +106,17 @@ export class EditField {
         }
     }
 
+    autoTimeConvert() {
+        let timeFields = this.val().split(":");
+        if (timeFields.length === 3) {
+            let [hour, min, sec] = timeFields;
+            this.valChange.emit(hour * 3600 + min * 60 + parseFloat(sec));
+        } else if (timeFields.length === 2) {
+            let [min, sec] = timeFields;
+            this.valChange.emit(min * 60 + parseFloat(sec));
+        }
+    }
+
     auto() {
         switch(this.key()) {
             case "preview":
@@ -99,6 +125,9 @@ export class EditField {
             case "subslides":
                 this.autoSubslides();
                 break;
+            case "start":
+            case "end":
+                this.autoTimeConvert();
         }
     }
 }

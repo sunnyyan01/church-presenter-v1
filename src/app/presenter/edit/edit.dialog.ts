@@ -1,5 +1,5 @@
 import { Component, computed, effect, HostListener, input, output, signal } from '@angular/core';
-import { SLIDE_CONSTRUCTORS } from '../../classes/playlist';
+import { CONSTRUCTORS } from '../../classes/playlist';
 import { EditField } from './edit-field.component';
 import { EditDialogInput, EditDialogOutput } from '../../classes/edit';
 
@@ -11,26 +11,26 @@ import { EditDialogInput, EditDialogOutput } from '../../classes/edit';
 })
 export class EditDialog {
     editIn = input.required<EditDialogInput>();
-    slide = signal<Record<string, any>>({ template: "" });
+    slide = signal<Record<string, any>>({ });
     slideEntries = computed(() => Object.entries(this.slide()));
     close = output<EditDialogOutput | null>();
 
     constructor() {
         effect(() => {
             if (this.editIn().mode == "edit")
-                this.slide.set(this.editIn().slide as any);
+                this.slide.set(this.editIn().playlistItem as any);
             else // "new"
-                this.slide.set({ template: "", idx: this.editIn().idx });
+                this.slide.set({ subtype: "", idx: this.editIn().idx });
         })
     }
 
     onChange(key: string, val: any) {
-        if (key == "template") {
+        if (key == "subtype") {
             if (val == "") return;
-            let constructor = SLIDE_CONSTRUCTORS[val];
+            let constructor = CONSTRUCTORS[this.slide()['type'] + val];
             let newSlide = new constructor({
                 ...this.slide(),
-                template: val,
+                subtype: val,
             });
             this.slide.set(newSlide);
         } else {
@@ -39,8 +39,8 @@ export class EditDialog {
     }
 
     onSave() {
-        if (this.slide()["template"] == "") {
-            alert("You must select a slide type!")
+        if (this.slide()["subtype"] == "") {
+            alert("You must select a subtype!")
             return;
         }
         this.close.emit(this.editIn().toOutput(this.slide()));

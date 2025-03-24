@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Slide, YoutubeSlide } from '../classes/playlist';
+import { Slide, YoutubeSlide } from '../../classes/playlist';
 
 @Component({
     selector: 'slide',

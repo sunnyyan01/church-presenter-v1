@@ -1,0 +1,15 @@
+<div
+    class="slide" [class.selected]="selected() >= 0"
+    (click)="handleSlideClick()"
+>
+    <h4>{{data().subtype}}</h4>
+    <h2>{{data().preview}}</h2>
+    @for (subslide of $any(data()).subslides; track subslide) {
+        <p
+            (click)="handleSubslideClick($event, $index + 1)"
+            [class.selected]="selected() === $index + 1"
+        >
+            {{subslide}}
+        </p>
+    }
+</div>

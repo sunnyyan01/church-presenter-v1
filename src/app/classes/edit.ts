@@ -1,27 +1,13 @@
-import { Slide } from "./playlist";
+import { PlaylistItem } from "./playlist";
 
-export class EditDialogInput {
+export interface EditDialogInput {
     mode: "edit" | "new";
-    slide?: Slide;
+    type: string;
+    playlistItem?: PlaylistItem;
     idx?: number;
-
-    constructor(mode: "edit" | "new", slide?: Slide, idx?: number) {
-        this.mode = mode;
-        this.slide = slide;
-        this.idx = idx;
-    }
-
-    toOutput(slide: Record<string, any>) {
-        return new EditDialogOutput(this.mode, slide);
-    }
 }
 
-export class EditDialogOutput {
+export interface EditDialogOutput {
     mode: "edit" | "new";
     slide: Record<string, any>;
-
-    constructor(mode: "edit" | "new", slide: Record<string, any>) {
-        this.mode = mode;
-        this.slide = slide;
-    }
 }

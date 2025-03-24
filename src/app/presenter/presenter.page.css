@@ -2,18 +2,14 @@ main {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    overflow-y: hidden;
-}
-
-edit-dialog {
-    display: absolute;
+    padding: 0px 5px;
 }
 
 playlist-section, preview-section {
     display: flex;
     flex-direction: column;
     width: calc(50% - 6px);
-    height: 75vh;
+    height: 80vh;
     margin: 3px;
 }
 

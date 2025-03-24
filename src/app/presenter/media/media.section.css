@@ -1,0 +1,31 @@
+section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+h2 {
+    margin: 0px;
+}
+
+.slides {
+    overflow-y: auto;
+}
+
+slide-context-menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    border: 1px solid gray;
+    border-radius: 20px;
+    background-color: white;
+    padding: 2px;
+    box-shadow: 1px 1px gray;
+}
+
+edit-dialog {
+    position: absolute;
+    left: calc((100vw - 800px) / 2);
+    top: calc((100vh - 500px) / 2);
+}

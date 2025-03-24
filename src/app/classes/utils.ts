@@ -68,3 +68,67 @@ export function timeConvert(sec: number) {
         Math.trunc(sec % 60).toString().padStart(2, "0")
     );
 }
+
+export interface ObjectWithId {
+    id: string;
+    idx: number;
+}
+
+export class OrderedDict<T extends ObjectWithId> {
+    nextId = 0;
+    dict: Record<string, T> = {};
+    order: Array<string> = [];
+
+    [Symbol.iterator]() {
+        let x = this.order.map(id => this.dict[id])
+        return x.values();
+    }
+
+    byId(id: string) {
+        return this.dict[id];
+    }
+    byIdx(idx: number) {
+        return this.dict[this.order[idx]];
+    }
+
+    push(item: T) {
+        let curId = this.nextId++;
+        item.id = curId.toString();
+        if (!item.idx) item.idx = this.order.length;
+        this.dict[curId] = item;
+        if (item.idx) {
+            this.order.splice(item.idx, 0, item.id);
+        } else {
+            this.order.push(item.id);
+        }
+    }
+
+    replace(item: T) {
+        this.dict[item.id] = item;
+    }
+
+    move(id: string, direction: 1 | -1) {
+        let item = this.byId(id);
+        let curIdx = item.idx;
+        if (direction == -1 && curIdx == 0) return;
+        if (direction == 1 && curIdx == this.order.length - 1) return;
+        let newIdx = curIdx + direction;
+
+        let temp = this.order[curIdx];
+        this.order[curIdx] = this.order[newIdx];
+        this.order[newIdx] = temp;
+
+        this.byIdx(curIdx).idx = curIdx;
+        this.byIdx(newIdx).idx = newIdx;
+    }
+
+    delete(id: string) {
+        let idx = this.byId(id).idx;
+        delete this.dict[id];
+        this.order.splice(idx, 1);
+        for (let i = 0; i < this.order.length; i++) {
+            let id = this.order[i];
+            this.dict[id].idx = i;
+        }
+    }
+}

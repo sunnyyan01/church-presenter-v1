@@ -1,42 +1,27 @@
-<div class="header">
-    <h1>{{translations.header}}</h1>
-    <p>{{playlist()?.name}}</p>
-    @if(playlist()) {
-        <div class="button icon-button" (click)="savePlaylist($event)">
-            <img src="icons/save.svg">
-        </div>
-        <div class="button icon-button" (click)="closePlaylist()">
-            <img src="icons/close-square.svg">
-        </div>
-    }
-</div>
-@if (playlist()) {
-    <slide-context-menu
-        [class.hidden]="slideContextMenuOpen() == ''"
-        [style.left.px]="slideContextMenuPos()[0]"
-        [style.top.px]="slideContextMenuPos()[1]"
-        [slideId]="slideContextMenuOpen()"
-        (action)="onContextMenuClose($event)"
-        (blur)="onContextMenuClose()"
-    />
-    @if (editSlideInput()) {
-        <edit-dialog
-            [editIn]="$any(editSlideInput())"
-            (close)="onCloseEditDialog($event)"
-        />
-    }
-    <div class="slides">
-        @for (item of playlist(); track item.id) {
-            <slide
-                [attr.data-id]="item.id"
-                [data]="item"
-                (select)="onSlideSelect($event)" [selected]="curSlideId() === item.id ? curSubslideIdx() : -1"
-                (playbackEvent)="onPlaybackEvent($event, item)"
-                [playbackTimer]="playbackRequest().slide?.id == item.id ? playbackStatus().timeDisplay : ''"
-                (contextmenu)="onContextMenu($event)"
-            />
+<section>
+    <div class="header">
+        <h1>{{translations.header}}</h1>
+        <p>{{playlist()?.name}}</p>
+        @if(playlist()) {
+            <div class="button icon-button" (click)="savePlaylist($event)">
+                <img src="icons/save.svg">
+            </div>
+            <div class="button icon-button" (click)="closePlaylist()">
+                <img src="icons/close-square.svg">
+            </div>
         }
     </div>
-} @else {
-    <playlist-setup (playlistParsed)="onPlaylistInput($event)" />
-}
+    @if (playlist()) {
+        <slides-section
+            [(playlist)]="playlist"
+            (forcePlaylistUpdate)="onPlaylistUpdate($event)"
+            [(curSlideId)]="curSlideId"
+            [(curSubslideIdx)]="curSubslideIdx"
+        />
+        <media-section
+            [(playlist)]="playlist"
+        />
+    } @else {
+        <playlist-setup (playlistParsed)="onPlaylistInput($event)" />
+    }
+</section>

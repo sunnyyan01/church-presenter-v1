@@ -1,0 +1,28 @@
+<section>
+    <h2>Slides</h2>
+    <context-menu
+        [class.hidden]="slideContextMenuOpen() == ''"
+        [style.left.px]="slideContextMenuPos()[0]"
+        [style.top.px]="slideContextMenuPos()[1]"
+        [slideId]="slideContextMenuOpen()"
+        (action)="onContextMenuClose($event)"
+        (blur)="onContextMenuClose()"
+    />
+    @if (editSlideInput()) {
+        <edit-dialog
+            [editIn]="$any(editSlideInput())"
+            (close)="onCloseEditDialog($event)"
+        />
+    }
+    <div class="slides">
+        @for (item of playlist().slides; track item.id) {
+            <slide
+                [attr.data-id]="item.id"
+                [data]="item"
+                (select)="onSlideSelect($event)"
+                [selected]="curSlideId() === item.id ? curSubslideIdx() : -1"
+                (contextmenu)="onContextMenu($event)"
+            />
+        }
+    </div>
+</section>

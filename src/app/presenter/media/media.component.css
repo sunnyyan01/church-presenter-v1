@@ -1,0 +1,15 @@
+.media {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 11px 1px;
+}
+.media.selected {
+    border: 2px solid blue;
+    margin: 10px 0px;
+}
+
+.media > * {
+    margin: 0px;
+}

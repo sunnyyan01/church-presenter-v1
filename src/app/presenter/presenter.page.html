@@ -3,6 +3,7 @@
     [(curSubslideIdx)]="curSubslideIdx"
     [(playbackRequest)]="playbackRequest"
     [(playbackStatus)]="playbackStatus"
+    (forcePlaylistUpdate)="onPlaylistUpdate($event)"
   />
   <preview-section />
   <controls-section (playlistControl)="onPlaylistControl($event)" />

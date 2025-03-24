@@ -9,6 +9,7 @@
 .top-bar h2 {
     margin-left: 10%;
     font-size: 8vh;
+    white-space: pre;
 }
 .top-bar h2::first-line {
     font-size: 12vh;
@@ -16,6 +17,7 @@
 .top-bar h3 {
     text-align: right;
     font-size: 8vh;
+    white-space: pre;
 }
 .top-bar h3::first-line {
     font-size: 10vh;

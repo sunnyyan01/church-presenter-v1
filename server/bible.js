@@ -29,7 +29,6 @@ async function bibleGatewayLookup(loc, version) {
 
         if (span.classList.contains("text")) {
             for (let el of span.childNodes) {
-                console.log(el.textContent);
                 if (el.classList && el.classList.contains("crossreference")) continue;
                 text += el.textContent;
             }
@@ -40,7 +39,6 @@ async function bibleGatewayLookup(loc, version) {
 }
 
 function mergeVersions(versionA, versionB) {
-    console.log("Merging");
     versionA = versionA.split("\n");
     versionB = versionB.split("\n");
     let result = [];
