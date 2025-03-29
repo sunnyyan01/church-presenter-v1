@@ -12,15 +12,23 @@
         }
     </div>
     @if (playlist()) {
-        <slides-section
-            [(playlist)]="playlist"
-            (forcePlaylistUpdate)="onPlaylistUpdate($event)"
-            [(curSlideId)]="curSlideId"
-            [(curSubslideIdx)]="curSubslideIdx"
-        />
-        <media-section
-            [(playlist)]="playlist"
-        />
+        <div class="row">
+            <slides-section
+                [(playlist)]="playlist"
+                (slideUpdate)="onSlideUpdate($event)"
+                [(curSlideId)]="curSlideId"
+                [(curSubslideIdx)]="curSubslideIdx"
+                [(showSlide)]="showSlide"
+            />
+            <media-section
+                [(playlist)]="playlist"
+                (mediaUpdate)="onMediaUpdate($event)"
+                [(curMediaId)]="curMediaId"
+                [(playbackRequest)]="playbackRequest"
+                [playbackStatus]="playbackStatus()"
+                [(showMedia)]="showMedia"
+            />
+        </div>
     } @else {
         <playlist-setup (playlistParsed)="onPlaylistInput($event)" />
     }

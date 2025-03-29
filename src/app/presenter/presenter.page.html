@@ -1,11 +1,15 @@
 <main>
-  <playlist-section #playlistSection [(playlist)]="playlist" [(curSlideId)]="curSlideId"
-    [(curSubslideIdx)]="curSubslideIdx"
+  <playlist-section #playlistSection
+    [(playlist)]="playlist"
+    [(curSlideId)]="curSlideId" [(curSubslideIdx)]="curSubslideIdx"
+    [(showSlide)]="showSlide"
+    [(curMediaId)]="curMediaId"
     [(playbackRequest)]="playbackRequest"
-    [(playbackStatus)]="playbackStatus"
-    (forcePlaylistUpdate)="onPlaylistUpdate($event)"
+    [playbackStatus]="playbackStatus()"
+    [(showMedia)]="showMedia"
+    (slideUpdate)="onSlideUpdate($event)"
+    (mediaUpdate)="onMediaUpdate($event)"
   />
   <preview-section />
-  <controls-section (playlistControl)="onPlaylistControl($event)" />
   <about-section />
 </main>

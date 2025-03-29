@@ -31,7 +31,14 @@ playlist-setup {
     margin: auto;
 }
 
-slides-section {
-    width: 60%;
+div.row {
     height: calc(100% - 60px);
+}
+
+slides-section {
+    width: calc(60% - 5px);
+    margin-right: 10px;
+}
+media-section {
+    width: calc(40% - 5px);
 }

@@ -1,28 +1,30 @@
 <main style="background-image: url('background.svg');">
-    <div class="slide-inner" [class.hidden]="blank()">
-        <youtube-player [bc]="playbackBc" [slide]="slide()" [class.invisible]="slide().template != 'youtube'" />
-        @if (slide().template == "welcome") {
+    <div class="slide-inner" [class.hidden]="!showSlide()">
+        <youtube-player
+            [media]="media()"
+            [class.invisible]="!showMedia()"
+            [playbackRequest]="playbackRequest()"
+            (playbackTimerChange)="onPlaybackTimerChange($event)"
+        />
+        @if (slide().subtype == "welcome") {
             <welcome-template [slide]="$any(slide())" />
         }
-        @if (slide().template == "bible") {
+        @if (slide().subtype == "bible") {
             @if (subslideIdx() == 0) {
                 <title-template [slide]="$any(slide()).toTitleSlide()" />
             } @else {
                 <bible-template [slide]="$any(slide())" [subslideIdx]="subslideIdx()" />
             }
         }
-        @if (slide().template == "song") {
+        @if (slide().subtype == "song") {
             @if (subslideIdx() == 0) {
                 <title-template [slide]="$any(slide()).toTitleSlide()" />
             } @else {
                 <song-template [slide]="$any(slide())" [subslideIdx]="subslideIdx()" />
             }
         }
-        @if (slide().template == "title") {
+        @if (slide().subtype == "title") {
             <title-template [slide]="$any(slide())" />
-        }
-        @if (slide().template == "youtube") {
-
         }
     </div>
 </main>

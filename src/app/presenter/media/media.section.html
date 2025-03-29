@@ -1,28 +1,70 @@
 <section>
     <h2>Media</h2>
     <context-menu
-        [class.hidden]="slideContextMenuOpen() == ''"
-        [style.left.px]="slideContextMenuPos()[0]"
-        [style.top.px]="slideContextMenuPos()[1]"
-        [slideId]="slideContextMenuOpen()"
+        [class.hidden]="contextMenuOpen() == ''"
+        [style.left.px]="contextMenuPos()[0]"
+        [style.top.px]="contextMenuPos()[1]"
+        [id]="contextMenuOpen()"
         (action)="onContextMenuClose($event)"
         (blur)="onContextMenuClose()"
     />
-    @if (editSlideInput()) {
+    @if (editDialogInput()) {
         <edit-dialog
-            [editIn]="$any(editSlideInput())"
+            [editIn]="$any(editDialogInput())"
             (close)="onCloseEditDialog($event)"
         />
     }
-    <div class="slides">
+    <div class="media-list">
         @for (item of playlist()?.media; track item.id) {
             <media
                 [attr.data-id]="item.id"
                 [data]="item"
-                (select)="onSlideSelect($event)"
-                [selected]="curSlideId() === item.id ? curSubslideIdx() : -1"
+                (select)="onMediaSelect(item.id)"
+                [selected]="curMediaId() === item.id"
                 (contextmenu)="onContextMenu($event)"
-            />
+            ></media>
         }
+        <div class="button text-button primary" (click)="openInsertDialogAtEnd()">
+            New Media
+        </div>
+    </div>
+    <div class="controls">
+        <div class="section">
+            <div
+                class="button icon-button"
+                (click)="prevMedia($event)"
+            >
+                <img src="icons/up-arrow.svg">
+            </div>
+            <div
+                class="button icon-button"
+                (click)="nextMedia($event)"
+            >
+                <img src="icons/down-arrow.svg">
+            </div>
+            <div
+                class="button icon-button"
+                (click)="toggleShow()"
+            >
+                <img src="icons/black-screen.svg">
+            </div>
+        </div>
+        <div class="section">
+            <div
+                class="button icon-button"
+                (click)="playPause()"
+            >
+                ⏯
+            </div>
+            <div
+                class="button icon-button"
+                (click)="stop()"
+            >
+                ⏹
+            </div>
+            <div class="time-display">
+                {{playbackStatus().timeDisplay}}
+            </div>
+        </div>
     </div>
 </section>

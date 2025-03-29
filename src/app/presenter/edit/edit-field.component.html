@@ -3,6 +3,7 @@
 <td class="value-field">
     @if (key() == 'subtype') {
         <select [(value)]="val" (change)="onChange($event)">
+            <option value="">(Select one)</option>
             @if (slide()['type'] == 'slide') {
                 <option value="welcome">Welcome</option>
                 <option value="bible">Bible</option>

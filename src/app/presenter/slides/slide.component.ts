@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Slide, YoutubeSlide } from '../../classes/playlist';
+import { Slide } from '../../classes/playlist';
 
 @Component({
     selector: 'slide',
@@ -16,27 +16,9 @@ export class SlideComponent {
 
     handleSlideClick() {
         this.select.emit([this.data().id, 0]);
-        if (this.data().hasPlayback) {
-            this.playbackEvent.emit("cue");
-        }
     }
     handleSubslideClick(e: Event, subslideIdx: number) {
         e.stopPropagation();
         this.select.emit([this.data().id, subslideIdx]);
-    }
-
-    play(e: MouseEvent) {
-        e.stopPropagation();
-        if (this.selected() == -1)
-            this.playbackEvent.emit("cue");
-        this.playbackEvent.emit("play");
-    }
-    pause(e: MouseEvent) {
-        e.stopPropagation();
-        this.playbackEvent.emit("pause");
-    }
-    stop(e: MouseEvent) {
-        e.stopPropagation();
-        this.playbackEvent.emit("stop");
     }
 }

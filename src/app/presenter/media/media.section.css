@@ -8,11 +8,11 @@ h2 {
     margin: 0px;
 }
 
-.slides {
+.media-list {
     overflow-y: auto;
 }
 
-slide-context-menu {
+context-menu {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -22,10 +22,37 @@ slide-context-menu {
     background-color: white;
     padding: 2px;
     box-shadow: 1px 1px gray;
+    z-index: 2;
 }
 
 edit-dialog {
     position: absolute;
     left: calc((100vw - 800px) / 2);
     top: calc((100vh - 500px) / 2);
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-self: center;
+    margin-top: auto;
+    justify-content: center;
+}
+.controls .section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.controls .button {
+    margin: 0px 5px;
+    width: 70px;
+    height: 70px;
+    font-size: 70px;
+    text-align: center;
+    line-height: 70px;
+}
+.controls .time-display {
+    width: 80px;
+    text-align: center;
 }

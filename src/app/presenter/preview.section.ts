@@ -1,8 +1,9 @@
-import { Component, ElementRef, model, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { ControlsSection } from "./controls.section";
 
 @Component({
     selector: 'preview-section',
-    imports: [],
+    imports: [ControlsSection],
     templateUrl: './preview.section.html',
     styleUrl: './preview.section.css',
 })

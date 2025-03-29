@@ -1,7 +1,8 @@
-import { afterRender, Component, computed, effect, input, signal } from '@angular/core';
-import { Slide, YoutubeSlide } from '../../classes/playlist';
+import { afterRender, Component, computed, effect, input, output, signal } from '@angular/core';
+import { Slide, YoutubeMedia } from '../../classes/playlist';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { timeConvert } from '../../classes/utils';
+import { PlaybackRequest, PlaybackState } from '../../classes/playback';
 
 declare var YT: any;
 
@@ -12,44 +13,41 @@ declare var YT: any;
     styleUrl: './youtube-player.component.css'
 })
 export class YoutubePlayer {
-    bc = input.required<BroadcastChannel>();
-    slide = input.required<Slide>();
-    playbackSlide = signal<YoutubeSlide | undefined>(undefined);
-    embedUrl = signal<SafeUrl | undefined>(undefined);
+    media = input.required<YoutubeMedia>();
+    playbackRequest = input.required<PlaybackRequest>();
+    playbackTimerChange = output<string>();
     player: any;
     playerReady = false;
     playbackTimerInterval: any;
 
     constructor() {
         effect(() => {
-            this.bc().addEventListener("message", e => {
-                let { slide, playRequest } = e.data;
-                if (slide) {
-                    this.playbackSlide.set(slide);
-                }
-                if (playRequest == 'play') {
+            switch (this.playbackRequest().state) {
+                case "play":
                     this.player.playVideo();
-                } else if (playRequest == 'pause') {
+                    break;
+                case "pause":
                     this.player.pauseVideo();
-                } else { // stop
+                    break;
+                case "stop":
                     this.player.stopVideo();
-                }
-            })
+                    break;
+            }
         })
 
-        effect(() => this.cueVideo(this.playbackSlide()));
+        effect(() => this.cueVideo(this.media()));
     }
 
-    cueVideo(slide: YoutubeSlide | undefined) {
-        if (!slide) return;
-        if (this.player?.getVideoUrl().includes(slide.videoId)) return;
+    cueVideo(media: YoutubeMedia) {
+        if (!media) return;
+        if (this.player?.getVideoUrl().includes(media.videoId)) return;
 
-        let startSeconds = slide.start ? parseFloat(slide.start) : undefined;
-        let endSeconds = slide.end ? parseFloat(slide.end) : undefined;
+        let startSeconds = media.start ? parseFloat(media.start) : undefined;
+        let endSeconds = media.end ? parseFloat(media.end) : undefined;
 
         if (this.playerReady) {
             this.player.cueVideoById({
-                videoId: this.playbackSlide()?.videoId,
+                videoId: media.videoId,
                 startSeconds, endSeconds
             });
         } else {
@@ -59,7 +57,7 @@ export class YoutubePlayer {
                         this.playerReady = true;
                         let player = e.target as any;
                         player.cueVideoById({
-                            videoId: this.playbackSlide()?.videoId,
+                            videoId: media.videoId,
                             startSeconds, endSeconds
                         });
                         // console.log("cued");
@@ -69,7 +67,7 @@ export class YoutubePlayer {
                             this.playbackTimerInterval = setInterval(() => {
                                 let cur = timeConvert( this.player.getCurrentTime() );
                                 let len = timeConvert( this.player.getDuration() );
-                                this.bc().postMessage({timeDisplay: `${cur} / ${len}`});
+                                this.playbackTimerChange.emit(`${cur} / ${len}`);
                             }, 1000)
                         } else if (this.playbackTimerInterval) {
                             clearInterval(this.playbackTimerInterval);

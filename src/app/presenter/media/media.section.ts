@@ -1,31 +1,32 @@
-import { Component, HostListener, model, output, signal } from "@angular/core";
-import { Playlist, PlaylistItem, Slide } from "../../classes/playlist";
+import { Component, HostListener, input, model, output, signal } from "@angular/core";
+import { Playlist, PlaylistItem } from "../../classes/playlist";
 import { EditDialogInput, EditDialogOutput } from "../../classes/edit";
 import { ContextMenu } from "../context-menu/context-menu.component";
 import { EditDialog } from "../edit/edit.dialog";
-import { SlideComponent } from "../slides/slide.component";
+import { MediaComponent } from "./media.component";
+import { PlaybackRequest, PlaybackStatus } from "../../classes/playback";
 
 @Component({
     selector: 'media-section',
     templateUrl: './media.section.html',
     styleUrl: './media.section.css',
-    imports: [ContextMenu, EditDialog, ]
+    imports: [ContextMenu, EditDialog, MediaComponent,],
 })
 export class MediaSection {
     playlist = model<Playlist | null>();
-    forcePlaylistUpdate = output<string>();
-    curSlideId = model<string>("");
-    curSubslideIdx = model<number>(0);
+    mediaUpdate = output<string>();
+    curMediaId = model<string>("");
+    playbackRequest = model<PlaybackRequest>(new PlaybackRequest());
+    playbackStatus = input<PlaybackStatus>(new PlaybackStatus());
+    showMedia = model<boolean>(false);
 
-    slideContextMenuOpen = signal<string>("");
-    slideContextMenuPos = signal<[number, number]>([0,0]);
+    contextMenuOpen = signal<string>("");
+    contextMenuPos = signal<[number, number]>([0,0]);
 
-    editSlideInput = signal<EditDialogInput | null>(null);
+    editDialogInput = signal<EditDialogInput | null>(null);
 
-    onSlideSelect(e: [string, number]) {
-        let [slideId, subslideIdx] = e;
-        this.curSlideId.set(slideId);
-        this.curSubslideIdx.set(subslideIdx);
+    onMediaSelect(e: string) {
+        this.curMediaId.set(e);
     }
 
     onContextMenu(e: MouseEvent) {
@@ -34,74 +35,117 @@ export class MediaSection {
 
         let target = e.currentTarget as HTMLElement;
 
-        this.slideContextMenuPos.set([e.clientX, e.clientY])
-        this.slideContextMenuOpen.set(target.dataset["id"] as string);
+        this.contextMenuPos.set([e.clientX, e.clientY])
+        this.contextMenuOpen.set(target.dataset["id"] as string);
     }
     onContextMenuClose(e?: [string, string]) {
-        this.slideContextMenuOpen.set("");
+        this.contextMenuOpen.set("");
 
         if (!e) return;
-        let [slideId, action] = e;
+        let [id, action] = e;
         switch (action) {
             case "edit":
-                this.openEditDialog(undefined, slideId);
+                this.openEditDialog(undefined, id);
                 break;
             case "move-up":
-                this.moveItem(slideId, -1);
+                this.moveItem(id, -1);
                 break;
             case "move-down":
-                this.moveItem(slideId, 1);
+                this.moveItem(id, 1);
                 break;
             case "insert-above":
-                this.openInsertDialog(slideId, -1);
+                this.openInsertDialog(id, -1);
                 break;
             case "insert-below":
-                this.openInsertDialog(slideId, 1);
+                this.openInsertDialog(id, 1);
                 break;
             case "delete":
-                this.playlist()?.slides.delete(slideId);
+                this.playlist()?.media.delete(id);
                 break;
         }
     }
     
-    @HostListener("window:keydown.control.e", ["$event"])
+    @HostListener("window:keydown.control.shift.e", ["$event"])
     openEditDialog(e?: KeyboardEvent, id?: string) {
         if (e) e.preventDefault();
 
-        this.editSlideInput.set({
+        this.editDialogInput.set({
             mode: "edit",
             type: "media",
-            playlistItem: this.playlist()?.slides.byId(id || this.curSlideId())
+            playlistItem: this.playlist()?.media.byId(id || this.curMediaId())
         });
     }
     onCloseEditDialog(e: EditDialogOutput | null) {
         if (e) {
             if (e.mode == 'edit') {
-                this.playlist()?.replace(PlaylistItem.fromRecord(e.slide));
-                if (e.slide['type'] == "slide")
-                    this.forcePlaylistUpdate.emit(e.slide["id"]);
+                this.playlist()?.media.replace(PlaylistItem.fromRecord(e.slide));
+                this.mediaUpdate.emit(e.slide["id"]);
             } else { // new
-                this.playlist()?.push(PlaylistItem.fromRecord(e.slide));
+                this.playlist()?.media.push(PlaylistItem.fromRecord(e.slide));
             }
         }
 
-        this.editSlideInput.set(null);
+        this.editDialogInput.set(null);
     }
 
     openInsertDialog(id: string, direction: 1 | -1) {
-        this.editSlideInput.set({
+        this.editDialogInput.set({
             mode: 'new',
-            type: 'slide',
-            idx: this.playlist()?.slides.byId(id).idx! + direction,
+            type: 'media',
+            idx: this.playlist()?.media.byId(id).idx! + direction,
+        });
+    }
+    openInsertDialogAtEnd() {
+        this.editDialogInput.set({
+            mode: 'new',
+            type: 'media',
         });
     }
 
-    moveItem(slideId: string, direction: 1 | -1) {
-        this.playlist()?.slides.move(slideId, direction);
+    moveItem(id: string, direction: 1 | -1) {
+        this.playlist()?.media.move(id, direction);
     }
-    @HostListener("window:keydown.control.shift.arrowup", ['-1'])
-    @HostListener("window:keydown.control.shift.arrowdown", ['1'])
     moveCurItem(direction: 1 | -1) {
-        this.moveItem(this.curSlideId(), direction);
+        this.moveItem(this.curMediaId(), direction);
+    }
+
+    @HostListener("window:keydown.control.F11", ["$event"])
+    @HostListener("window:keydown.MediaTrackPrevious", ["$event"])
+    nextMedia(e: KeyboardEvent | MouseEvent) {
+        e.preventDefault();
+
+        let curMedia = this.playlist()?.slides.byId(this.curMediaId())
+        if (!curMedia) return;
+        let nextMedia = this.playlist()?.slides.byIdx(curMedia.idx + 1);
+        if (!nextMedia) return;
+        this.curMediaId.set(nextMedia.id);
+    }
+
+    @HostListener("window:keydown.control.F9", ["$event"])
+    @HostListener("window:keydown.MediaTrackPrevious", ["$event"])
+    prevMedia(e: KeyboardEvent | MouseEvent) {
+        e.preventDefault();
+
+        let curMedia = this.playlist()?.slides.byId(this.curMediaId())
+        if (!curMedia) return;
+        let prevMedia = this.playlist()?.slides.byIdx(curMedia.idx - 1);
+        if (!prevMedia) return;
+        this.curMediaId.set(prevMedia.id);
+    }
+
+    toggleShow() {
+        this.showMedia.update(x => !x);
+        console.log(this.showMedia());
+    }
+
+    @HostListener("window:keydown.control.F10")
+    playPause() {
+        this.playbackRequest.update(r => ({
+            state: r.state == "play" ? "pause" : "play"
+        }));
+    }
+
+    stop() {
+        this.playbackRequest.set({state: "stop"});
     }
 }
