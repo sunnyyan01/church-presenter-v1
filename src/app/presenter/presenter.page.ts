@@ -1,32 +1,35 @@
-import { Component, HostListener, signal, effect } from '@angular/core';
+import { Component, signal, effect } from '@angular/core';
 import { PlaylistSection } from './playlist.section';
 import { PreviewSection } from './preview.section';
-import { ControlsSection } from './controls.section';
 import { Playlist } from '../classes/playlist';
 import { PlaybackRequest, PlaybackStatus } from '../classes/playback';
 import { AboutSection } from "./about.section";
 
 @Component({
     selector: 'presenter-page',
-    imports: [PlaylistSection, PreviewSection, ControlsSection, AboutSection],
+    imports: [PlaylistSection, PreviewSection, AboutSection],
     templateUrl: './presenter.page.html',
     styleUrl: './presenter.page.css'
 })
 export class PresenterPage {
     playlist = signal<Playlist | null>(null, {equal: () => false});
+
+    slideshowBc: BroadcastChannel;
     curSlideId = signal<string>("");
     curSubslideIdx = signal<number>(0);
-    slideshowBc: BroadcastChannel;
+    showSlide = signal<boolean>(true);
 
     playbackBc: BroadcastChannel;
+    curMediaId = signal<string>("");
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     playbackStatus = signal<PlaybackStatus>(new PlaybackStatus());
+    showMedia = signal<boolean>(false);
 
     constructor() {
         this.slideshowBc = new BroadcastChannel("slideshow");
         effect(() => {
             this.slideshowBc.postMessage({
-                slide: this.playlist()?.byId(this.curSlideId())
+                slide: this.playlist()?.slides.byId(this.curSlideId())
             })
         })
         effect(() => {
@@ -34,17 +37,35 @@ export class PresenterPage {
                 subslideIdx: this.curSubslideIdx()
             })
         })
+        effect(() => {
+            this.slideshowBc.postMessage({
+                showSlide: this.showSlide()
+            })
+        })
         this.slideshowBc.onmessage = e => {
             if (e.data !== "refresh") return;
             this.slideshowBc.postMessage({
-                slide: this.playlist()?.byId(this.curSlideId()),
+                slide: this.playlist()?.slides.byId(this.curSlideId()),
                 subslideIdx: this.curSubslideIdx(),
             })
         }
 
         this.playbackBc = new BroadcastChannel("playback");
         effect(() => {
-            this.playbackBc.postMessage(this.playbackRequest());
+            this.playbackBc.postMessage({
+                media: this.playlist()?.media.byId(this.curMediaId())
+            });
+        })
+        effect(() => {
+            this.playbackBc.postMessage({
+                playbackRequest: this.playbackRequest()
+            });
+        })
+        effect(() => {
+            console.log("here");
+            this.playbackBc.postMessage({
+                showMedia: this.showMedia()
+            })
         })
         this.playbackBc.addEventListener("message", e => {
             if (e.data.refresh)
@@ -55,68 +76,18 @@ export class PresenterPage {
         })
     }
 
-    onPlaylistUpdate(slideId: string) {
+    onSlideUpdate(slideId: string) {
         if (this.curSlideId() == slideId) {
             this.slideshowBc.postMessage({
-                slide: this.playlist()?.byId(this.curSlideId())
+                slide: this.playlist()?.slides.byId(this.curSlideId())
             });
         }
     }
-
-    @HostListener("window:keydown.arrowdown", ["$event"])
-    @HostListener("window:keydown.control.arrowdown", ["$event"])
-    @HostListener("window:keydown.arrowright", ["$event"])
-    @HostListener("window:keydown.control.arrowright", ["$event"])
-    nextSlide(e: KeyboardEvent | MouseEvent) {
-        e.preventDefault();
-
-        let curSlide = this.playlist()?.byId(this.curSlideId())
-        if (!curSlide) return;
-
-        if (!e.ctrlKey && this.curSubslideIdx() < curSlide.subslideCount) {
-            this.curSubslideIdx.update(x => x + 1);
-        } else {
-            let nextSlide = this.playlist()?.byIdx(curSlide.idx + 1);
-            if (!nextSlide) return;
-            this.curSlideId.set(nextSlide.id);
-            this.curSubslideIdx.set(0);
-        }
-    }
-
-    @HostListener("window:keydown.arrowup", ["$event"])
-    @HostListener("window:keydown.control.arrowup", ["$event"])
-    @HostListener("window:keydown.arrowleft", ["$event"])
-    @HostListener("window:keydown.control.arrowleft", ["$event"])
-    prevSlide(e: KeyboardEvent | MouseEvent) {
-        e.preventDefault();
-
-        let curSlide = this.playlist()?.byId(this.curSlideId())
-        if (!curSlide) return;
-
-        if (!e.ctrlKey && this.curSubslideIdx() > 0) {
-            this.curSubslideIdx.update(x => x - 1);
-        } else {
-            let nextSlide = this.playlist()?.byIdx(curSlide.idx - 1);
-            if (!nextSlide) return;
-            this.curSlideId.set(nextSlide.id);
-            this.curSubslideIdx.set(0);
-        }
-    }
-
-    @HostListener("window:keydown.b", [])
-    blankSlide() {
-        this.slideshowBc.postMessage({blank: "toggle"});
-    }
-
-    onPlaylistControl(e: MouseEvent) {
-        let target = e.currentTarget as HTMLElement;
-        let action = target?.dataset["action"];
-        if (action == "next-slide") {
-            this.nextSlide(e);
-        } else if (action == "prev-slide") {
-            this.prevSlide(e);
-        } else if (action == "blank") {
-            this.blankSlide();
+    onMediaUpdate(id: string) {
+        if (this.curMediaId() == id) {
+            this.playbackBc.postMessage({
+                media: this.playlist()?.media.byId(this.curSlideId())
+            });
         }
     }
 }

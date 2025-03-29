@@ -1,13 +1,13 @@
-import { Component, computed, HostListener, model, output, signal } from "@angular/core";
+import { Component, input, model, output } from "@angular/core";
 import { PlaylistSetupComponent } from "./playlist-setup.component";
-import { Playlist, Slide } from "../classes/playlist";
-import { EditDialog } from "./edit/edit.dialog";
+import { Playlist } from "../classes/playlist";
 import { PlaybackRequest, PlaybackStatus } from "../classes/playback";
 import { SlidesSection } from "./slides/slides.section";
+import { MediaSection } from "./media/media.section";
 
 @Component({
     selector: 'playlist-section',
-    imports: [EditDialog, PlaylistSetupComponent, SlidesSection],
+    imports: [PlaylistSetupComponent, SlidesSection, MediaSection],
     templateUrl: './playlist.section.html',
     styleUrl: './playlist.section.css',
 })
@@ -19,14 +19,26 @@ export class PlaylistSection {
     };
 
     playlist = model<Playlist | null>();
-    forcePlaylistUpdate = output<string>();
+    slideUpdate = output<string>();
     curSlideId = model<string>("");
     curSubslideIdx = model<number>(0);
+    showSlide = model<boolean>(true);
 
+    curMediaId = model<string>("");
+    mediaUpdate = output<string>();
     playbackRequest = model<PlaybackRequest>(new PlaybackRequest());
-    playbackStatus = model<PlaybackStatus>(new PlaybackStatus());
+    playbackStatus = input<PlaybackStatus>(new PlaybackStatus());
+    showMedia = model<boolean>(false);
 
     onPlaylistInput(playlist: Playlist) {
+        this.curSlideId.set("");
+        this.curSubslideIdx.set(0);
+        this.curMediaId.set("");
+        this.showSlide.set(true);
+
+        this.playbackRequest.set(new PlaybackRequest());
+        this.showMedia.set(false);
+        
         this.playlist.set(playlist);
     }
 
@@ -47,18 +59,10 @@ export class PlaylistSection {
         this.playlist.set(null);
     }
 
-    onPlaylistUpdate(slideId: string) {
-        this.forcePlaylistUpdate.emit(slideId);
+    onSlideUpdate(id: string) {
+        this.slideUpdate.emit(id);
     }
-
-    onPlaybackEvent(e: string, slide: Slide) {
-        if (e == 'cue') {
-            this.playbackRequest.set(new PlaybackRequest(slide, "stop"));
-        } else {
-            this.playbackRequest.set(new PlaybackRequest(slide, e as any));
-            if (e == 'stop') {
-                this.playbackStatus.set(new PlaybackStatus());
-            }
-        }
+    onMediaUpdate(id: string) {
+        this.mediaUpdate.emit(id);
     }
 }

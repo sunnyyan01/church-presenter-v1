@@ -4,7 +4,7 @@
         [class.hidden]="slideContextMenuOpen() == ''"
         [style.left.px]="slideContextMenuPos()[0]"
         [style.top.px]="slideContextMenuPos()[1]"
-        [slideId]="slideContextMenuOpen()"
+        [id]="slideContextMenuOpen()"
         (action)="onContextMenuClose($event)"
         (blur)="onContextMenuClose()"
     />
@@ -15,7 +15,7 @@
         />
     }
     <div class="slides">
-        @for (item of playlist().slides; track item.id) {
+        @for (item of playlist()?.slides; track item.id) {
             <slide
                 [attr.data-id]="item.id"
                 [data]="item"
@@ -24,5 +24,28 @@
                 (contextmenu)="onContextMenu($event)"
             />
         }
+        <div class="button text-button primary" (click)="openInsertDialogAtEnd()">
+            New Slide
+        </div>
+    </div>
+    <div class="controls">
+        <div
+            class="button icon-button"
+            (click)="prevSlide($event)"
+        >
+            <img src="icons/up-arrow.svg">
+        </div>
+        <div
+            class="button icon-button"
+            (click)="nextSlide($event)"
+        >
+            <img src="icons/down-arrow.svg">
+        </div>
+        <div
+            class="button icon-button"
+            (click)="blankSlide()"
+        >
+            <img src="icons/black-screen.svg">
+        </div>
     </div>
 </section>

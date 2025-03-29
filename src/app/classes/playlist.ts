@@ -160,7 +160,7 @@ export class EmbedSlide extends Slide {
 
 export class BlankSlide extends Slide {
     constructor() {
-        super({"subtype": "blank"});
+        super({"type": "slide", "subtype": "blank"});
     }
 
     override resetPreview(): string {
@@ -204,6 +204,16 @@ export class YoutubeMedia extends Media {
     }
 }
 
+export class BlankMedia extends Media {
+    constructor() {
+        super({"type": "media", "subtype": "blank"});
+    }
+
+    override resetPreview(): string {
+        return this.preview;
+    }
+}
+
 export const CONSTRUCTORS: Record<string, any> = {
     slidewelcome: WelcomeSlide,
     slidebible: BibleSlide,
@@ -212,6 +222,7 @@ export const CONSTRUCTORS: Record<string, any> = {
     slideembed: EmbedSlide,
     slideblank: BlankSlide,
     mediayoutube: YoutubeMedia,
+    mediablank: BlankMedia,
 }
 
 export const TEMPLATES: Array<[string, string, Array<string>]> = [
@@ -272,7 +283,7 @@ export class Playlist {
             let args = [ templateNum.toString() ];
 
             // Positional args
-            for (let arg of TEMPLATES[templateNum][1]) {
+            for (let arg of TEMPLATES[templateNum][2]) {
                 args.push(item[arg]);
                 delete item[arg];
             }
@@ -313,6 +324,7 @@ export class Playlist {
                 if (line == "E") {
                     curItem['subslides'].push(subslide.join("\n"));
                     readingSubslides = false;
+                    subslide = [];
                 } else {
                     if (line.endsWith("N")) {
                         subslide.push(line.trim().replace(/N$/,""));

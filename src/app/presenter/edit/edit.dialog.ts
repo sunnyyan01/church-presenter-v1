@@ -17,10 +17,15 @@ export class EditDialog {
 
     constructor() {
         effect(() => {
-            if (this.editIn().mode == "edit")
+            if (this.editIn().mode == "edit") {
                 this.slide.set(this.editIn().playlistItem as any);
-            else // "new"
-                this.slide.set({ subtype: "", idx: this.editIn().idx });
+            } else { // "new"
+                this.slide.set({
+                    type: this.editIn().type,
+                    subtype: "",
+                    idx: this.editIn().idx
+                });
+            }
         })
     }
 
@@ -43,7 +48,10 @@ export class EditDialog {
             alert("You must select a subtype!")
             return;
         }
-        this.close.emit(this.editIn().toOutput(this.slide()));
+        this.close.emit({
+            mode: this.editIn().mode,
+            slide: this.slide(),
+        });
     }
     onClose() {
         this.close.emit(null);

@@ -4,24 +4,7 @@
     align-items: center;
     justify-content: center;
 }
-.control-group {
-    padding: 0px 5px;
-    border-right: 1px solid grey;
-}
-.control-group:last-child {
-    border-right: none;
-}
-.control-group h6 {
-    margin: 0px;
-    text-transform: uppercase;
-    font-size: 14px;
-    text-align: center;
-}
-.control-group div {
-    display: flex;
-    flex-direction: row;
-}
-.control-group div .button {
+.button {
     margin: 0px 5px;
     width: 70px;
     height: 70px;

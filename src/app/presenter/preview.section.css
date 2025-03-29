@@ -1,8 +1,14 @@
+section {
+    height: 100%;
+}
 .button {
     align-self: center;
     justify-self: center;
 }
-video {
+.preview-frame, video {
     width: 100%;
     aspect-ratio: 16 / 9;
+}
+controls-section {
+    margin-top: auto;
 }

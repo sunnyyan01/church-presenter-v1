@@ -10,9 +10,9 @@ export class MediaComponent {
     data = input.required<Media>();
     selected = input<boolean>(false);
 
-    select = output<string>();
+    select = output<void>();
 
-    handleSlideClick() {
-        this.select.emit(this.data().id);
+    handleMediaClick() {
+        this.select.emit();
     }
 }

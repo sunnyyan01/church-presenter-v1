@@ -1,7 +1,7 @@
-import { Component, HostListener, model, output, signal } from "@angular/core";
+import { Component, effect, HostListener, model, output, signal } from "@angular/core";
 import { Playlist, PlaylistItem, Slide } from "../../classes/playlist";
 import { EditDialogInput, EditDialogOutput } from "../../classes/edit";
-import { SlideContextMenu } from "../context-menu/context-menu.component";
+import { ContextMenu } from "../context-menu/context-menu.component";
 import { EditDialog } from "../edit/edit.dialog";
 import { SlideComponent } from "./slide.component";
 
@@ -9,13 +9,15 @@ import { SlideComponent } from "./slide.component";
     selector: 'slides-section',
     templateUrl: './slides.section.html',
     styleUrl: './slides.section.css',
-    imports: [SlideContextMenu, EditDialog, SlideComponent]
+    imports: [ContextMenu, EditDialog, SlideComponent]
 })
 export class SlidesSection {
     playlist = model<Playlist | null>();
-    forcePlaylistUpdate = output<string>();
+    slideUpdate = output<string>();
+
     curSlideId = model<string>("");
     curSubslideIdx = model<number>(0);
+    showSlide = model<boolean>(true);
 
     slideContextMenuOpen = signal<string>("");
     slideContextMenuPos = signal<[number, number]>([0,0]);
@@ -79,7 +81,7 @@ export class SlidesSection {
             if (e.mode == 'edit') {
                 this.playlist()?.replace(PlaylistItem.fromRecord(e.slide));
                 if (e.slide['type'] == "slide")
-                    this.forcePlaylistUpdate.emit(e.slide["id"]);
+                    this.slideUpdate.emit(e.slide["id"]);
             } else { // new
                 this.playlist()?.push(PlaylistItem.fromRecord(e.slide));
             }
@@ -95,6 +97,12 @@ export class SlidesSection {
             idx: this.playlist()?.slides.byId(slideId).idx! + direction,
         });
     }
+    openInsertDialogAtEnd() {
+        this.editSlideInput.set({
+            mode: 'new',
+            type: 'slide',
+        })
+    }
 
     moveSlide(slideId: string, direction: 1 | -1) {
         this.playlist()?.slides.move(slideId, direction);
@@ -103,5 +111,50 @@ export class SlidesSection {
     @HostListener("window:keydown.control.shift.arrowdown", ['1'])
     moveCurSlide(direction: 1 | -1) {
         this.moveSlide(this.curSlideId(), direction);
+    }
+
+    @HostListener("window:keydown.arrowdown", ["$event"])
+    @HostListener("window:keydown.control.arrowdown", ["$event"])
+    @HostListener("window:keydown.arrowright", ["$event"])
+    @HostListener("window:keydown.control.arrowright", ["$event"])
+    nextSlide(e: KeyboardEvent | MouseEvent) {
+        e.preventDefault();
+
+        let curSlide = this.playlist()?.slides.byId(this.curSlideId())
+        if (!curSlide) return;
+
+        if (!e.ctrlKey && this.curSubslideIdx() < curSlide.subslideCount) {
+            this.curSubslideIdx.update(x => x + 1);
+        } else {
+            let nextSlide = this.playlist()?.slides.byIdx(curSlide.idx + 1);
+            if (!nextSlide) return;
+            this.curSlideId.set(nextSlide.id);
+            this.curSubslideIdx.set(0);
+        }
+    }
+
+    @HostListener("window:keydown.arrowup", ["$event"])
+    @HostListener("window:keydown.control.arrowup", ["$event"])
+    @HostListener("window:keydown.arrowleft", ["$event"])
+    @HostListener("window:keydown.control.arrowleft", ["$event"])
+    prevSlide(e: KeyboardEvent | MouseEvent) {
+        e.preventDefault();
+
+        let curSlide = this.playlist()?.slides.byId(this.curSlideId())
+        if (!curSlide) return;
+
+        if (!e.ctrlKey && this.curSubslideIdx() > 0) {
+            this.curSubslideIdx.update(x => x - 1);
+        } else {
+            let nextSlide = this.playlist()?.slides.byIdx(curSlide.idx - 1);
+            if (!nextSlide) return;
+            this.curSlideId.set(nextSlide.id);
+            this.curSubslideIdx.set(0);
+        }
+    }
+
+    @HostListener("window:keydown.b", [])
+    blankSlide() {
+        this.showSlide.update(x => !x);
     }
 }

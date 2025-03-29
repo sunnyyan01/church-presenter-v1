@@ -1,4 +1,5 @@
 .context-menu {
+    z-index: 2;
 }
 .context-menu .button {
     border: none;

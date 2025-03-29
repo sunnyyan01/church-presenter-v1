@@ -1,9 +1,12 @@
-<div class="preview-section">
+<section class="preview-section">
     <h1>{{translations.header}}</h1>
-    @if (!inUse) {
-        <div class="button text-button primary" (click)="setupPreview()">
-            {{translations.setup}}
-        </div>
-    }
-    <video #previewFrame class="preview"></video>
-</div>
+    <div class="preview-frame">
+        @if (!inUse) {
+            <div class="button text-button primary" (click)="setupPreview()">
+                {{translations.setup}}
+            </div>
+        }
+        <video #previewFrame class="preview" [class.hidden]="!inUse"></video>
+    </div>
+    <controls-section />
+</section>
