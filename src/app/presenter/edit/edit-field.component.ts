@@ -49,6 +49,8 @@ export class EditField {
 
     constructor() {
         effect(() => {
+            if (this.field()[0] == 'subtype')
+                console.log(this.field()[1]);
             this.val.set(this.field()[1]);
         })
     }

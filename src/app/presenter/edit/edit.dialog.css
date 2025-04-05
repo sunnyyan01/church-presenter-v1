@@ -6,8 +6,8 @@
     width: 800px;
     height: 500px;
     padding: 20px;
-    background-color: white;
-    border: 2px solid grey;
+    background-color: #292C79;
+    border: 2px solid white;
     border-radius: 20px;
     z-index: 2;
 }

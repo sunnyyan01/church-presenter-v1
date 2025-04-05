@@ -3,6 +3,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding: 10px;
 }
 .button {
     margin: 0px 5px;
@@ -28,4 +29,37 @@
 #ws-connection-dot[data-status=disconnected] {
     background-color: red;
     animation: blinker 2s linear 10;
+}
+
+.disp-mode {
+    margin-right: auto;
+}
+.toggle-button-group {
+    display: inline flex;
+    flex-direction: row;
+}
+.toggle-button-group .button {
+    border: 1px solid white;
+    border-radius: 0px;
+    margin: 0px;
+    width: 65px;
+    height: 25px;
+}
+.toggle-button-group .button:hover {
+    background-color: white;
+    color: #292C79;
+    opacity: 0.7;
+}
+.toggle-button-group .button.selected {
+    background-color: white;
+    color: #292C79;
+    opacity: 1;
+}
+.toggle-button-group .button:first-child {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+.toggle-button-group .button:last-child {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
 }

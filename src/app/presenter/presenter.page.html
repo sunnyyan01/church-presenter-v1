@@ -2,14 +2,14 @@
   <playlist-section #playlistSection
     [(playlist)]="playlist"
     [(curSlideId)]="curSlideId" [(curSubslideIdx)]="curSubslideIdx"
-    [(showSlide)]="showSlide"
     [(curMediaId)]="curMediaId"
     [(playbackRequest)]="playbackRequest"
     [playbackStatus]="playbackStatus()"
-    [(showMedia)]="showMedia"
     (slideUpdate)="onSlideUpdate($event)"
     (mediaUpdate)="onMediaUpdate($event)"
   />
-  <preview-section />
+  <preview-section
+    [(slideshowDispMode)]="slideshowDispMode"
+  />
   <about-section />
 </main>

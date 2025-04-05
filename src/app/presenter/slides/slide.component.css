@@ -1,12 +1,15 @@
 .slide {
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid white;
     border-radius: 20px;
     cursor: pointer;
     margin: 11px 1px;
 }
+.slide:hover {
+    border: 1px solid #EE343F;
+}
 .slide.selected {
-    border: 2px solid blue;
+    border: 2px solid #EE343F;
     margin: 10px 0px;
 }
 
@@ -20,22 +23,8 @@ p {
     border: 1px solid rgba(0,0,0,0);
 }
 p:hover {
-    border: 1px solid cyan;
+    border: 1px solid #EE343F;
 }
 p.selected {
-    background-color: cyan;
-}
-
-.playback-controls {
-    display: flex;
-    flex-direction: row;
-}
-.playback-controls * {
-    margin: 0px 10px;
-}
-.playback-controls .button {
-    margin: 0px;
-}
-.playback-controls > p {
-    margin: auto 0px;
+    background-color: #EE343F;
 }

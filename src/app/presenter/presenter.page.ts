@@ -2,7 +2,7 @@ import { Component, signal, effect } from '@angular/core';
 import { PlaylistSection } from './playlist.section';
 import { PreviewSection } from './preview.section';
 import { Playlist } from '../classes/playlist';
-import { PlaybackRequest, PlaybackStatus } from '../classes/playback';
+import { PlaybackRequest, PlaybackStatus, SlideshowDispMode } from '../classes/slideshow';
 import { AboutSection } from "./about.section";
 
 @Component({
@@ -15,15 +15,12 @@ export class PresenterPage {
     playlist = signal<Playlist | null>(null, {equal: () => false});
 
     slideshowBc: BroadcastChannel;
+    slideshowDispMode = signal<SlideshowDispMode>("slide");
     curSlideId = signal<string>("");
     curSubslideIdx = signal<number>(0);
-    showSlide = signal<boolean>(true);
-
-    playbackBc: BroadcastChannel;
     curMediaId = signal<string>("");
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     playbackStatus = signal<PlaybackStatus>(new PlaybackStatus());
-    showMedia = signal<boolean>(false);
 
     constructor() {
         this.slideshowBc = new BroadcastChannel("slideshow");
@@ -39,41 +36,33 @@ export class PresenterPage {
         })
         effect(() => {
             this.slideshowBc.postMessage({
-                showSlide: this.showSlide()
+                slideshowDispMode: this.slideshowDispMode()
             })
         })
-        this.slideshowBc.onmessage = e => {
-            if (e.data !== "refresh") return;
-            this.slideshowBc.postMessage({
-                slide: this.playlist()?.slides.byId(this.curSlideId()),
-                subslideIdx: this.curSubslideIdx(),
-            })
-        }
-
-        this.playbackBc = new BroadcastChannel("playback");
         effect(() => {
-            this.playbackBc.postMessage({
+            this.slideshowBc.postMessage({
                 media: this.playlist()?.media.byId(this.curMediaId())
             });
         })
         effect(() => {
-            this.playbackBc.postMessage({
+            this.slideshowBc.postMessage({
                 playbackRequest: this.playbackRequest()
             });
         })
-        effect(() => {
-            console.log("here");
-            this.playbackBc.postMessage({
-                showMedia: this.showMedia()
-            })
-        })
-        this.playbackBc.addEventListener("message", e => {
-            if (e.data.refresh)
-                this.playbackBc.postMessage(this.playbackRequest());
+        this.slideshowBc.onmessage = e => {
+            if (e.data === "refresh") {
+                this.slideshowBc.postMessage({
+                    slide: this.playlist()?.slides.byId(this.curSlideId()),
+                    subslideIdx: this.curSubslideIdx(),
+                    slideshowDispMode: this.slideshowDispMode(),
+                    media: this.playlist()?.media.byId(this.curMediaId()),
+                    playbackRequest: this.playbackRequest(),
+                })
+            }
             if (e.data.timeDisplay) {
                 this.playbackStatus().timeDisplay = e.data.timeDisplay;
             }
-        })
+        }
     }
 
     onSlideUpdate(slideId: string) {
@@ -85,7 +74,7 @@ export class PresenterPage {
     }
     onMediaUpdate(id: string) {
         if (this.curMediaId() == id) {
-            this.playbackBc.postMessage({
+            this.slideshowBc.postMessage({
                 media: this.playlist()?.media.byId(this.curSlideId())
             });
         }

@@ -42,25 +42,19 @@
             >
                 <img src="icons/down-arrow.svg">
             </div>
-            <div
-                class="button icon-button"
-                (click)="toggleShow()"
-            >
-                <img src="icons/black-screen.svg">
-            </div>
         </div>
         <div class="section">
             <div
                 class="button icon-button"
                 (click)="playPause()"
             >
-                ⏯
+                <img src="icons/play-pause.svg">
             </div>
             <div
                 class="button icon-button"
                 (click)="stop()"
             >
-                ⏹
+                <img src="icons/stop.svg">
             </div>
             <div class="time-display">
                 {{playbackStatus().timeDisplay}}

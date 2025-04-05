@@ -28,6 +28,13 @@ h1 {
 }
 
 .icon-button {
+    filter: invert(98%) sepia(1%) saturate(417%) hue-rotate(281deg) brightness(117%) contrast(100%);
+    color: white;
+    border: 1px solid transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .icon-button > *:first-child {
     width: 100%;
@@ -35,6 +42,7 @@ h1 {
     object-fit: contain;
 }
 .icon-button:hover {
+    border-color: grey;
     box-shadow: 3px 3px grey;
 }
 .icon-button:active {
@@ -43,31 +51,26 @@ h1 {
 }
 
 .text-button {
-    text-align: center;
-    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0.7;
+}
+.text-button:hover {
+    opacity: 1;
+}
+.text-button[data-disabled=true] {
+    opacity: 0.5;
 }
 .text-button.primary {
-    background-color: #00FC;
-    color: white;
-}
-.text-button.primary:hover {
-    background-color: #00F;
-}
-.text-button.primary[data-disabled=true] {
-    background-color: grey;
+    background-color: white;
+    color: #292C79;
 }
 .text-button.secondary {
-    border: 1px solid #00FC;
-    color: #00FC;
-}
-.text-button.secondary:hover {
-    border: 1px solid #00F;
-    color: #00F;
-}
-.text-button.secondary[data-disabled=true] {
-    border-color: grey;
-    color: grey;
+    border: 1px solid white;
+    color: white;
 }
 
 .row {

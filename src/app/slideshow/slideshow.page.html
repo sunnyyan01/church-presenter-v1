@@ -1,8 +1,8 @@
 <main style="background-image: url('background.svg');">
-    <div class="slide-inner" [class.hidden]="!showSlide()">
+    <div class="slide-inner" [class.hidden]="slideshowDispMode() == 'blank'">
         <youtube-player
             [media]="media()"
-            [class.invisible]="!showMedia()"
+            [class.invisible]="slideshowDispMode() != 'media'"
             [playbackRequest]="playbackRequest()"
             (playbackTimerChange)="onPlaybackTimerChange($event)"
         />

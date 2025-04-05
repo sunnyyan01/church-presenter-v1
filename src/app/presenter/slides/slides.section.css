@@ -10,6 +10,8 @@ h2 {
 
 .slides {
     overflow-y: auto;
+    scrollbar-color: grey #292C79;
+    padding-right: 2px;
 }
 
 context-menu {
@@ -17,9 +19,9 @@ context-menu {
     display: flex;
     flex-direction: column;
     position: absolute;
-    border: 1px solid gray;
+    border: 1px solid white;
     border-radius: 20px;
-    background-color: white;
+    background-color: #292C79;
     padding: 2px;
     box-shadow: 1px 1px gray;
     z-index: 2;

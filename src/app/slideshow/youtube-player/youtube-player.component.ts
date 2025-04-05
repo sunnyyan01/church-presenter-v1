@@ -2,7 +2,7 @@ import { afterRender, Component, computed, effect, input, output, signal } from 
 import { Slide, YoutubeMedia } from '../../classes/playlist';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { timeConvert } from '../../classes/utils';
-import { PlaybackRequest, PlaybackState } from '../../classes/playback';
+import { PlaybackRequest, PlaybackState } from '../../classes/slideshow';
 
 declare var YT: any;
 

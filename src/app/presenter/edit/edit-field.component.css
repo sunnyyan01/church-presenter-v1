@@ -19,3 +19,14 @@ td.value-field > * {
 textarea {
     resize: none;
 }
+select {
+    background-color: #292C79;
+    color: white;
+}
+
+td.auto-field .button {
+    height: 23px;
+    padding: auto;
+    box-sizing: border-box;
+    font-weight: normal;
+}

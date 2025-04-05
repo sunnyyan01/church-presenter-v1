@@ -1,7 +1,7 @@
 import { Component, input, model, output } from "@angular/core";
 import { PlaylistSetupComponent } from "./playlist-setup.component";
 import { Playlist } from "../classes/playlist";
-import { PlaybackRequest, PlaybackStatus } from "../classes/playback";
+import { PlaybackRequest, PlaybackStatus } from "../classes/slideshow";
 import { SlidesSection } from "./slides/slides.section";
 import { MediaSection } from "./media/media.section";
 

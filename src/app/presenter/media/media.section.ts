@@ -4,7 +4,7 @@ import { EditDialogInput, EditDialogOutput } from "../../classes/edit";
 import { ContextMenu } from "../context-menu/context-menu.component";
 import { EditDialog } from "../edit/edit.dialog";
 import { MediaComponent } from "./media.component";
-import { PlaybackRequest, PlaybackStatus } from "../../classes/playback";
+import { PlaybackRequest, PlaybackStatus } from "../../classes/slideshow";
 
 @Component({
     selector: 'media-section',
@@ -18,7 +18,6 @@ export class MediaSection {
     curMediaId = model<string>("");
     playbackRequest = model<PlaybackRequest>(new PlaybackRequest());
     playbackStatus = input<PlaybackStatus>(new PlaybackStatus());
-    showMedia = model<boolean>(false);
 
     contextMenuOpen = signal<string>("");
     contextMenuPos = signal<[number, number]>([0,0]);
@@ -133,12 +132,8 @@ export class MediaSection {
         this.curMediaId.set(prevMedia.id);
     }
 
-    toggleShow() {
-        this.showMedia.update(x => !x);
-        console.log(this.showMedia());
-    }
-
     @HostListener("window:keydown.control.F10")
+    @HostListener("window:keydown.MediaPlayPause")
     playPause() {
         this.playbackRequest.update(r => ({
             state: r.state == "play" ? "pause" : "play"

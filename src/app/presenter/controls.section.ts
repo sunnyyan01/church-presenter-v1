@@ -1,4 +1,5 @@
-import { Component, output } from "@angular/core";
+import { Component, HostListener, model, output } from "@angular/core";
+import { SlideshowDispMode } from "../classes/slideshow";
 
 @Component({
     selector: 'controls-section',
@@ -6,10 +7,22 @@ import { Component, output } from "@angular/core";
     styleUrl: './controls.section.css',
 })
 export class ControlsSection {
-    playlistControl = output<MouseEvent>();
+    slideshowDispMode = model<SlideshowDispMode>();
 
-    onClick(e: MouseEvent) {
-        this.playlistControl.emit(e);
+    changeSlideshowDispMode(mode: SlideshowDispMode) {
+        this.slideshowDispMode.set(mode);
+    }
+
+    @HostListener("window:keydown.b", ["$event"])
+    @HostListener("window:keydown.shift.b", ["$event"])
+    toggleSlideshowDispMode(e: KeyboardEvent) {
+        this.slideshowDispMode.update(m => {
+            if (e.shiftKey) {
+                return m == "blank" ? "slide" : "blank";
+            } else {
+                return m == "slide" ? "media" : "slide";
+            }
+        })
     }
 
     openSlideshow() {

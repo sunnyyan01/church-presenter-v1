@@ -9,7 +9,8 @@ import { Component } from "@angular/core";
     }
     div.about-links > * {
         padding: 0px 5px;
-        border-left: 1px solid black;
+        color: white;
+        border-left: 1px solid white;
     }
     div.about-links > *:first-child {
         border: none;
@@ -29,6 +30,7 @@ export class AboutSection {
         if (sessionStorage.getItem("serverlessMode") === "true") return;
 
         let resp = await fetch("/api/update/check");
+        if (!resp.ok) return;
         let { curVersion, latestVersion } = await resp.json();
         this.version = curVersion.version;
         this.versionDate = new Date(curVersion.date).toLocaleDateString(

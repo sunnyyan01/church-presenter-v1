@@ -42,16 +42,16 @@ async function getLatestVersion() {
 
     let headers = {
         "Accept": "application/vnd.github+json",
-        "User-Agent": "church-presenter",
+        "User-Agent": "church-presenter-v1",
         "X-GitHub-Api-Version": "2022-11-28",
     };
     if (cache.etag) {
         headers["If-None-Match"] = cache.etag;
     }
     let gh_res = await getAsync(
-        "https://api.github.com/repos/sunnyyan01/church-presenter/commits/heads/master",
+        "https://api.github.com/repos/sunnyyan01/church-presenter-v1/commits/heads/master",
         { headers }
-    );
+    )
 
     if (gh_res.statusCode == 200) {
         let etag = gh_res.headers.etag;
@@ -65,17 +65,22 @@ async function getLatestVersion() {
         cache = {date, version, changes, etag};
         saveCache(cache);
     } else if (gh_res.statusCode != 304) {
-        throw new Error(`Github API error occurred: ${gh_res.statusCode}`);
+        let data = await waitForResp(gh_res);
+        throw new Error("Github error occurred: " + data);
     }
 
     return cache;
 }
 
 export async function checkUpdate(req, res) {
-    let [curVersion, latestVersion] = await Promise.all(
-        [getCurrentVersion(), getLatestVersion()]
-    );
-    res.send({curVersion, latestVersion});
+    try {
+        let [curVersion, latestVersion] = await Promise.all(
+            [getCurrentVersion(), getLatestVersion()]
+        );
+        res.send({curVersion, latestVersion});
+    } catch (e) {
+        res.status(e.status || 500).send(e.message)
+    }
 }
 
 export async function downloadUpdate(req, res) {

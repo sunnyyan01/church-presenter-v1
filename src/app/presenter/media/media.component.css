@@ -1,12 +1,15 @@
 .media {
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid white;
     border-radius: 20px;
     cursor: pointer;
     margin: 11px 1px;
 }
+.media:hover {
+    border: 1px solid #EE343F;
+}
 .media.selected {
-    border: 2px solid blue;
+    border: 2px solid #EE343F;
     margin: 10px 0px;
 }
 

@@ -17,7 +17,6 @@ export class SlidesSection {
 
     curSlideId = model<string>("");
     curSubslideIdx = model<number>(0);
-    showSlide = model<boolean>(true);
 
     slideContextMenuOpen = signal<string>("");
     slideContextMenuPos = signal<[number, number]>([0,0]);
@@ -67,15 +66,15 @@ export class SlidesSection {
     }
     
     @HostListener("window:keydown.control.e", ["$event"])
-        openEditDialog(e?: KeyboardEvent, id?: string) {
-            if (e) e.preventDefault();
-    
-            this.editSlideInput.set({
-                mode: "edit",
-                type: "slide",
-                playlistItem: this.playlist()?.slides.byId(id || this.curSlideId())
-            });
-        }
+    openEditDialog(e?: KeyboardEvent, id?: string) {
+        if (e) e.preventDefault();
+
+        this.editSlideInput.set({
+            mode: "edit",
+            type: "slide",
+            playlistItem: this.playlist()?.slides.byId(id || this.curSlideId())
+        });
+    }
     onCloseEditDialog(e: EditDialogOutput | null) {
         if (e) {
             if (e.mode == 'edit') {
@@ -151,10 +150,5 @@ export class SlidesSection {
             this.curSlideId.set(nextSlide.id);
             this.curSubslideIdx.set(0);
         }
-    }
-
-    @HostListener("window:keydown.b", [])
-    blankSlide() {
-        this.showSlide.update(x => !x);
     }
 }

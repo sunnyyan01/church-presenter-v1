@@ -1,4 +1,18 @@
 <section class="controls-section">
+    <div class="disp-mode">
+        <span>Display: </span>
+        <div class="toggle-button-group" [attr.data-mode]="slideshowDispMode()">
+            @for (mode of ['blank', 'slide', 'media']; track mode) {
+                <div
+                    class="button text-button"
+                    [class.selected]="slideshowDispMode() == mode"
+                    (click)="changeSlideshowDispMode($any(mode))"
+                >
+                    {{mode}}
+                </div>
+            }
+        </div>
+    </div>
     <div
         class="button icon-button"
         (click)="openSlideshow()"

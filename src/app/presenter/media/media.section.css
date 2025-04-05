@@ -10,6 +10,8 @@ h2 {
 
 .media-list {
     overflow-y: auto;
+    scrollbar-color: grey #292C79;
+    padding-right: 2px;
 }
 
 context-menu {
@@ -17,9 +19,9 @@ context-menu {
     display: flex;
     flex-direction: column;
     position: absolute;
-    border: 1px solid gray;
+    border: 1px solid white;
     border-radius: 20px;
-    background-color: white;
+    background-color: #292C79;
     padding: 2px;
     box-shadow: 1px 1px gray;
     z-index: 2;
@@ -46,13 +48,12 @@ edit-dialog {
 }
 .controls .button {
     margin: 0px 5px;
-    width: 70px;
-    height: 70px;
-    font-size: 70px;
-    text-align: center;
-    line-height: 70px;
+    width: 85px;
+    height: 85px;
+    box-sizing: border-box;
 }
 .controls .time-display {
-    width: 80px;
+    margin: 0px 5px;
+    width: 85px;
     text-align: center;
 }
