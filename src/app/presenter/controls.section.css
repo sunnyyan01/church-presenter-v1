@@ -11,24 +11,11 @@
     height: 70px;
 }
 
-#remote-control-btn {
-    position: relative;
-}
-#ws-connection-dot {
+remote-setup-dialog {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
-
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-}
-#ws-connection-dot[data-status=connected] {
-    background-color: lime;
-}
-#ws-connection-dot[data-status=disconnected] {
-    background-color: red;
-    animation: blinker 2s linear 10;
+    z-index: 2;
+    left: calc((100vw - 500px) / 2);
+    top: calc((100vh - 400px) / 2);
 }
 
 .disp-mode {

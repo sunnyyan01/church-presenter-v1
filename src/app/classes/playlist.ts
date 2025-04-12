@@ -253,6 +253,39 @@ export class Playlist {
             this.media.replace(item as Media);
     }
 
+    prevSlide(id: string, subslideIdx: number, skip?: boolean): [string, number] {
+        let curSlide = this.slides.byId(id);
+        if (!skip && subslideIdx > 0) {
+            return [id, subslideIdx - 1];
+        } else if (curSlide.idx > 0) {
+            let prevSlide = this.slides.byIdx(curSlide.idx - 1);
+            return [prevSlide.id, 0];
+        }
+        return ["", 0];
+    }
+    nextSlide(id: string, subslideIdx: number, skip?: boolean): [string, number] {
+        let curSlide = this.slides.byId(id);
+        if (!skip && subslideIdx < curSlide.subslideCount) {
+            return [id, subslideIdx + 1];
+        } else if (curSlide.idx < this.slides.length - 1) {
+            let nextSlide = this.slides.byIdx(curSlide.idx + 1);
+            return [nextSlide.id, 0];
+        }
+        return ["", 0];
+    }
+    prevMedia(id: string): string {
+        let curMedia = this.media.byId(id);
+        if (curMedia.idx == 0) return "";
+        let prevMedia = this.media.byIdx(curMedia.idx - 1);
+        return prevMedia.id;
+    }
+    nextMedia(id: string): string {
+        let curMedia = this.media.byId(id);
+        if (curMedia.idx == this.media.length - 1) return "";
+        let nextMedia = this.media.byIdx(curMedia.idx + 1);
+        return nextMedia.id;
+    }
+
     toJson(space: number | string) {
         let items: Array<Record<string, any>> = [
             ...this.slides,

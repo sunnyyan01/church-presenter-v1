@@ -1,13 +1,13 @@
 .playlist-setup-section {
-    width: 500px;
+    width: 30vw;
     border: 2px solid grey;
     border-radius: 20px;
     padding: 20px;
     text-align: center;
 }
 
-p:first-child {
-    margin-bottom: 10px;
+p {
+    margin: 5px 0px;
 }
 
 new-playlist-dialog {

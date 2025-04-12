@@ -1,3 +1,63 @@
 <main>
-    
+    <p class="connection-status-row">Connection:
+        <span class="connection-status" [attr.data-status]="connectionStatus()">
+            {{connectionStatus()}}
+        </span>
+    </p>
+    <div>
+        <h2>Slides</h2>
+        <div
+            class="button icon-button"
+            (click)="remoteEvent('prev-slide')"
+        >
+            <img src="icons/up-arrow.svg">
+        </div>
+        <div
+            class="button icon-button"
+            (click)="remoteEvent('next-slide')"
+        >
+            <img src="icons/down-arrow.svg">
+        </div>
+    </div>
+    <div>
+        <h2>Media</h2>
+        <div
+            class="button icon-button"
+            (click)="remoteEvent('prev-media')"
+        >
+            <img src="icons/up-arrow.svg">
+        </div>
+        <div
+            class="button icon-button"
+            (click)="remoteEvent('next-media')"
+        >
+            <img src="icons/down-arrow.svg">
+        </div>
+        <div
+            class="button icon-button"
+            (click)="remoteEvent('play-pause')"
+        >
+            <img src="icons/play-pause.svg">
+        </div>
+        <div
+            class="button icon-button"
+            (click)="remoteEvent('stop')"
+        >
+            <img src="icons/stop.svg">
+        </div>
+    </div>
+    <div class="disp-mode">
+        <h2>Display</h2>
+        <div class="toggle-button-group" [attr.data-mode]="slideshowDispMode()">
+            @for (mode of ['blank', 'slide', 'media']; track mode) {
+                <div
+                    class="button text-button"
+                    [class.selected]="slideshowDispMode() == mode"
+                    (click)="changeSlideshowDispMode($any(mode))"
+                >
+                    {{mode}}
+                </div>
+            }
+        </div>
+    </div>
 </main>

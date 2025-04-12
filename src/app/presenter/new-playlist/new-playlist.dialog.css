@@ -6,7 +6,7 @@
     width: 800px;
     height: 500px;
     padding: 20px;
-    background-color: white;
+    background-color: #292C79;
     border: 2px solid grey;
     border-radius: 20px;
     z-index: 2;
@@ -16,6 +16,9 @@ textarea {
     width: 90%;
     height: 400px;
     margin: 10px;
+    background-color: #292C79;
+    color: white;
+    scrollbar-color: grey #292C79;
 }
 
 .error-toast {

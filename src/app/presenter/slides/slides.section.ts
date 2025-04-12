@@ -119,16 +119,12 @@ export class SlidesSection {
     nextSlide(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
 
-        let curSlide = this.playlist()?.slides.byId(this.curSlideId())
-        if (!curSlide) return;
-
-        if (!e.ctrlKey && this.curSubslideIdx() < curSlide.subslideCount) {
-            this.curSubslideIdx.update(x => x + 1);
-        } else {
-            let nextSlide = this.playlist()?.slides.byIdx(curSlide.idx + 1);
-            if (!nextSlide) return;
-            this.curSlideId.set(nextSlide.id);
-            this.curSubslideIdx.set(0);
+        let [nextSlideId, nextSubslideIdx] = this.playlist()?.nextSlide(
+            this.curSlideId(), this.curSubslideIdx(), e.ctrlKey
+        )!;
+        if (nextSlideId) {
+            this.curSlideId.set(nextSlideId);
+            this.curSubslideIdx.set(nextSubslideIdx);
         }
     }
 
@@ -139,16 +135,12 @@ export class SlidesSection {
     prevSlide(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
 
-        let curSlide = this.playlist()?.slides.byId(this.curSlideId())
-        if (!curSlide) return;
-
-        if (!e.ctrlKey && this.curSubslideIdx() > 0) {
-            this.curSubslideIdx.update(x => x - 1);
-        } else {
-            let nextSlide = this.playlist()?.slides.byIdx(curSlide.idx - 1);
-            if (!nextSlide) return;
-            this.curSlideId.set(nextSlide.id);
-            this.curSubslideIdx.set(0);
+        let [prevSlideId, prevSubslideIdx] = this.playlist()?.prevSlide(
+            this.curSlideId(), this.curSubslideIdx(), e.ctrlKey
+        )!;
+        if (prevSlideId) {
+            this.curSlideId.set(prevSlideId);
+            this.curSubslideIdx.set(prevSubslideIdx);
         }
     }
 }

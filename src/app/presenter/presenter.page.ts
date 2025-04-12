@@ -22,6 +22,21 @@ export class PresenterPage {
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     playbackStatus = signal<PlaybackStatus>(new PlaybackStatus());
 
+    ws: WebSocket;
+    wsStatus = signal<string>("unconnected");
+
+    REMOTE_HANDLERS: Record<string, Function> = {
+        "prev-slide": this.prevSlide,
+        "next-slide": this.nextSlide,
+        "prev-media": this.prevMedia,
+        "next-media": this.nextMedia,
+        "slideshow-disp-mode-blank": () => this.slideshowDispMode.set("blank"),
+        "slideshow-disp-mode-slide": () => this.slideshowDispMode.set("slide"),
+        "slideshow-disp-mode-media": () => this.slideshowDispMode.set("media"),
+        "play-pause": this.playPause,
+        "stop": this.stop,
+    };
+
     constructor() {
         this.slideshowBc = new BroadcastChannel("slideshow");
         effect(() => {
@@ -63,6 +78,20 @@ export class PresenterPage {
                 this.playbackStatus().timeDisplay = e.data.timeDisplay;
             }
         }
+
+        let { hostname } = window.location;
+        this.ws = new WebSocket(`ws://${hostname}:3000/ws/presenter`);
+        this.ws.addEventListener("open", e => {
+            this.wsStatus.set("connected");
+        });
+        this.ws.addEventListener("message", e => {
+            let {origin, message} = JSON.parse(e.data);
+            console.log(e.data);
+            this.REMOTE_HANDLERS[message].bind(this)();
+        });
+        this.ws.addEventListener("close", e => {
+            this.wsStatus.set("disconnected");
+        })
     }
 
     onSlideUpdate(slideId: string) {
@@ -78,5 +107,46 @@ export class PresenterPage {
                 media: this.playlist()?.media.byId(this.curSlideId())
             });
         }
+    }
+
+    prevSlide() {
+        console.log(this.playlist);
+        let [prevSlideId, prevSubslideIdx] = this.playlist()?.prevSlide(
+            this.curSlideId(), this.curSubslideIdx()
+        )!;
+        if (prevSlideId) {
+            this.curSlideId.set(prevSlideId);
+            this.curSubslideIdx.set(prevSubslideIdx);
+        }
+    }
+    nextSlide() {
+        let [nextSlideId, nextSubslideIdx] = this.playlist()?.nextSlide(
+            this.curSlideId(), this.curSubslideIdx()
+        )!;
+        if (nextSlideId) {
+            this.curSlideId.set(nextSlideId);
+            this.curSubslideIdx.set(nextSubslideIdx);
+        }
+    }
+
+    prevMedia() {
+        let prevMediaId = this.playlist()?.prevMedia(this.curMediaId());
+        if (prevMediaId)
+            this.curMediaId.set(prevMediaId);
+    }
+    nextMedia() {
+        let nextMediaId = this.playlist()?.nextMedia(this.curMediaId());
+        if (nextMediaId)
+            this.curMediaId.set(nextMediaId);
+    }
+
+    playPause() {
+        this.playbackRequest.update(r => ({
+            state: r.state == "play" ? "pause" : "play"
+        }));
+    }
+
+    stop() {
+        this.playbackRequest.set({state: "stop"});
     }
 }

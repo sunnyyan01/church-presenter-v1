@@ -1,4 +1,7 @@
 <section class="controls-section">
+    @if (remoteSetupDialogOpen()) {
+        <remote-setup-dialog (closeDialog)="closeRemoteQr()" />
+    }
     <div class="disp-mode">
         <span>Display: </span>
         <div class="toggle-button-group" [attr.data-mode]="slideshowDispMode()">
@@ -24,7 +27,6 @@
         (click)="openRemoteQr()"
     >
         <img src="icons/remote-control.svg">
-        <div id="ws-connection-dot"></div>
     </div>
     <div
         class="button icon-button"

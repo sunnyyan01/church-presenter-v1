@@ -131,4 +131,8 @@ export class OrderedDict<T extends ObjectWithId> {
             this.dict[id].idx = i;
         }
     }
+
+    get length() {
+        return this.order.length;
+    }
 }

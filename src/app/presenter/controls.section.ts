@@ -1,13 +1,16 @@
-import { Component, HostListener, model, output } from "@angular/core";
+import { Component, HostListener, model, output, signal } from "@angular/core";
 import { SlideshowDispMode } from "../classes/slideshow";
+import { RemoteSetupDialog } from "./remote-setup/remote-setup.dialog";
 
 @Component({
     selector: 'controls-section',
     templateUrl: './controls.section.html',
     styleUrl: './controls.section.css',
+    imports: [RemoteSetupDialog],
 })
 export class ControlsSection {
     slideshowDispMode = model<SlideshowDispMode>();
+    remoteSetupDialogOpen = signal<boolean>(false);
 
     changeSlideshowDispMode(mode: SlideshowDispMode) {
         this.slideshowDispMode.set(mode);
@@ -29,7 +32,12 @@ export class ControlsSection {
         window.open("slideshow", "slideshow", "popup");
     }
 
-    openRemoteQr() {}
+    openRemoteQr() {
+        this.remoteSetupDialogOpen.set(true);
+    }
+    closeRemoteQr() {
+        this.remoteSetupDialogOpen.set(false);
+    }
 
     openSettings() {}
 }

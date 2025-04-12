@@ -112,24 +112,18 @@ export class MediaSection {
     @HostListener("window:keydown.MediaTrackPrevious", ["$event"])
     nextMedia(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
-
-        let curMedia = this.playlist()?.slides.byId(this.curMediaId())
-        if (!curMedia) return;
-        let nextMedia = this.playlist()?.slides.byIdx(curMedia.idx + 1);
-        if (!nextMedia) return;
-        this.curMediaId.set(nextMedia.id);
+        let nextMediaId = this.playlist()?.nextMedia(this.curMediaId());
+        if (nextMediaId)
+            this.curMediaId.set(nextMediaId);
     }
 
     @HostListener("window:keydown.control.F9", ["$event"])
     @HostListener("window:keydown.MediaTrackPrevious", ["$event"])
     prevMedia(e: KeyboardEvent | MouseEvent) {
         e.preventDefault();
-
-        let curMedia = this.playlist()?.slides.byId(this.curMediaId())
-        if (!curMedia) return;
-        let prevMedia = this.playlist()?.slides.byIdx(curMedia.idx - 1);
-        if (!prevMedia) return;
-        this.curMediaId.set(prevMedia.id);
+        let prevMediaId = this.playlist()?.prevMedia(this.curMediaId());
+        if (prevMediaId)
+            this.curMediaId.set(prevMediaId);
     }
 
     @HostListener("window:keydown.control.F10")
