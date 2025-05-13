@@ -6,10 +6,11 @@ import { SongTemplateComponent } from './song-template/song-template.component';
 import { TitleTemplateComponent } from './title-template/title-template.component';
 import { YoutubePlayer } from './youtube-player/youtube-player.component';
 import { PlaybackRequest, SlideshowDispMode } from '../classes/slideshow';
+import { VideoPlayer } from "./video-player/video-player.component";
 
 @Component({
     selector: 'slideshow-page',
-    imports: [WelcomeTemplateComponent, BibleTemplateComponent, SongTemplateComponent, TitleTemplateComponent, YoutubePlayer],
+    imports: [WelcomeTemplateComponent, BibleTemplateComponent, SongTemplateComponent, TitleTemplateComponent, YoutubePlayer, VideoPlayer],
     templateUrl: './slideshow.page.html',
     styleUrl: './slideshow.page.css'
 })

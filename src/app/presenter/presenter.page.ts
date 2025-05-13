@@ -4,10 +4,11 @@ import { PreviewSection } from './preview.section';
 import { Playlist } from '../classes/playlist';
 import { PlaybackRequest, PlaybackStatus, SlideshowDispMode } from '../classes/slideshow';
 import { AboutSection } from "./about.section";
+import { FilePicker } from "./file-picker/file-picker.dialog";
 
 @Component({
     selector: 'presenter-page',
-    imports: [PlaylistSection, PreviewSection, AboutSection],
+    imports: [PlaylistSection, PreviewSection, AboutSection, FilePicker],
     templateUrl: './presenter.page.html',
     styleUrl: './presenter.page.css'
 })
@@ -21,6 +22,10 @@ export class PresenterPage {
     curMediaId = signal<string>("");
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     playbackStatus = signal<PlaybackStatus>(new PlaybackStatus());
+
+    filePickerBc: BroadcastChannel;
+    filePickerFolder = signal<string>("");
+    filePickerAction = signal<"open" | "save">("open");
 
     ws: WebSocket;
     wsStatus = signal<string>("unconnected");
@@ -75,7 +80,12 @@ export class PresenterPage {
                 })
             }
             if (e.data.timeDisplay) {
-                this.playbackStatus().timeDisplay = e.data.timeDisplay;
+                this.playbackStatus.update(
+                    old => {
+                        old.timeDisplay = e.data.timeDisplay;
+                        return old;
+                    }
+                )
             }
         }
 
@@ -91,6 +101,12 @@ export class PresenterPage {
         });
         this.ws.addEventListener("close", e => {
             this.wsStatus.set("disconnected");
+        })
+
+        this.filePickerBc = new BroadcastChannel("file-picker");
+        this.filePickerBc.addEventListener("message", e => {
+            this.filePickerFolder.set(e.data.folder);
+            this.filePickerAction.set(e.data.action);
         })
     }
 
@@ -148,5 +164,10 @@ export class PresenterPage {
 
     stop() {
         this.playbackRequest.set({state: "stop"});
+    }
+    
+    filePickerClose(file: string) {
+        this.filePickerBc.postMessage({file});
+        this.filePickerFolder.set("");
     }
 }

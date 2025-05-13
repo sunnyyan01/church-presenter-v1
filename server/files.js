@@ -1,7 +1,9 @@
-import { readdir, readFile, mkdir, rm, writeFile } from 'node:fs/promises';
+import { readdir, mkdir, rm, writeFile } from 'node:fs/promises';
+import path from 'path';
 
 const VALID_FOLDERS = [
     "saved-slides",
+    "user-files",
 ]
 function checkParams(folder, name) {
     // Returns true when folder or file name is not allowed
@@ -35,8 +37,7 @@ export async function getFile(req, res) {
         return;
     }
     try {
-        let contents = await readFile(`${folder}/${name}`, "utf8");
-        res.send(JSON.parse(contents));
+        res.sendFile(path.resolve(`${folder}/${name}`));
     } catch (err) {
         res.status(500).send(err.message);
     }

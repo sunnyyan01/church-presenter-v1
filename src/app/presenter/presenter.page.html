@@ -1,15 +1,15 @@
 <main>
-  <playlist-section #playlistSection
-    [(playlist)]="playlist"
-    [(curSlideId)]="curSlideId" [(curSubslideIdx)]="curSubslideIdx"
-    [(curMediaId)]="curMediaId"
-    [(playbackRequest)]="playbackRequest"
-    [playbackStatus]="playbackStatus()"
-    (slideUpdate)="onSlideUpdate($event)"
-    (mediaUpdate)="onMediaUpdate($event)"
-  />
-  <preview-section
-    [(slideshowDispMode)]="slideshowDispMode"
-  />
-  <about-section />
+    @if (filePickerFolder()) {
+        <file-picker 
+            [folder]="filePickerFolder()"
+            [action]="filePickerAction()"
+            (close)="filePickerClose($event)"
+        />
+    }
+    <playlist-section #playlistSection [(playlist)]="playlist" [(curSlideId)]="curSlideId"
+        [(curSubslideIdx)]="curSubslideIdx" [(curMediaId)]="curMediaId" [(playbackRequest)]="playbackRequest"
+        [playbackStatus]="playbackStatus()" (slideUpdate)="onSlideUpdate($event)"
+        (mediaUpdate)="onMediaUpdate($event)" />
+    <preview-section [(slideshowDispMode)]="slideshowDispMode" />
+    <about-section />
 </main>

@@ -12,6 +12,7 @@
                 <option value="embed">Embed</option>
             } @else {
                 <option value="youtube">Youtube</option>
+                <option value="video">Video</option>
             }
         </select>
     } @else if (key() == 'version') {
@@ -49,9 +50,11 @@
         <p>Please wait...</p>
     </div>
 </td>
-@if (autoAvail()) {
+@if (autoLabel()) {
     <td class="auto-field">
-        <div class="button text-button secondary" (click)="auto()">Auto</div>
+        <div class="button text-button secondary" (click)="auto()">
+            {{autoLabel()}}
+        </div>
     </td>
 }
 }

@@ -1,0 +1,5 @@
+<video #player [src]="videoSrc()">
+    @if (media().subtitleSrc) {
+        <track default [src]="media().subtitleSrc">
+    }
+</video>

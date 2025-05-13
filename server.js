@@ -1,6 +1,4 @@
 import express from 'express';
-import { exec } from 'child_process';
-import { platform } from 'os';
 import { WebSocketServer } from 'ws';
 import { bibleLookup } from "./server/bible.js";
 import { openUserFiles } from './server/other.js';

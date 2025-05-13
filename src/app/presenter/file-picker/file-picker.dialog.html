@@ -1,0 +1,28 @@
+<div class="dialog-inner">
+    <h1>{{friendlyFolderName()}}</h1>
+    <div class="files">
+        @for (file of files(); track file) {
+            <div
+                class="file"
+                [class.selected]="file === selected()"
+                (click)="selected.set(file)"
+                (dblclick)="close.emit(file)"
+            >
+                {{file}}
+            </div>
+        }
+    </div>
+    <input
+        type="text"
+        [(value)]="selected"
+        (blur)="selected.set($any($event.target).value)"
+    />
+    <div class="buttons">
+        <div class="button text-button primary" (click)="onClose()">
+            {{action()}}
+        </div>
+        <div class="button text-button secondary" (click)="close.emit('')">
+            Cancel
+        </div>
+    </div>
+</div>

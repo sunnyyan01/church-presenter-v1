@@ -1,5 +1,6 @@
-import { Component, computed, effect, input, output, signal } from "@angular/core";
+import { Component, computed, effect, inject, input, output, signal } from "@angular/core";
 import { BibleSlide, Slide, TEMPLATES } from "../../classes/playlist";
+import { FilePickerService } from "../file-picker/file-picker.service";
 
 const FRIENDLY_NAMES: Record<string, string> = {
     location: "Location",
@@ -17,14 +18,18 @@ const FRIENDLY_NAMES: Record<string, string> = {
     videoId: "Video ID",
     start: "Start",
     end: "End",
+    videoSrc: "Video URL",
+    subtitleSrc: "Subtitle URL",
 }
 const HIDDEN_FIELDS: Array<string> = ['id', 'idx', 'type', ]
-const AUTO_FIELDS: Array<string> = [
-    'start',
-    'end',
-    'preview',
-    // 'subslides',
-]
+const AUTO_FIELDS: Record<string, string> = {
+    start: 'Format',
+    end: 'Format',
+    preview: 'Auto',
+    videoSrc: 'Open',
+    subtitleSrc: 'Open',
+    subslides: 'Bible Lookup',
+}
 
 @Component({
     selector: '[edit-field]',
@@ -34,15 +39,14 @@ const AUTO_FIELDS: Array<string> = [
 export class EditField {
     slide = input.required<Record<string, any>>();
 
+    fp = inject(FilePickerService);
+
     field = input.required<[string, any]>();
     key = computed(() => this.field()[0]);
     friendlyKey = computed(() => FRIENDLY_NAMES[this.key()]);
     val = signal<any>(null);
     isHidden = computed(() => HIDDEN_FIELDS.includes(this.field()[0]));
-    autoAvail = computed(() => (
-        (this.slide()['subtype'] == 'bible' && this.field()[0] == 'subslides') ||
-        AUTO_FIELDS.includes(this.field()[0])
-    ));
+    autoLabel = computed(() => AUTO_FIELDS[this.field()[0]]);
     loading = signal<boolean>(false);
 
     valChange = output<any>();
@@ -119,6 +123,12 @@ export class EditField {
         }
     }
 
+    async openFilePicker() {
+        let file = await this.fp.openFilePicker("user-files", "open");
+        if (!file) return;
+        this.valChange.emit("/api/files/user-files/" + file);
+    }
+
     auto() {
         switch(this.key()) {
             case "preview":
@@ -130,6 +140,11 @@ export class EditField {
             case "start":
             case "end":
                 this.autoTimeConvert();
+                break;
+            case "subtitleSrc":
+            case "videoSrc":
+                this.openFilePicker();
+                break;
         }
     }
 }

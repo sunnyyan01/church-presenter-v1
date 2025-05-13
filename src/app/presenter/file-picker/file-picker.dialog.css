@@ -1,0 +1,51 @@
+.dialog-inner {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+    height: 500px;
+    padding: 20px;
+    background-color: #292C79;
+    border: 2px solid white;
+    border-radius: 20px;
+    z-index: 3;
+}
+
+.files {
+    height: 400px;
+    width: 100%;
+    align-self: flex-start;
+}
+.file {
+    align-self: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid transparent;
+}
+.file:nth-child(even) {
+    background-color: #363A9F;
+}
+.file:hover {
+    border: 1px solid #EE343F;
+}
+.file.selected {
+    background-color: #EE343F;
+}
+
+input {
+    background-color: #292C79;
+    border-color: white;
+    color: white;
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+}
+.buttons .button {
+    margin: 10px;
+    width: 150px;
+    text-transform: capitalize;
+}

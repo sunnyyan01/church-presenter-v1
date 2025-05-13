@@ -204,6 +204,27 @@ export class YoutubeMedia extends Media {
     }
 }
 
+export class VideoMedia extends Media {
+    videoSrc;
+    start;
+    end;
+    subtitleSrc;
+
+    constructor(data: Record<string, any>) {
+        super(data);
+        this.videoSrc = data['videoSrc'] || "";
+        this.start = data['start'] || "";
+        this.end = data['end'] || "";
+        this.subtitleSrc = data['subtitleSrc'] || "";
+        if (!this.preview) this.resetPreview();
+    }
+
+    override resetPreview() {
+        this.preview = this.videoSrc;
+        return this.preview;
+    }
+}
+
 export class BlankMedia extends Media {
     constructor() {
         super({"type": "media", "subtype": "blank"});
@@ -222,6 +243,7 @@ export const CONSTRUCTORS: Record<string, any> = {
     slideembed: EmbedSlide,
     slideblank: BlankSlide,
     mediayoutube: YoutubeMedia,
+    mediavideo: VideoMedia,
     mediablank: BlankMedia,
 }
 
@@ -230,7 +252,7 @@ export const TEMPLATES: Array<[string, string, Array<string>]> = [
     ["slide", "bible", ["title", "location"]],
     ["slide", "song", ["title", "name"]],
     ["slide", "title", ["title", "subtitle"]],
-    ["slide", "embed", ["url"]],
+    ["media", "video", ["videoSrc"]],
     ["media", "youtube", ["videoId"]],
 ]
 

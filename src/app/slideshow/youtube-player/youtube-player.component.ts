@@ -14,6 +14,7 @@ declare var YT: any;
 })
 export class YoutubePlayer {
     media = input.required<YoutubeMedia>();
+    subtitles = computed(() => this.media().subtitles);
     playbackRequest = input.required<PlaybackRequest>();
     playbackTimerChange = output<string>();
     player: any;
@@ -24,18 +25,22 @@ export class YoutubePlayer {
         effect(() => {
             switch (this.playbackRequest().state) {
                 case "play":
-                    this.player.playVideo();
+                    this.player?.playVideo();
                     break;
                 case "pause":
-                    this.player.pauseVideo();
+                    this.player?.pauseVideo();
                     break;
                 case "stop":
-                    this.player.stopVideo();
+                    this.player?.stopVideo();
                     break;
             }
         })
 
         effect(() => this.cueVideo(this.media()));
+        effect(() => {
+            this.subtitles();
+            this.onPlayerApiChange();
+        });
     }
 
     cueVideo(media: YoutubeMedia) {
@@ -72,12 +77,27 @@ export class YoutubePlayer {
                         } else if (this.playbackTimerInterval) {
                             clearInterval(this.playbackTimerInterval);
                         }
-                    }
+                    },
+                    onApiChange: this.onPlayerApiChange.bind(this),
                 },
                 width: window.innerWidth,
                 height: window.innerHeight,
             });
+            window['player' as any] = this.player;
             // console.log("player created");
         }
     }
+
+    onPlayerApiChange() {
+        console.log(this.player);
+        if (!this.subtitles() || !this.player?.getOptions('captions').includes("tracklist"))
+            return;
+        let track = this.player.getOption("captions", "tracklist").find(
+            (t: any) => t.languageCode.includes(this.subtitles())
+        );
+        this.player.setOption("captions", "track", track);
+        this.player.setOption("captions", "fontSize", 3);
+        console.log("Set caption: " + track);
+    }
+    
 }

@@ -1,8 +1,15 @@
 <main style="background-image: url('background.svg');">
     <div class="slide-inner" [class.hidden]="slideshowDispMode() == 'blank'">
+        @if (slideshowDispMode() == 'media' && media().subtype == "video") {
+            <video-player
+                [media]="media()"
+                [playbackRequest]="playbackRequest()"
+                (playbackTimerChange)="onPlaybackTimerChange($event)"
+            />
+        }
         <youtube-player
             [media]="media()"
-            [class.invisible]="slideshowDispMode() != 'media'"
+            [class.invisible]="slideshowDispMode() != 'media' || media().subtype != 'youtube'"
             [playbackRequest]="playbackRequest()"
             (playbackTimerChange)="onPlaybackTimerChange($event)"
         />

@@ -11,7 +11,7 @@ main {
 .invisible {
     visibility: hidden;
 }
-youtube-player {
+youtube-player, video-player {
     position: absolute;
     width: 100%;
     height: 100%;
