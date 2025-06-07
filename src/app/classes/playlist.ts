@@ -339,14 +339,14 @@ export class Playlist {
 
             // Positional args
             for (let arg of TEMPLATES[templateNum][2]) {
-                args.push(item[arg]);
+                args.push(item[arg].replace("\n", "<br>"));
                 delete item[arg];
             }
 
             // Keyword args
             for (let [key, val] of Object.entries(item)) {
                 if (key == 'subslides') continue;
-                args.push(`${key}=${val}`);
+                args.push(`${key}=${val.replace("\n", "<br>")}`);
             }
 
             text += args.join(",") + "\n";
@@ -415,10 +415,10 @@ export class Playlist {
                 for (let arg of args) {
                     if (arg.includes("=")) {
                         let [key, val] = arg.split("=");
-                        curItem[key] = val;
+                        curItem[key] = val.replace("<br>", "\n");
                     } else {
                         let key = positionalArgs[positionalsMatched++];
-                        curItem[key] = arg;
+                        curItem[key] = arg.replace("<br>", "\n");
                     }
                 }
 
