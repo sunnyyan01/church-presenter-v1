@@ -11,8 +11,9 @@ export class RemotePage {
     slideshowDispMode = signal<SlideshowDispMode | "">("");
 
     constructor() {
-        let { hostname } = window.location;
-        this.ws = new WebSocket(`ws://${hostname}:3000/ws/remote`);
+        let { hostname, protocol } = window.location;
+        let wsProtocol = protocol == "http:" ? "ws" : "wss";
+        this.ws = new WebSocket(`${wsProtocol}://${hostname}:3000/ws/remote`);
         this.ws.addEventListener("open", e => {
             this.connectionStatus.set("connected");
         });

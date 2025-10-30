@@ -27,7 +27,7 @@ export class PresenterPage {
     filePickerFolder = signal<string>("");
     filePickerAction = signal<"open" | "save">("open");
 
-    ws: WebSocket;
+    ws: WebSocket | null = null;
     wsStatus = signal<string>("unconnected");
 
     REMOTE_HANDLERS: Record<string, Function> = {
@@ -89,19 +89,24 @@ export class PresenterPage {
             }
         }
 
-        let { hostname } = window.location;
-        this.ws = new WebSocket(`ws://${hostname}:3000/ws/presenter`);
-        this.ws.addEventListener("open", e => {
-            this.wsStatus.set("connected");
-        });
-        this.ws.addEventListener("message", e => {
-            let {origin, message} = JSON.parse(e.data);
-            console.log(e.data);
-            this.REMOTE_HANDLERS[message].bind(this)();
-        });
-        this.ws.addEventListener("close", e => {
-            this.wsStatus.set("disconnected");
-        })
+        if (sessionStorage.getItem("serverlessMode") === "true") {
+            let { protocol, hostname } = window.location;
+            let wsProtocol = protocol == "http:" ? "ws" : "wss";
+            try {
+                this.ws = new WebSocket(`${wsProtocol}://${hostname}:3000/ws/presenter`);
+                this.ws.addEventListener("open", e => {
+                    this.wsStatus.set("connected");
+                });
+                this.ws.addEventListener("message", e => {
+                    let {origin, message} = JSON.parse(e.data);
+                    console.log(e.data);
+                    this.REMOTE_HANDLERS[message].bind(this)();
+                });
+                this.ws.addEventListener("close", e => {
+                    this.wsStatus.set("disconnected");
+                })
+            } catch {}
+        }
 
         this.filePickerBc = new BroadcastChannel("file-picker");
         this.filePickerBc.addEventListener("message", e => {

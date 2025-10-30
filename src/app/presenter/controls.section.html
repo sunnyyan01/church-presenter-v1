@@ -24,6 +24,7 @@
     </div>
     <div
         id="remote-control-btn" class="button icon-button"
+        [class.hidden]="serverlessMode == 'true'"
         (click)="openRemoteQr()"
     >
         <img src="icons/remote-control.svg">

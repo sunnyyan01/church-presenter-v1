@@ -9,6 +9,7 @@ import { RemoteSetupDialog } from "./remote-setup/remote-setup.dialog";
     imports: [RemoteSetupDialog],
 })
 export class ControlsSection {
+    serverlessMode = sessionStorage.getItem("serverlessMode");
     slideshowDispMode = model<SlideshowDispMode>();
     remoteSetupDialogOpen = signal<boolean>(false);
 

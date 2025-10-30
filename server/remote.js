@@ -15,5 +15,5 @@ export function remoteQr(req, res) {
     if (!req.app.ip)
         req.app.ip = getLocalIp();
 
-    res.send(`http://${req.app.ip}:${req.app.port}/remote.html`);
+    res.send(`http://${req.app.ip}:${req.app.port}/remote`);
 }
