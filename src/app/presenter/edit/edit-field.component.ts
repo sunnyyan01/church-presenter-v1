@@ -97,7 +97,8 @@ export class EditField {
         let loc = bibleSlide.location;
         let version = bibleSlide.version;
         let url = (
-            sessionStorage.getItem("serverlessMode") === "true"
+            // sessionStorage.getItem("serverlessMode") === "true"
+            true
             ? "https://churchpresenterapi.azurewebsites.net/api/bible-lookup"
             : "/api/bible-lookup"
         )

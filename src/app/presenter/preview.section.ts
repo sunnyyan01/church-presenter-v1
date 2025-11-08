@@ -1,4 +1,4 @@
-import { Component, ElementRef, model, ViewChild } from "@angular/core";
+import { Component, ElementRef, model, signal, ViewChild } from "@angular/core";
 import { ControlsSection } from "./controls.section";
 import { SlideshowDispMode } from "../classes/slideshow";
 
@@ -13,16 +13,20 @@ export class PreviewSection {
         header: "Preview",
         setup: "Setup",
     };
-    inUse = false;
+    inUse = signal(false);
     @ViewChild("previewFrame") video!: ElementRef<HTMLVideoElement>;
 
     slideshowDispMode = model<SlideshowDispMode>();
 
     async setupPreview() {
         let captureStream = await navigator.mediaDevices.getDisplayMedia();
+        captureStream.getVideoTracks()[0].onended = () => {
+            this.inUse.set(false);
+        }
+        
         let video = this.video.nativeElement;
         video.srcObject = captureStream;
         video.play();
-        this.inUse = true;
+        this.inUse.set(true);
     }
 }

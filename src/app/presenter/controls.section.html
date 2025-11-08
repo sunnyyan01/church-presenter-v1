@@ -24,13 +24,14 @@
     </div>
     <div
         id="remote-control-btn" class="button icon-button"
-        [class.hidden]="serverlessMode == 'true'"
+        [class.hidden]="true"
         (click)="openRemoteQr()"
     >
         <img src="icons/remote-control.svg">
     </div>
     <div
         class="button icon-button"
+        [class.hidden]="true"
         (click)="openSettings()"
     >
         <img src="icons/settings.svg">

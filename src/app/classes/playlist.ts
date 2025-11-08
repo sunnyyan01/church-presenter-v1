@@ -354,10 +354,8 @@ export class Playlist {
             // Subslides
             if (item['subslides']) {
                 text += "S\n";
-                for (let subslide of item['subslides']) {
-                    text += subslide + "N\n";
-                }
-                text += "E\n";
+                text += item['subslides'].join("N\n");
+                text += "\nE\n";
             }
         }
 

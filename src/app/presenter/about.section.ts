@@ -23,11 +23,11 @@ export class AboutSection {
     versionDate = '';
 
     constructor() {
-        this.checkVersion();
+        // this.checkVersion();
     }
 
     async checkVersion() {
-        if (sessionStorage.getItem("serverlessMode") === "true") return;
+        // if (sessionStorage.getItem("serverlessMode") === "true") return;
 
         let resp = await fetch("/api/update/check");
         if (!resp.ok) return;

@@ -89,6 +89,7 @@ export class PresenterPage {
             }
         }
 
+        /*
         if (sessionStorage.getItem("serverlessMode") === "true") {
             let { protocol, hostname } = window.location;
             let wsProtocol = protocol == "http:" ? "ws" : "wss";
@@ -107,6 +108,7 @@ export class PresenterPage {
                 })
             } catch {}
         }
+        */
 
         this.filePickerBc = new BroadcastChannel("file-picker");
         this.filePickerBc.addEventListener("message", e => {

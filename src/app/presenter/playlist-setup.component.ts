@@ -49,6 +49,7 @@ export class PlaylistSetupComponent {
     onNewPlaylistSubmit(e: string) {
         if (e) {
             try {
+                this.newPlaylistDialogErr.set("");
                 this.playlistParsed.emit(Playlist.fromText(e));
             } catch (err: any) {
                 this.newPlaylistDialogErr.set(err.message);

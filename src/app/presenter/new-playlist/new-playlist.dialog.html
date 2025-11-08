@@ -1,13 +1,11 @@
 <div class="dialog-inner">
     <h1>New Playlist</h1>
 
-    <textarea #textarea></textarea>
+    <textarea #textarea (change)="onTextChange()"></textarea>
 
-    @if(errorMessage()) {
-        <div class="error-toast">
-            {{errorMessage()}}
-        </div>
-    }
+    <div class="error-toast" [class.hidden]="!localErrorMessage()">
+        {{localErrorMessage()}}
+    </div>
 
     <div class="buttons">
         <div class="button text-button large primary" (click)="onSubmit()">

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, input, output, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostListener, effect, input, output, signal, ViewChild } from "@angular/core";
 import { bibleLookup } from "../../api/bible";
 import { nextSunday } from "../../classes/utils";
 
@@ -10,7 +10,14 @@ import { nextSunday } from "../../classes/utils";
 export class NewPlaylistDialog {
     @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
     errorMessage = input<string>("");
+    localErrorMessage = signal("");
     submit = output<string>();
+
+    constructor() {
+        effect(() => {
+            this.localErrorMessage.set(this.errorMessage());
+        })
+    }
 
     extendSelection(text: string, start: number, end: number, to: string | RegExp) {
         while (start > 0 && !text[start - 1].match(to)) {
@@ -31,12 +38,16 @@ export class NewPlaylistDialog {
         let line = value.slice(lineStart, lineEnd);
         let match = /1,[^,]+,([^,]+)/.exec(line);
         let match2 = /version=(.+)(,|$)/.exec(line);
-        if (match) {
-            let text = await bibleLookup(match[1], match2 ? match2[1] : "");
+        if (!match) return;
+        
+        try {
+            let text = await bibleLookup(match[1], match2 ? match2[1] : "")
             let toReplace = line + "\nS\n  " + text.trim().replaceAll("\n", "\n  ") + "\nE";
             this.textarea.nativeElement.setRangeText(toReplace, lineStart, lineEnd);
             let newEnd = lineStart + toReplace.length;
             this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);
+        } catch (e: any) {
+            this.localErrorMessage.set(e.message);
         }
     }
 
@@ -85,6 +96,10 @@ export class NewPlaylistDialog {
     @HostListener("keydown", ["$event"])
     stopBubbling(e: KeyboardEvent) {
         e.stopPropagation();
+    }
+
+    onTextChange() {
+        this.localErrorMessage.set("");
     }
 
     onSubmit() {
