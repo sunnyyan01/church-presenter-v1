@@ -28,7 +28,7 @@ const AUTO_FIELDS: Record<string, string> = {
     preview: 'Auto',
     videoSrc: 'Open',
     subtitleSrc: 'Open',
-    subslides: 'Bible Lookup',
+    subslides: 'Lookup',
 }
 
 @Component({
@@ -105,6 +105,7 @@ export class EditField {
         let search = new URLSearchParams({loc, version});
         let resp = await fetch(url + "?" + search.toString());
         let text = await resp.text();
+        this.loading.set(false);
         if (resp.ok) {
             this.valChange.emit([text]);
         } else {

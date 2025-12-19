@@ -38,7 +38,15 @@ export class NewPlaylistDialog {
         let line = value.slice(lineStart, lineEnd);
         let match = /1,[^,]+,([^,]+)/.exec(line);
         let match2 = /version=(.+)(,|$)/.exec(line);
-        if (!match) return;
+
+        if (!match) {
+            this.localErrorMessage.set("Slide type is not 1 (bible)");
+            return;
+        };
+        if (line.match("，|：")) {
+            this.localErrorMessage.set("Chinese punctuation detected");
+            return;
+        }
         
         try {
             let text = await bibleLookup(match[1], match2 ? match2[1] : "")
