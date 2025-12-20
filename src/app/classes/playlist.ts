@@ -263,7 +263,7 @@ export class Playlist {
     modified = false;
 
     isBlank() {
-        return this.slides.length || this.media.length;
+        return !(this.slides.length || this.media.length);
     }
 
     push(item: PlaylistItem) {
@@ -315,6 +315,8 @@ export class Playlist {
     }
 
     toJson(space: number | string) {
+        this.modified = false;
+
         let items: Array<Record<string, any>> = [
             ...this.slides,
             ...this.media,
@@ -322,11 +324,14 @@ export class Playlist {
         for (let item of structuredClone(items)) {
             delete item['id'];
             delete item['idx'];
-        }
+        };
+
         return JSON.stringify(items, undefined, space);
     }
 
     toText() {
+        this.modified = false;
+
         let items: Array<Record<string, any>> = [
             ...this.slides,
             ...this.media,
@@ -448,6 +453,7 @@ export class Playlist {
             playlist.push(PlaylistItem.fromRecord(curItem));
         }
 
+        playlist.modified = false;
         return playlist;
     }
 
@@ -458,6 +464,7 @@ export class Playlist {
         for (let item of slides) {
             playlist.push(PlaylistItem.fromRecord(item));
         }
+        playlist.modified = false;
         return playlist;
     }
 }

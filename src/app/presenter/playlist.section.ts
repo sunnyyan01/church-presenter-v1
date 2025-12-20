@@ -120,6 +120,7 @@ export class PlaylistSection {
         if (!this.confirmBeforeDiscard()) return;
 
         this.playlist.set(new Playlist());
+        this.fileInput.nativeElement.value = "";
     }
 
     onSlideUpdate(id: string) {
