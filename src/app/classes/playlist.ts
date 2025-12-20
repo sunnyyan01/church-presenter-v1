@@ -257,18 +257,24 @@ export const TEMPLATES: Array<[string, string, Array<string>]> = [
 ]
 
 export class Playlist {
-    nextId = 0;
     slides: OrderedDict<Slide> = new OrderedDict<Slide>();
     media: OrderedDict<Media> = new OrderedDict<Media>();
-    name = "";
+    name = "New Playlist";
+    modified = false;
+
+    isBlank() {
+        return this.slides.length || this.media.length;
+    }
 
     push(item: PlaylistItem) {
+        this.modified = true;
         if (item.type == "slide")
             this.slides.push(item as Slide);
         else /* media */
             this.media.push(item as Media);
     }
     replace(item: PlaylistItem) {
+        this.modified = true;
         if (item.type == "slide")
             this.slides.replace(item as Slide);
         else /* media */
@@ -404,6 +410,10 @@ export class Playlist {
                 let [template, ...args] = readResult;
                 let templateNum = parseInt(template);
 
+                if (!TEMPLATES[templateNum]) {
+                    throw new Error(`Invalid slide type ${template}`);
+                }
+
                 let [type, subtype, positionalArgs] = TEMPLATES[templateNum];
                 let positionalsMatched = 0;
 
@@ -427,6 +437,10 @@ export class Playlist {
                         .join(" - ");
                 }
             }
+        }
+
+        if (readingSubslides) {
+            throw new Error("Unexpected end of input");
         }
 
         // Push last slide

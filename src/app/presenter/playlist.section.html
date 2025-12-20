@@ -2,32 +2,38 @@
     <div class="header">
         <h1>{{translations.header}}</h1>
         <p>{{playlist()?.name}}</p>
-        @if(playlist()) {
-            <div class="button icon-button" (click)="savePlaylist($event)">
-                <img src="icons/save.svg">
-            </div>
-            <div class="button icon-button" (click)="closePlaylist()">
-                <img src="icons/close-square.svg">
-            </div>
-        }
-    </div>
-    @if (playlist()) {
-        <div class="row">
-            <slides-section
-                [(playlist)]="playlist"
-                (slideUpdate)="onSlideUpdate($event)"
-                [(curSlideId)]="curSlideId"
-                [(curSubslideIdx)]="curSubslideIdx"
-            />
-            <media-section
-                [(playlist)]="playlist"
-                (mediaUpdate)="onMediaUpdate($event)"
-                [(curMediaId)]="curMediaId"
-                [(playbackRequest)]="playbackRequest"
-                [playbackStatus]="playbackStatus()"
-            />
+        <input #fileInput class="hidden" type="file" accept=".txt,.json" (change)="openPlaylist($event)" />
+        <new-playlist-dialog
+            [class.hidden]="!newPlaylistDialogOpen()"
+            [errorMessage]="newPlaylistDialogErr()"
+            (submit)="onNewPlaylistSubmit($event)"
+        />
+        <div class="button icon-button" (click)="openPlaylistFileSelector()">
+            <img src="icons/open-folder.svg" title="Open Playlist">
         </div>
-    } @else {
-        <playlist-setup (playlistParsed)="onPlaylistInput($event)" />
-    }
+        <div class="button icon-button" (click)="newPlaylist()">
+            <img src="icons/write.svg" title="Write Playlist">
+        </div>
+        <div class="button icon-button" (click)="savePlaylist($event)">
+            <img src="icons/save.svg" title="Save Playlist">
+        </div>
+        <div class="button icon-button" (click)="closePlaylist()">
+            <img src="icons/close-square.svg" title="Close Playlist">
+        </div>
+    </div>
+    <div class="row">
+        <slides-section
+            [(playlist)]="playlist"
+            (slideUpdate)="onSlideUpdate($event)"
+            [(curSlideId)]="curSlideId"
+            [(curSubslideIdx)]="curSubslideIdx"
+        />
+        <media-section
+            [(playlist)]="playlist"
+            (mediaUpdate)="onMediaUpdate($event)"
+            [(curMediaId)]="curMediaId"
+            [(playbackRequest)]="playbackRequest"
+            [playbackStatus]="playbackStatus()"
+        />
+    </div>
 </section>

@@ -16,6 +16,10 @@ section {
     margin-right: auto;
 }
 
+.header p {
+    margin-right: 5px;
+}
+
 .header .icon-button {
     width: 40px;
     height: 40px;
@@ -41,4 +45,10 @@ slides-section {
 }
 media-section {
     width: calc(40% - 5px);
+}
+
+new-playlist-dialog {
+    position: absolute;
+    left: calc((100vw - 800px) / 2);
+    top: calc((100vh - 500px) / 2);
 }

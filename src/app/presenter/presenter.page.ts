@@ -13,7 +13,7 @@ import { FilePicker } from "./file-picker/file-picker.dialog";
     styleUrl: './presenter.page.css'
 })
 export class PresenterPage {
-    playlist = signal<Playlist | null>(null, {equal: () => false});
+    playlist = signal<Playlist>(new Playlist(), {equal: () => false});
 
     slideshowBc: BroadcastChannel;
     slideshowDispMode = signal<SlideshowDispMode>("slide");
