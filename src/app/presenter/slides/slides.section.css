@@ -45,3 +45,9 @@ edit-dialog {
     width: 70px;
     height: 70px;
 }
+
+@media (width < 800px) {
+    edit-dialog {
+        left: 0px;
+    }
+}

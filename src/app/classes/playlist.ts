@@ -280,6 +280,9 @@ export class Playlist {
         else /* media */
             this.media.replace(item as Media);
     }
+    touch() {
+        this.modified = true;
+    }
 
     prevSlide(id: string, subslideIdx: number, skip?: boolean): [string, number] {
         let curSlide = this.slides.byId(id);

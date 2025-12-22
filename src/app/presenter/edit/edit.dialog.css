@@ -12,6 +12,10 @@
     z-index: 2;
 }
 
+h1 {
+    text-transform: capitalize;
+}
+
 .buttons {
     display: flex;
     flex-direction: row;
@@ -19,4 +23,10 @@
 .buttons .button {
     margin: 10px;
     width: 150px;
+}
+
+@media (width < 800px) {
+    .dialog-inner {
+        width: calc(100vw - 40px);
+    }
 }

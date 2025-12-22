@@ -1,3 +1,9 @@
+@media (width < 800px) {
+    td.value-field {
+        width: 50vw !important;
+    }
+}
+
 th.key-field {
     text-align: left;
 }
@@ -9,6 +15,7 @@ td.value-field {
 }
 td.value-field > * {
     width: 100%;
+    border-radius: 5px;
 }
 
 .text-input {
@@ -23,6 +30,7 @@ textarea {
 select {
     background-color: #292C79;
     color: white;
+    height: 23px;
 }
 
 td.auto-field .button {

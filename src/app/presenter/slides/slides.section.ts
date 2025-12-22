@@ -61,6 +61,7 @@ export class SlidesSection {
                 break;
             case "delete":
                 this.playlist()?.slides.delete(slideId);
+                this.playlist()?.touch();
                 break;
         }
     }
@@ -105,6 +106,7 @@ export class SlidesSection {
 
     moveSlide(slideId: string, direction: 1 | -1) {
         this.playlist()?.slides.move(slideId, direction);
+        this.playlist()?.touch();
     }
     @HostListener("window:keydown.control.shift.arrowup", ['-1'])
     @HostListener("window:keydown.control.shift.arrowdown", ['1'])
