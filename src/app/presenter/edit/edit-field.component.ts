@@ -4,12 +4,14 @@ import { FilePickerService } from "../file-picker/file-picker.service";
 
 const FRIENDLY_NAMES: Record<string, string> = {
     location: "Location",
+    location_tr: "Translated Location",
     preview: "Preview",
     subslides: "Subslides",
     subtitle: "Subtitle",
     subtitles: "Subtitles",
     subtype: "Subtype",
     title: "Title",
+    title_tr: "Translated Title",
     name: "Name",
     version: "Version",
     year: "Year",

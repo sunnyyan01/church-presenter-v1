@@ -1,26 +1,25 @@
-.top-bar {
+.top-bar, .top2-bar {
     display: flex;
     flex-direction: row;
     width: 100%;
-    min-height: 15%;
     justify-content: space-between;
     align-items: center;
-}
-.top-bar h2 {
-    margin-left: 10%;
-    font-size: 8vh;
     white-space: pre;
 }
-.top-bar h2::first-line {
+.bible-template .left {
+    margin-left: 10%;
+}
+.bible-template .right {
+    text-align: right;
+}
+.bible-template h2 {
     font-size: 12vh;
 }
-.top-bar h3 {
-    text-align: right;
-    font-size: 8vh;
-    white-space: pre;
-}
-.top-bar h3::first-line {
+.bible-template h3 {
     font-size: 10vh;
+}
+.bible-template h5 {
+    font-size: 6vh;
 }
 
 .bible-template {

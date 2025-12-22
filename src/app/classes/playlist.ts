@@ -60,14 +60,18 @@ export class WelcomeSlide extends Slide {
 
 export class BibleSlide extends Slide {
     title = "";
+    title_tr = "";
     location = "";
+    location_tr = "";
     version = "";
     subslides: Array<string>;
 
     constructor(data: Record<string, any>) {
         super(data);
         this.title = data['title'] || "";
+        this.title_tr = data['title_tr'] || "";
         this.location = data['location'] || "";
+        this.location_tr = data['location_tr'] || "";
         this.version = data['version'] || "";
         this.subslides = data['subslides'] || [];
         if (!this.preview) this.resetPreview();

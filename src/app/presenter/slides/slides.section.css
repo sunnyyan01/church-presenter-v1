@@ -50,4 +50,8 @@ edit-dialog {
     edit-dialog {
         left: 0px;
     }
+
+    .controls {
+        display: none;
+    }
 }

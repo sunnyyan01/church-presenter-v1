@@ -1,5 +1,6 @@
 <div class="dialog-inner">
     <h1>{{editIn().mode}} {{editIn().type}}</h1>
+    <div class="table">
     <table>
     <tbody>
         @for (field of slideEntries().values(); track field[0]) {
@@ -8,6 +9,7 @@
         }
     </tbody>
     </table>
+    </div>
     <div class="buttons">
         <div class="button text-button large primary" (click)="onSave()">
             Save

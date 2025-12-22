@@ -41,3 +41,9 @@ textarea {
     margin: 10px;
     width: 150px;
 }
+
+@media (width < 800px) {
+    .dialog-inner {
+        width: calc(100vw - 40px);
+    }
+}

@@ -52,3 +52,9 @@ new-playlist-dialog {
     left: calc((100vw - 800px) / 2);
     top: calc((100vh - 500px) / 2);
 }
+
+@media (width < 800px) {
+    new-playlist-dialog {
+        left: 0px;
+    }
+}

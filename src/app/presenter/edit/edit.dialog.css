@@ -16,6 +16,11 @@ h1 {
     text-transform: capitalize;
 }
 
+.table {
+    height: 400px;
+    overflow: auto;
+}
+
 .buttons {
     display: flex;
     flex-direction: row;
