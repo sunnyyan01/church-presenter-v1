@@ -1,30 +1,38 @@
 export class TextReader {
-    lines: Array<String>;
+    lines: Array<string>;
     idx: number;
     canRead: Boolean;
-    lastRead: String | null;
+    lastRead: string | null;
+    newline: string;
 
-    constructor(text: String) {
-        let newline = text.includes("\r") ? "\r\n" : "\n";
-        this.lines = text.trim().split(newline);
+    constructor(text: string) {
+        this.newline = text.includes("\r") ? "\r\n" : "\n";
+        this.lines = text.trim().split(this.newline);
         this.idx = -1;
         this.canRead = this.lines.length > 0;
         this.lastRead = null;
     }
 
     peek() {
-        if (!this.canRead)
-            throw Error(`Cannot read past end of file`);
+        if (!this.canRead) return "";
         return this.lines[this.idx + 1];
     }
 
     read() {
-        if (!this.canRead)
-            throw Error(`Cannot read past end of file`);
+        if (!this.canRead) return "";
         this.lastRead = this.lines[++this.idx];
         if (this.idx + 1 >= this.lines.length)
             this.canRead = false;
         return this.lastRead;
+    }
+
+    write(...toInsert: string[]) {
+        this.lines.splice(this.idx + 1, 0, ...toInsert);
+        this.idx += toInsert.length;
+    }
+
+    toString(): string {
+        return this.lines.join(this.newline);
     }
 }
 

@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, effect, input, output, signal, ViewChild } from "@angular/core";
 import { bibleLookup } from "../../api/bible";
-import { nextSunday } from "../../classes/utils";
+import { nextSunday, TextReader } from "../../classes/utils";
 
 @Component({
     selector: 'new-playlist-dialog',
@@ -30,13 +30,13 @@ export class NewPlaylistDialog {
     }
 
     @HostListener("keydown.control.b", ["$event"])
-    async autoBible(e: KeyboardEvent) {
+    async autoBibleIndividual(e: KeyboardEvent) {
         e.preventDefault();
         
         let {value, selectionStart, selectionEnd} = this.textarea.nativeElement;
         let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd, "\n");
         let line = value.slice(lineStart, lineEnd);
-        let match = /1,[^,]+,([^,]+)/.exec(line);
+        let match = /^1,[^,]+,([^,]+)/.exec(line);
         let match2 = /version=(.+)(,|$)/.exec(line);
 
         if (!match) {
@@ -57,6 +57,27 @@ export class NewPlaylistDialog {
         } catch (e: any) {
             this.localErrorMessage.set(e.message);
         }
+    }
+
+    async autoBible() {
+        let input = this.textarea.nativeElement.value;
+        let reader = new TextReader(input);
+        while (reader.canRead) {
+            let line = reader.read();
+            if (reader.peek() == "S") continue;
+            let match = /^1,[^,]+,([^,]+)/.exec(line);
+            let match2 = /version=(.+?)(,|$)/.exec(line);
+            if (match) {
+                console.log(match);
+                let text = await bibleLookup(match[1], match2 ? match2[1] : "");
+                reader.write("S");
+                reader.write(
+                    ...text.trim().split("\n").map(line => "  " + line)
+                );
+                reader.write("E");
+            }
+        }
+        this.textarea.nativeElement.value = reader.toString();
     }
 
     @HostListener("keydown.control.`", ["$event"])
