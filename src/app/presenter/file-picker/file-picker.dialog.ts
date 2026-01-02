@@ -18,10 +18,12 @@ export class FilePicker {
     close = output<string>();
 
     constructor() {
-        effect(() => {
-            fetch(`/api/files/${this.folder()}`)
-                .then(res => res.json())
-                .then(res => this.files.set(res));
+        effect(async () => {
+            let resp = await fetch(`https://churchpresenterpublic.blob.core.windows.net/${this.folder()}?restype=container&comp=list`);
+            let text = await resp.text();
+            let parser = new DOMParser();
+            let xml = parser.parseFromString(text, "application/xml");
+            this.files.set(Array.from(xml.querySelectorAll("Name")).map(e => e.textContent as string));
         })
     }
 

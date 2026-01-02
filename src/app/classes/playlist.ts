@@ -141,27 +141,6 @@ export class TitleSlide extends Slide {
     }
 }
 
-export class EmbedSlide extends Slide {
-    url;
-    _subslideCount;
-
-    constructor(data: Record<string,any>) {
-        super(data);
-        this.url = data['url'] || "";
-        this._subslideCount = data['subslideCount'] || 0;
-        if (!this.preview) this.resetPreview();
-    }
-
-    override get subslideCount(): number {
-        return this._subslideCount;
-    }
-
-    override resetPreview() {
-        this.preview = this.url;
-        return this.preview;
-    }
-}
-
 export class BlankSlide extends Slide {
     constructor() {
         super({"type": "slide", "subtype": "blank"});
@@ -244,7 +223,6 @@ export const CONSTRUCTORS: Record<string, any> = {
     slidebible: BibleSlide,
     slidesong: SongSlide,
     slidetitle: TitleSlide,
-    slideembed: EmbedSlide,
     slideblank: BlankSlide,
     mediayoutube: YoutubeMedia,
     mediavideo: VideoMedia,

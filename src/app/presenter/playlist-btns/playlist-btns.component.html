@@ -1,0 +1,34 @@
+<div class="playlist-btns">
+    <p>{{playlist()?.name}}</p>
+    <input #fileInput class="hidden" type="file" accept=".txt,.json" (change)="openPlaylist($event)" />
+    <new-playlist-dialog
+        [class.hidden]="!newPlaylistDialogOpen()"
+        [errorMessage]="newPlaylistDialogErr()"
+        (submit)="onNewPlaylistSubmit($event)"
+    />
+    <div class="button icon-button" (click)="showOpenContextMenu()">
+        <img src="icons/open-folder.svg" title="Open Playlist">
+    </div>
+    @if (contextMenuOpen() == 'open') {
+        <div
+            class="context-menu open-context-menu"
+            #openContextMenu
+        >
+            <div class="button text-button" (click)="openPlaylistFileSelector()">
+                Open local file
+            </div>
+            <div class="button text-button" (click)="openCloudPlaylist()">
+                Open from cloud
+            </div>
+        </div>
+    }
+    <div class="button icon-button" (click)="newPlaylist()">
+        <img src="icons/write.svg" title="Write Playlist">
+    </div>
+    <div class="button icon-button" (click)="savePlaylist($event)">
+        <img src="icons/save.svg" title="Save Playlist">
+    </div>
+    <div class="button icon-button" (click)="closePlaylist()">
+        <img src="icons/close-square.svg" title="Close Playlist">
+    </div>
+</div>

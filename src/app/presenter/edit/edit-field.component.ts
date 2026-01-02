@@ -130,7 +130,7 @@ export class EditField {
     async openFilePicker() {
         let file = await this.fp.openFilePicker("user-files", "open");
         if (!file) return;
-        this.valChange.emit("/api/files/user-files/" + file);
+        this.valChange.emit("https://churchpresenterpublic.blob.core.windows.net/user-files/" + file);
     }
 
     auto() {

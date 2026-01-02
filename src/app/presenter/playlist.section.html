@@ -1,25 +1,11 @@
 <section>
     <div class="header">
         <h1>{{translations.header}}</h1>
-        <p>{{playlist()?.name}}</p>
-        <input #fileInput class="hidden" type="file" accept=".txt,.json" (change)="openPlaylist($event)" />
-        <new-playlist-dialog
-            [class.hidden]="!newPlaylistDialogOpen()"
-            [errorMessage]="newPlaylistDialogErr()"
-            (submit)="onNewPlaylistSubmit($event)"
+
+        <playlist-btns
+            [(playlist)]="playlist"
+            (playlistSubmit)="onPlaylistInput($any($event))"
         />
-        <div class="button icon-button" (click)="openPlaylistFileSelector()">
-            <img src="icons/open-folder.svg" title="Open Playlist">
-        </div>
-        <div class="button icon-button" (click)="newPlaylist()">
-            <img src="icons/write.svg" title="Write Playlist">
-        </div>
-        <div class="button icon-button" (click)="savePlaylist($event)">
-            <img src="icons/save.svg" title="Save Playlist">
-        </div>
-        <div class="button icon-button" (click)="closePlaylist()">
-            <img src="icons/close-square.svg" title="Close Playlist">
-        </div>
     </div>
     <div class="row">
         <slides-section
