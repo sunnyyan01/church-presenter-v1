@@ -25,9 +25,22 @@
     <div class="button icon-button" (click)="newPlaylist()">
         <img src="icons/write.svg" title="Write Playlist">
     </div>
-    <div class="button icon-button" (click)="savePlaylist($event)">
+    <div class="button icon-button" (click)="showSaveContextMenu()">
         <img src="icons/save.svg" title="Save Playlist">
     </div>
+    @if (contextMenuOpen() == 'save') {
+        <div
+            class="context-menu save-context-menu"
+            #saveContextMenu
+        >
+            <div class="button text-button" (click)="savePlaylist($event)">
+                Save locally
+            </div>
+            <div class="button text-button" (click)="saveCloudPlaylist($event)">
+                Save to cloud
+            </div>
+        </div>
+    }
     <div class="button icon-button" (click)="closePlaylist()">
         <img src="icons/close-square.svg" title="Close Playlist">
     </div>

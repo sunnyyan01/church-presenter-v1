@@ -12,6 +12,19 @@
     z-index: 3;
 }
 
+.sas-url {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.sas-url a {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .files {
     height: 400px;
     width: 100%;

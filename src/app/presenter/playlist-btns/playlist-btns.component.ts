@@ -2,6 +2,7 @@ import { Component, ElementRef, HostListener, inject, input, model, output, sign
 import { NewPlaylistDialog } from "../new-playlist/new-playlist.dialog";
 import { Playlist } from "../../classes/playlist";
 import { FilePickerService } from "../file-picker/file-picker.service";
+import { BlobServiceClient } from "@azure/storage-blob";
 
 @Component({
     selector: 'playlist-btns',
@@ -12,6 +13,7 @@ import { FilePickerService } from "../file-picker/file-picker.service";
 export class PlaylistBtns {
     @ViewChild("fileInput") fileInput!: ElementRef<HTMLInputElement>;
     @ViewChild("openContextMenu") openContextMenu!: ElementRef<HTMLDivElement>;
+    @ViewChild("saveContextMenu") saveContextMenu!: ElementRef<HTMLDivElement>;
     fp = inject(FilePickerService);
     
     playlist = model<Playlist>();
@@ -25,13 +27,23 @@ export class PlaylistBtns {
 
     @HostListener('document:click', ['$event'])
     onClickOut(e: MouseEvent) {
-        if (!this.openContextMenu.nativeElement.contains(e.target as Node | null)) {
-            this.contextMenuOpen.set("");
+        if (this.contextMenuOpen() == "open" && this.openContextMenu) {
+            if (!this.openContextMenu.nativeElement.contains(e.target as Node | null)) {
+                this.contextMenuOpen.set("");
+            }
+        }
+        if (this.contextMenuOpen() == "save" && this.saveContextMenu) {
+            if (!this.saveContextMenu.nativeElement.contains(e.target as Node | null)) {
+                this.contextMenuOpen.set("");
+            }
         }
     }
 
     showOpenContextMenu() {
         this.contextMenuOpen.update(prev => prev == "open" ? "" : "open");
+    }
+    showSaveContextMenu() {
+        this.contextMenuOpen.update(prev => prev == "save" ? "" : "save");
     }
 
     confirmBeforeDiscard() {
@@ -122,6 +134,22 @@ export class PlaylistBtns {
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
+    }
+    async saveCloudPlaylist(e: MouseEvent) {
+        if (this.playlist()?.isBlank()) {
+            alert("Can't save blank playlist");
+            return;
+        }
+
+        let content = e.ctrlKey ? this.playlist()?.toJson(2) : this.playlist()?.toText();
+        let type = e.ctrlKey ? "application/json" : "text/plain";
+        let name = await this.fp.openFilePicker("playlists", "save") as string;
+
+        let serviceClient = new BlobServiceClient(localStorage.getItem("sas_url") as string);
+        let containerClient = serviceClient.getContainerClient("playlists");
+        let blobClient = containerClient.getBlockBlobClient(name);
+        await blobClient.uploadData(new Blob([content!], {type}));
+        alert("Saved successfully");
     }
 
     closePlaylist() {

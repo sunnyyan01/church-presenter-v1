@@ -1,5 +1,12 @@
 <div class="dialog-inner">
     <h1>{{friendlyFolderName()}}</h1>
+    <div class="sas-url">
+        <p>
+            SAS URL:
+            <span class="sas-status" [attr.data-colour]="sasColour()">{{sasStatus()}}</span>
+        </p>
+        <a (click)="changeSas()">Change</a>
+    </div>
     <div class="files">
         @for (file of files(); track file) {
             <div

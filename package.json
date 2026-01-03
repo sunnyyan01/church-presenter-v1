@@ -19,6 +19,7 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "@azure/storage-blob": "^12.29.1",
     "concurrently": "^9.1.2",
     "express": "^4.21.2",
     "jsdom": "^26.0.0",
