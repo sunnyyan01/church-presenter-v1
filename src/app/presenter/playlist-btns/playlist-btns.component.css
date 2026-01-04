@@ -13,6 +13,9 @@
     width: 40px;
     height: 40px;
 }
+.playlist-btns .toggle-button[data-active=true] {
+    border-bottom-right-radius: 0px;
+}
 
 .icon-button > *:first-child {
     width: 100%;
@@ -30,6 +33,7 @@
     border: 1px solid white;
     border-radius: 20px;
     border-top-right-radius: 0px;
+    border: 1px solid grey;
     background-color: #292C79;
     padding: 2px;
     box-shadow: 1px 1px gray;
@@ -40,10 +44,10 @@
 }
 
 .open-context-menu {
-    right: calc(62px * 3);
+    right: calc(62px * 3 - 2px);
 }
 .save-context-menu {
-    right: 62px;
+    right: 60px;
 }
 
 new-playlist-dialog {

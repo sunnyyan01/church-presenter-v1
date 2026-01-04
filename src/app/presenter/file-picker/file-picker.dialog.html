@@ -13,7 +13,7 @@
                 class="file"
                 [class.selected]="file === selected()"
                 (click)="selected.set(file)"
-                (dblclick)="close.emit(file)"
+                (dblclick)="selected.set(file); onClose()"
             >
                 {{file}}
             </div>

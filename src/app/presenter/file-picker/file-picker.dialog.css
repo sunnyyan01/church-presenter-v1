@@ -35,6 +35,7 @@
     white-space: nowrap;
     overflow: hidden;
     border: 1px solid transparent;
+    cursor: pointer;
 }
 .file:nth-child(even) {
     background-color: #363A9F;

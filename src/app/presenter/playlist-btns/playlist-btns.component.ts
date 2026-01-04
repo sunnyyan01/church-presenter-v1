@@ -102,7 +102,6 @@ export class PlaylistBtns {
     newPlaylist() {
         if (!this.confirmBeforeDiscard()) return;
 
-
         this.newPlaylistDialogOpen.set(true);
     }
     onNewPlaylistSubmit(e: string) {
@@ -119,6 +118,8 @@ export class PlaylistBtns {
     }
 
     savePlaylist(e: MouseEvent) {
+        this.contextMenuOpen.set("");
+
         if (this.playlist()?.isBlank()) {
             alert("Can't save blank playlist");
             return;
@@ -136,6 +137,8 @@ export class PlaylistBtns {
         URL.revokeObjectURL(url);
     }
     async saveCloudPlaylist(e: MouseEvent) {
+        this.contextMenuOpen.set("");
+
         if (this.playlist()?.isBlank()) {
             alert("Can't save blank playlist");
             return;

@@ -49,6 +49,11 @@ h1 {
     transform: translate(3px,3px);
     box-shadow: none;
 }
+.icon-button.toggle-button[data-active=true] {
+    border-color: grey;
+    transform: translate(3px,3px);
+    box-shadow: none;
+}
 
 .text-button {
     display: flex;

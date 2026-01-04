@@ -2,19 +2,22 @@
 <th class="key-field">{{friendlyKey()}}</th>
 <td class="value-field">
     @if (key() == 'subtype') {
-        <select [(value)]="val" (change)="onChange($event)">
-            <option value="">(Select one)</option>
-            @if (slide()['type'] == 'slide') {
+        @if (slide()['type'] == "slide") {
+            <select [(value)]="val" (change)="onChange($event)">
+                <option value="">(Select one)</option>
                 <option value="welcome">Welcome</option>
                 <option value="bible">Bible</option>
                 <option value="song">Song</option>
                 <option value="title">Title</option>
-                <option value="embed">Embed</option>
-            } @else {
+            </select>
+        } @else if (slide()['type'] == 'media') {
+            <select [(value)]="val" (change)="onChange($event)">
+                <option value="">(Select one)</option>
                 <option value="youtube">Youtube</option>
                 <option value="video">Video</option>
-            }
-        </select>
+            </select>
+        }
+        
     } @else if (key() == 'version') {
         <select [(value)]="val" (change)="onChange($event)">
             <option selected>(default)</option>

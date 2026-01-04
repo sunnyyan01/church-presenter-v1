@@ -1,4 +1,5 @@
 import { Component, computed, effect, input, output, signal } from "@angular/core";
+import { BlobServiceClient } from "@azure/storage-blob";
 
 const FOLDER_NAMES: Record<string, string> = {
     "user-files": "User Files",
@@ -24,11 +25,13 @@ export class FilePicker {
 
     constructor() {
         effect(async () => {
-            let resp = await fetch(`https://churchpresenterpublic.blob.core.windows.net/${this.folder()}?restype=container&comp=list`);
-            let text = await resp.text();
-            let parser = new DOMParser();
-            let xml = parser.parseFromString(text, "application/xml");
-            this.files.set(Array.from(xml.querySelectorAll("Name")).map(e => e.textContent as string));
+            let files = [];
+            let serviceClient = new BlobServiceClient("https://churchpresenterpublic.blob.core.windows.net");
+            let containerClient = serviceClient.getContainerClient(this.folder());
+            for await (let blob of containerClient.listBlobsFlat()) {
+                files.push(blob.name);
+            }
+            this.files.set(files);
         })
 
         effect(() => {
@@ -52,11 +55,20 @@ export class FilePicker {
     }
 
     onClose() {
-        if (this.action() == "open" && !this.selected()) {
-            alert("Please select a file");
+        if (!this.selected()) {
+            alert(
+                this.action() == "open"
+                ? "Please select a file"
+                : "Please enter a file name"
+            );
             return;
-        } if (this.action() == "open" && !this.files().includes(this.selected())) {
+        }
+        if (this.action() == "open" && !this.files().includes(this.selected())) {
             alert(`Unknown file ${this.selected()}`)
+            return;
+        }
+        if (this.action() == "save" && !this.sasUrl()) {
+            alert("Can't save without a SAS URL");
             return;
         }
 

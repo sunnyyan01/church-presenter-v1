@@ -1,12 +1,16 @@
+<new-playlist-dialog
+    [class.hidden]="!newPlaylistDialogOpen()"
+    [errorMessage]="newPlaylistDialogErr()"
+    (submit)="onNewPlaylistSubmit($event)"
+/>
 <div class="playlist-btns">
     <p>{{playlist()?.name}}</p>
     <input #fileInput class="hidden" type="file" accept=".txt,.json" (change)="openPlaylist($event)" />
-    <new-playlist-dialog
-        [class.hidden]="!newPlaylistDialogOpen()"
-        [errorMessage]="newPlaylistDialogErr()"
-        (submit)="onNewPlaylistSubmit($event)"
-    />
-    <div class="button icon-button" (click)="showOpenContextMenu()">
+    <div
+        class="button icon-button toggle-button"
+        [attr.data-active]="contextMenuOpen() == 'open'"
+        (click)="showOpenContextMenu()"
+    >
         <img src="icons/open-folder.svg" title="Open Playlist">
     </div>
     @if (contextMenuOpen() == 'open') {
@@ -25,7 +29,11 @@
     <div class="button icon-button" (click)="newPlaylist()">
         <img src="icons/write.svg" title="Write Playlist">
     </div>
-    <div class="button icon-button" (click)="showSaveContextMenu()">
+    <div
+        class="button icon-button toggle-button"
+        [attr.data-active]="contextMenuOpen() == 'save'"
+        (click)="showSaveContextMenu()"
+    >
         <img src="icons/save.svg" title="Save Playlist">
     </div>
     @if (contextMenuOpen() == 'save') {
