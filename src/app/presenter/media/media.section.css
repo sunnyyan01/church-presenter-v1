@@ -29,8 +29,10 @@ context-menu {
 
 edit-dialog {
     position: absolute;
-    left: calc((100vw - 800px) / 2);
-    top: calc((100vh - 500px) / 2);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
 }
 
 .controls {

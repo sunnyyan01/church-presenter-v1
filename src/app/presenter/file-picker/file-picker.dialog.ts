@@ -4,6 +4,8 @@ import { BlobServiceClient } from "@azure/storage-blob";
 const FOLDER_NAMES: Record<string, string> = {
     "user-files": "User Files",
     "playlists": "Playlists",
+    "slide-library": "Slide Library",
+    "media-library": "Media Library",
 }
 
 @Component({

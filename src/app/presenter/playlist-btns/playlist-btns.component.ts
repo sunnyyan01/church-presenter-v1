@@ -88,7 +88,7 @@ export class PlaylistBtns {
         let resp = await fetch(
             "https://churchpresenterpublic.blob.core.windows.net/playlists/" + file
         );
-        if (file.endsWith(".json")) {
+        if (resp.headers.get("Content-Type") == "application/json") {
             this.playlistSubmit.emit(
                 Playlist.fromJson(await resp.text(), file)
             );
@@ -151,7 +151,10 @@ export class PlaylistBtns {
         let serviceClient = new BlobServiceClient(localStorage.getItem("sas_url") as string);
         let containerClient = serviceClient.getContainerClient("playlists");
         let blobClient = containerClient.getBlockBlobClient(name);
-        await blobClient.uploadData(new Blob([content!], {type}));
+        await blobClient.uploadData(
+            new Blob([content!]),
+            {blobHTTPHeaders: {blobContentType: type}}
+        );
         alert("Saved successfully");
     }
 

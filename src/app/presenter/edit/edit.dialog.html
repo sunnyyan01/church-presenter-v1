@@ -1,5 +1,19 @@
 <div class="dialog-inner">
     <h1>{{editIn().mode}} {{editIn().type}}</h1>
+    <div class="toolbar">
+        <div
+            class="button icon-button"
+            (click)="loadFromLibrary()"
+        >
+            <img src="icons/open-folder.svg" title="Load from library">
+        </div>
+        <div
+            class="button icon-button"
+            (click)="saveToLibrary()"
+        >
+            <img src="icons/save.svg" title="Save to library">
+        </div>
+    </div>
     <div class="table">
     <table>
     <tbody>
