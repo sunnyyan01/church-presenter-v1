@@ -3,6 +3,7 @@ import { NewPlaylistDialog } from "../new-playlist/new-playlist.dialog";
 import { Playlist } from "../../classes/playlist";
 import { FilePickerService } from "../file-picker/file-picker.service";
 import { BlobServiceClient } from "@azure/storage-blob";
+import { ToastsService } from "../toasts/toasts.service";
 
 @Component({
     selector: 'playlist-btns',
@@ -15,6 +16,7 @@ export class PlaylistBtns {
     @ViewChild("openContextMenu") openContextMenu!: ElementRef<HTMLDivElement>;
     @ViewChild("saveContextMenu") saveContextMenu!: ElementRef<HTMLDivElement>;
     fp = inject(FilePickerService);
+    toastService = inject(ToastsService);
     
     playlist = model<Playlist>();
 
@@ -121,7 +123,7 @@ export class PlaylistBtns {
         this.contextMenuOpen.set("");
 
         if (this.playlist()?.isBlank()) {
-            alert("Can't save blank playlist");
+            this.toastService.createToast("error", "Can't save blank playlist");
             return;
         }
 
@@ -140,7 +142,7 @@ export class PlaylistBtns {
         this.contextMenuOpen.set("");
 
         if (this.playlist()?.isBlank()) {
-            alert("Can't save blank playlist");
+            this.toastService.createToast("error", "Can't save blank playlist");
             return;
         }
 
@@ -155,7 +157,7 @@ export class PlaylistBtns {
             new Blob([content!]),
             {blobHTTPHeaders: {blobContentType: type}}
         );
-        alert("Saved successfully");
+        this.toastService.createToast("success", "Saved successfully");
     }
 
     closePlaylist() {

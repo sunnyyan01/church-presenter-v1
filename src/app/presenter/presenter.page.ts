@@ -5,10 +5,11 @@ import { Playlist } from '../classes/playlist';
 import { PlaybackRequest, PlaybackStatus, SlideshowDispMode } from '../classes/slideshow';
 import { AboutSection } from "./about.section";
 import { FilePicker } from "./file-picker/file-picker.dialog";
+import { Toasts } from './toasts/toasts.component';
 
 @Component({
     selector: 'presenter-page',
-    imports: [PlaylistSection, PreviewSection, AboutSection, FilePicker],
+    imports: [PlaylistSection, PreviewSection, AboutSection, FilePicker, Toasts],
     templateUrl: './presenter.page.html',
     styleUrl: './presenter.page.css'
 })

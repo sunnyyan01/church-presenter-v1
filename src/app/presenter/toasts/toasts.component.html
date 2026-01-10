@@ -1,0 +1,7 @@
+<div class="toasts">
+    @for (toast of toastsIt(); track toast.id) {
+        <toast
+            [type]="toast.type" [message]="toast.message"
+        />
+    }
+</div>

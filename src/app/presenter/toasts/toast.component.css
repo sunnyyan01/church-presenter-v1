@@ -1,0 +1,30 @@
+.toast {
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    background-color: white;
+}
+
+.toast[data-type="error"]::before {
+    content: "❌ ";
+}
+.toast[data-type="error"] {
+    color: red;
+}
+.toast[data-type="warning"]::before {
+    content: "⚠️ ";
+}
+.toast[data-type="warning"] {
+    color: orange;
+}
+.toast[data-type="info"]::before {
+    content: "ℹ️ ";
+}
+.toast[data-type="success"]::before {
+    content: "✅ ";
+}
+.toast[data-type="success"] {
+    background-color: green;
+}
