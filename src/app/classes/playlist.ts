@@ -1,4 +1,4 @@
-import { OrderedDict, TextReader } from "./utils";
+import { iso8601date, OrderedDict, TextReader } from "./utils";
 
 const dashJoin = (...arr: Array<string>) => arr.filter(x => x).join(" - ");
 
@@ -164,6 +164,7 @@ export abstract class Media extends PlaylistItem {
     }
 
     abstract resetPreview(): string;
+    abstract get externalOpenUrl(): string;
 }
 
 export class YoutubeMedia extends Media {
@@ -179,6 +180,10 @@ export class YoutubeMedia extends Media {
         this.end = data['end'] || "";
         this.subtitles = data['subtitles'] || "";
         if (!this.preview) this.resetPreview();
+    }
+
+    override get externalOpenUrl() {
+        return `https://www.youtube.com/watch?v=${this.videoId}`;
     }
 
     override resetPreview() {
@@ -202,6 +207,10 @@ export class VideoMedia extends Media {
         if (!this.preview) this.resetPreview();
     }
 
+    override get externalOpenUrl() {
+        return this.videoSrc;
+    }
+
     override resetPreview() {
         this.preview = this.videoSrc;
         return this.preview;
@@ -211,6 +220,10 @@ export class VideoMedia extends Media {
 export class BlankMedia extends Media {
     constructor() {
         super({"type": "media", "subtype": "blank"});
+    }
+
+    override get externalOpenUrl() {
+        return "";
     }
 
     override resetPreview(): string {
@@ -241,8 +254,21 @@ export const TEMPLATES: Array<[string, string, Array<string>]> = [
 export class Playlist {
     slides: OrderedDict<Slide> = new OrderedDict<Slide>();
     media: OrderedDict<Media> = new OrderedDict<Media>();
-    name = "New Playlist";
+    _name = "";
     modified = false;
+
+    get name() {
+        if (this._name) {
+            return this._name;
+        }
+        for (let slide of this.slides) {
+            if (slide.subtype == "welcome") {
+                let welcomeSlide = slide as WelcomeSlide;
+                return iso8601date(welcomeSlide.year, welcomeSlide.month, welcomeSlide.day);
+            }
+        }
+        return "New Playlist";
+    }
 
     isBlank() {
         return !(this.slides.length || this.media.length);
@@ -360,7 +386,7 @@ export class Playlist {
 
     static fromText(text: string, name?: string) {
         let playlist = new this();
-        playlist.name = name || "";
+        playlist._name = name || "";
 
         let reader = new TextReader(text);
         let curItem: Record<string, any> = {};
@@ -444,7 +470,7 @@ export class Playlist {
 
     static fromJson(json: string, name?: string) {
         let playlist = new this();
-        playlist.name = name || "";
+        playlist._name = name || "";
         let slides: Array<Record<string,any>> = Object.values(JSON.parse(json));
         for (let item of slides) {
             playlist.push(PlaylistItem.fromRecord(item));

@@ -93,10 +93,10 @@ h1 {
     line-height: 25px;
     padding: 5px;
 }
-.context-menu .button:first-child {
+.context-menu > .button:first-child {
     border-radius: 20px 20px 0px 0px;
 }
-.context-menu .button:last-child {
+.context-menu > .button:last-child {
     border-radius: 0px 0px 20px 20px;
 }
 .context-menu .button:hover {

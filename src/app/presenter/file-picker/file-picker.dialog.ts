@@ -14,19 +14,32 @@ const FOLDER_NAMES: Record<string, string> = {
     templateUrl: "./file-picker.dialog.html",
 })
 export class FilePicker {
-    folder = input.required<string>();
-    friendlyFolderName = computed(() => FOLDER_NAMES[this.folder()])
-    action = input.required<"open" | "save">();
+    bc: BroadcastChannel;
+
+    open = signal<boolean>(false);
+    folder = signal<string>("");
+    friendlyFolderName = computed(() => FOLDER_NAMES[this.folder()] || this.folder());
+    action = signal<"open" | "save">("open");
     files = signal<Array<string>>([]);
     selected = signal<string>("");
-    close = output<string>();
 
     sasUrl = signal<string>(localStorage.getItem("sas_url") || "");
     sasStatus = signal<string>("Not provided");
     sasColour = signal<string>("white");
 
     constructor() {
+        this.bc = new BroadcastChannel("file-picker");
+        this.bc.addEventListener("message", e => {
+            let {folder, action, defaultName} = e.data;
+            this.folder.set(folder);
+            this.action.set(action);
+            this.selected.set(defaultName || "");
+            this.open.set(true);
+        })
+
         effect(async () => {
+            if (!this.folder()) return;
+
             let files = [];
             let serviceClient = new BlobServiceClient("https://churchpresenterpublic.blob.core.windows.net");
             let containerClient = serviceClient.getContainerClient(this.folder());
@@ -46,7 +59,6 @@ export class FilePicker {
             } else {
                 this.sasStatus.set("Not provided");
                 this.sasColour.set(this.action() == "open" ? "white" : "red");
-
             }
         })
     }
@@ -74,6 +86,11 @@ export class FilePicker {
             return;
         }
 
-        this.close.emit(this.selected());
+        this.bc.postMessage({file: this.selected()});
+        this.open.set(false);
+    }
+
+    onCancel() {
+        this.open.set(false);
     }
 }

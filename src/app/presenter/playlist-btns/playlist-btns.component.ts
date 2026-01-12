@@ -148,7 +148,7 @@ export class PlaylistBtns {
 
         let content = e.ctrlKey ? this.playlist()?.toJson(2) : this.playlist()?.toText();
         let type = e.ctrlKey ? "application/json" : "text/plain";
-        let name = await this.fp.openFilePicker("playlists", "save") as string;
+        let name = await this.fp.openFilePicker("playlists", "save", this.playlist()?.name) as string;
 
         let serviceClient = new BlobServiceClient(localStorage.getItem("sas_url") as string);
         let containerClient = serviceClient.getContainerClient("playlists");

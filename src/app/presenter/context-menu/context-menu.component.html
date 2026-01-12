@@ -2,17 +2,28 @@
     <div class="button text-button secondary" data-action="edit" (click)="onAction($event)">
         Edit
     </div>
-    <div class="button text-button secondary" data-action="move-up" (click)="onAction($event)">
-        Move ↑
+    @if (type() == "media") {
+        <div class="button text-button secondary" data-action="open" (click)="onAction($event)">
+            Open Externally
+        </div>
+    }
+    <div class="row">
+        Move
+        <div class="button text-button secondary" data-action="move-up" (click)="onAction($event)">
+            ↑
+        </div>
+        <div class="button text-button secondary" data-action="move-down" (click)="onAction($event)">
+            ↓
+        </div>
     </div>
-    <div class="button text-button secondary" data-action="move-down" (click)="onAction($event)">
-        Move ↓
-    </div>
-    <div class="button text-button secondary" data-action="insert-above" (click)="onAction($event)">
-        Insert ↑
-    </div>
-    <div class="button text-button secondary" data-action="insert-below" (click)="onAction($event)">
-        Insert ↓
+    <div class="row">
+        Insert
+        <div class="button text-button secondary" data-action="insert-above" (click)="onAction($event)">
+            ↑
+        </div>
+        <div class="button text-button secondary" data-action="insert-below" (click)="onAction($event)">
+            ↓
+        </div>
     </div>
     <div class="button text-button secondary" data-action="delete" (click)="onAction($event)">
         Delete

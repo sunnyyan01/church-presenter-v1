@@ -7,6 +7,7 @@ import { Component, ElementRef, HostListener, input, output, ViewChild } from "@
 })
 export class ContextMenu {
     id = input.required<string>();
+    type = input.required<string>();
     action = output<[string, string]>();
     @ViewChild("contextMenuRoot") domElement!: ElementRef<HTMLDivElement>;
 

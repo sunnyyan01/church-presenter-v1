@@ -4,6 +4,7 @@
         [class.hidden]="contextMenuOpen() == ''"
         [style.left.px]="contextMenuPos()[0]"
         [style.top.px]="contextMenuPos()[1]"
+        [type]="'media'"
         [id]="contextMenuOpen()"
         (action)="onContextMenuClose($event)"
         (blur)="onContextMenuClose()"

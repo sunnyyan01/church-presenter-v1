@@ -4,6 +4,7 @@
         [class.hidden]="slideContextMenuOpen() == ''"
         [style.left.px]="slideContextMenuPos()[0]"
         [style.top.px]="slideContextMenuPos()[1]"
+        [type]="'slide'"
         [id]="slideContextMenuOpen()"
         (action)="onContextMenuClose($event)"
         (blur)="onContextMenuClose()"

@@ -69,6 +69,10 @@ export function nextSunday() {
     ];
 }
 
+export function iso8601date(year: string, month: string, day: string) {
+    return year.padStart(4, "0") + month.padStart(2, "0") + day.padStart(2, "0");
+}
+
 export function timeConvert(sec: number) {
     return (
         Math.trunc(sec / 60) +

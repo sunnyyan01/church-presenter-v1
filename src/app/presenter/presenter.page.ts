@@ -24,10 +24,6 @@ export class PresenterPage {
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     playbackStatus = signal<PlaybackStatus>(new PlaybackStatus());
 
-    filePickerBc: BroadcastChannel;
-    filePickerFolder = signal<string>("");
-    filePickerAction = signal<"open" | "save">("open");
-
     ws: WebSocket | null = null;
     wsStatus = signal<string>("unconnected");
 
@@ -110,12 +106,6 @@ export class PresenterPage {
             } catch {}
         }
         */
-
-        this.filePickerBc = new BroadcastChannel("file-picker");
-        this.filePickerBc.addEventListener("message", e => {
-            this.filePickerFolder.set(e.data.folder);
-            this.filePickerAction.set(e.data.action);
-        })
     }
 
     onSlideUpdate(slideId: string) {
@@ -172,10 +162,5 @@ export class PresenterPage {
 
     stop() {
         this.playbackRequest.set({state: "stop"});
-    }
-    
-    filePickerClose(file: string) {
-        this.filePickerBc.postMessage({file});
-        this.filePickerFolder.set("");
     }
 }

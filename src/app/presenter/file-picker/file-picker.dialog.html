@@ -1,4 +1,4 @@
-<div class="dialog-inner">
+<div class="dialog-inner" [class.hidden]="!open()">
     <h1>{{friendlyFolderName()}}</h1>
     <div class="sas-url">
         <p>
@@ -28,7 +28,7 @@
         <div class="button text-button primary" (click)="onClose()">
             {{action()}}
         </div>
-        <div class="button text-button secondary" (click)="close.emit('')">
+        <div class="button text-button secondary" (click)="onCancel()">
             Cancel
         </div>
     </div>

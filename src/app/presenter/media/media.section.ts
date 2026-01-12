@@ -46,6 +46,9 @@ export class MediaSection {
             case "edit":
                 this.openEditDialog(undefined, id);
                 break;
+            case "open":
+                this.openMediaExternally(id);
+                break;
             case "move-up":
                 this.moveItem(id, -1);
                 break;
@@ -62,6 +65,10 @@ export class MediaSection {
                 this.playlist()?.media.delete(id);
                 break;
         }
+    }
+
+    openMediaExternally(id: string) {
+        window.open(this.playlist()?.media.byId(id).externalOpenUrl);
     }
     
     @HostListener("window:keydown.control.shift.e", ["$event"])

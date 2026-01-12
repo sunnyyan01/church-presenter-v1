@@ -1,11 +1,5 @@
 <main>
-    @if (filePickerFolder()) {
-        <file-picker 
-            [folder]="filePickerFolder()"
-            [action]="filePickerAction()"
-            (close)="filePickerClose($event)"
-        />
-    }
+    <file-picker />
     <playlist-section #playlistSection [(playlist)]="playlist" [(curSlideId)]="curSlideId"
         [(curSubslideIdx)]="curSubslideIdx" [(curMediaId)]="curMediaId" [(playbackRequest)]="playbackRequest"
         [playbackStatus]="playbackStatus()" (slideUpdate)="onSlideUpdate($event)"
