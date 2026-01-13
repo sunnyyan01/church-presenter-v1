@@ -107,6 +107,17 @@ export class NewPlaylistDialog {
             }
         }
 
+        if (template == '5') { // Youtube link handling
+            let url = new URL(line.replace(/^5,/,""))
+            if (url.pathname == "/watch") {
+                line = "5," + url.searchParams.get("v");
+            } else if (url.pathname.startsWith("/embed/")) {
+                line = "5," + url.pathname.split("/")[2];
+            } else if (url.hostname == "youtu.be") {
+                line = "5," + url.pathname.slice(1);
+            }
+        }
+
         this.textarea.nativeElement.setRangeText(line, lineStart, lineEnd);
         let newEnd = lineStart + line.length;
         this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);
