@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, input, output, signal } from "@angular/core";
-import { BibleSlide, Slide, TEMPLATES } from "../../classes/playlist";
+import { CONSTRUCTORS } from "../../classes/playlist";
 import { FilePickerService } from "../file-picker/file-picker.service";
 
 const FRIENDLY_NAMES: Record<string, string> = {
@@ -20,6 +20,7 @@ const FRIENDLY_NAMES: Record<string, string> = {
     videoId: "Video ID",
     start: "Start",
     end: "End",
+    imageSrc: "Image URL",
     videoSrc: "Video URL",
     subtitleSrc: "Subtitle URL",
 }
@@ -28,9 +29,9 @@ const AUTO_FIELDS: Record<string, string> = {
     start: 'Format',
     end: 'Format',
     preview: 'Auto',
+    imageSrc: 'Open',
     videoSrc: 'Open',
     subtitleSrc: 'Open',
-    subslides: 'Lookup',
 }
 
 @Component({
@@ -82,38 +83,8 @@ export class EditField {
     }
 
     autoPreview() {
-        let template = TEMPLATES.find(
-            t => t[0] == this.slide()['type'] && t[1] == this.slide()['subtype']
-        );
-        let tFields = template![2];
-        let preview = tFields
-            .map(f => this.slide()[f])
-            .filter(x => x)
-            .join(' - ');
-        this.valChange.emit(preview);
-    }
-
-    async autoSubslides() {
-        this.loading.set(true);
-        let bibleSlide = this.slide() as BibleSlide;
-        let loc = bibleSlide.location;
-        let version = bibleSlide.version;
-        let url = (
-            // sessionStorage.getItem("serverlessMode") === "true"
-            true
-            ? "https://churchpresenterapi.azurewebsites.net/api/bible-lookup"
-            : "/api/bible-lookup"
-        )
-        let search = new URLSearchParams({loc, version});
-        let resp = await fetch(url + "?" + search.toString());
-        let text = await resp.text();
-        this.loading.set(false);
-        if (resp.ok) {
-            this.valChange.emit([text]);
-        } else {
-            alert("Error: " + text);
-            throw new Error(text);
-        }
+        let slide = new CONSTRUCTORS[this.slide()['type'] + this.slide()['subtype']](this.slide());
+        this.valChange.emit(slide.resetPreview());
     }
 
     autoTimeConvert() {
@@ -138,13 +109,11 @@ export class EditField {
             case "preview":
                 this.autoPreview();
                 break;
-            case "subslides":
-                this.autoSubslides();
-                break;
             case "start":
             case "end":
                 this.autoTimeConvert();
                 break;
+            case "imageSrc":
             case "subtitleSrc":
             case "videoSrc":
                 this.openFilePicker();

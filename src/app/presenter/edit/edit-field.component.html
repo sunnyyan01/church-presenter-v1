@@ -9,6 +9,7 @@
                 <option value="bible">Bible</option>
                 <option value="song">Song</option>
                 <option value="title">Title</option>
+                <option value="image">Image</option>
             </select>
         } @else if (slide()['type'] == 'media') {
             <select [(value)]="val" (change)="onChange($event)">
@@ -37,7 +38,6 @@
             <option value="">None</option>
             <option value="en">English</option>
             <option value="zh">Chinese</option>
-            <option disabled>Use JSON editor for other languages</option>
         </select>
     } @else {
         <div

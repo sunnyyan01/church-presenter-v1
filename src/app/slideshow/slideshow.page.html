@@ -33,5 +33,8 @@
         @if (slide().subtype == "title") {
             <title-template [slide]="$any(slide())" />
         }
+        @if (slide().subtype == "image") {
+            <image-template [slide]="$any(slide())" />
+        }
     </div>
 </main>

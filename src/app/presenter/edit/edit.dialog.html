@@ -13,6 +13,20 @@
         >
             <img src="icons/save.svg" title="Save to library">
         </div>
+        <div
+            class="button icon-button"
+            [class.hidden]="slide()['subtype'] != 'bible'"
+            (click)="autoBible()"
+        >
+            <img src="icons/book.svg" title="Auto bible lookup">
+        </div>
+        <div
+            class="button icon-button"
+            [class.hidden]="slide()['subtype'] != 'welcome'"
+            (click)="autoDate()"
+        >
+            <img src="icons/calendar.svg" title="Auto date">
+        </div>
     </div>
     <div class="table">
     <table>

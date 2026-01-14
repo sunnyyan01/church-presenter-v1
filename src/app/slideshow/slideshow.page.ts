@@ -7,10 +7,11 @@ import { TitleTemplateComponent } from './title-template/title-template.componen
 import { YoutubePlayer } from './youtube-player/youtube-player.component';
 import { PlaybackRequest, SlideshowDispMode } from '../classes/slideshow';
 import { VideoPlayer } from "./video-player/video-player.component";
+import { ImageTemplateComponent } from "./image-template/image-template.component";
 
 @Component({
     selector: 'slideshow-page',
-    imports: [WelcomeTemplateComponent, BibleTemplateComponent, SongTemplateComponent, TitleTemplateComponent, YoutubePlayer, VideoPlayer],
+    imports: [WelcomeTemplateComponent, BibleTemplateComponent, SongTemplateComponent, TitleTemplateComponent, YoutubePlayer, VideoPlayer, ImageTemplateComponent],
     templateUrl: './slideshow.page.html',
     styleUrl: './slideshow.page.css'
 })

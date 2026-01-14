@@ -141,6 +141,24 @@ export class TitleSlide extends Slide {
     }
 }
 
+export class ImageSlide extends Slide {
+    imageSrc = "";
+
+    constructor(data: Record<string, any>) {
+        super(data);
+        this.imageSrc = data['imageSrc'] || "";
+        if (!this.preview) this.resetPreview();
+    }
+
+    override resetPreview() {
+        if (!this.imageSrc) return "";
+
+        let url = new URL(this.imageSrc);
+        this.preview = url.pathname.split("/").at(-1);
+        return this.preview;
+    }
+}
+
 export class BlankSlide extends Slide {
     constructor() {
         super({"type": "slide", "subtype": "blank"});
@@ -212,7 +230,10 @@ export class VideoMedia extends Media {
     }
 
     override resetPreview() {
-        this.preview = this.videoSrc;
+        if (!this.videoSrc) return "";
+
+        let url = new URL(this.videoSrc);
+        this.preview = url.pathname.split("/").at(-1) as string;
         return this.preview;
     }
 }
@@ -236,6 +257,7 @@ export const CONSTRUCTORS: Record<string, any> = {
     slidebible: BibleSlide,
     slidesong: SongSlide,
     slidetitle: TitleSlide,
+    slideimage: ImageSlide,
     slideblank: BlankSlide,
     mediayoutube: YoutubeMedia,
     mediavideo: VideoMedia,
@@ -247,8 +269,9 @@ export const TEMPLATES: Array<[string, string, Array<string>]> = [
     ["slide", "bible", ["title", "location"]],
     ["slide", "song", ["title", "name"]],
     ["slide", "title", ["title", "subtitle"]],
-    ["media", "video", ["videoSrc"]],
+    ["slide", "image", ["imageSrc"]],
     ["media", "youtube", ["videoId"]],
+    ["media", "video", ["videoSrc"]],
 ]
 
 export class Playlist {
