@@ -36,5 +36,9 @@
         @if (slide().subtype == "image") {
             <image-template [slide]="$any(slide())" />
         }
+
+        <div class="button text-button" [class.hidden]="fullscreen()" (click)="enterFullscreen()">
+            Fullscreen
+        </div>
     </div>
 </main>

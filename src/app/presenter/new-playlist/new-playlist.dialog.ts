@@ -1,11 +1,13 @@
 import { Component, ElementRef, HostListener, effect, input, output, signal, ViewChild } from "@angular/core";
 import { bibleLookup } from "../../api/bible";
 import { nextSunday, TextReader } from "../../classes/utils";
+import { ToastComponent } from "../toasts/toast.component";
 
 @Component({
     selector: 'new-playlist-dialog',
     templateUrl: './new-playlist.dialog.html',
     styleUrl: './new-playlist.dialog.css',
+    imports: [ToastComponent],
 })
 export class NewPlaylistDialog {
     @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;

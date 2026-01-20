@@ -9,9 +9,7 @@
 
     <textarea #textarea (change)="onTextChange()"></textarea>
 
-    <div class="error-toast" [class.hidden]="!localErrorMessage()">
-        {{localErrorMessage()}}
-    </div>
+    <toast [class.hidden]="!localErrorMessage()" type="error" [message]="localErrorMessage()" />
 
     <div class="buttons">
         <div class="button text-button large primary" (click)="onSubmit()">

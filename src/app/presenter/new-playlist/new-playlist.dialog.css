@@ -31,16 +31,8 @@ textarea {
     scrollbar-color: grey #292C79;
 }
 
-.error-toast {
-    background-color: red;
-    color: white;
-    opacity: 0.7;
+toast {
     width: 90%;
-    padding: 10px;
-    border-radius: 10px;
-}
-.error-toast::before {
-    content: "❌";
 }
 
 .buttons {

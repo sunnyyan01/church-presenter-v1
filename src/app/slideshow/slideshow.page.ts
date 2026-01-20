@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, HostListener, signal } from '@angular/core';
 import { Slide, Media, BlankMedia, BlankSlide } from '../classes/playlist';
 import { WelcomeTemplateComponent } from './welcome-template/welcome-template.component';
 import { BibleTemplateComponent } from './bible-template/bible-template.component';
@@ -24,6 +24,7 @@ export class SlideshowPage {
     media = computed(() => Media.fromRecord(this.mediaRecord()));
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     slideshowDispMode = signal<SlideshowDispMode>("slide");
+    fullscreen = signal<boolean>(false);
 
     constructor() {
         this.slideshowBc = new BroadcastChannel("slideshow");
@@ -50,5 +51,21 @@ export class SlideshowPage {
         this.slideshowBc.postMessage(
             {timeDisplay: e}
         );
+    }
+
+    async enterFullscreen() {
+        // @ts-ignore
+        let screenDetails = await window.getScreenDetails();
+        let secondary = screenDetails.screens.find((s: any) => !s.isPrimary);
+        await document.body.requestFullscreen({
+            navigationUI: "hide",
+            // @ts-ignore
+            screen: secondary,
+        })
+    }
+
+    @HostListener("document:fullscreenchange")
+    onFullscreenChange() {
+        this.fullscreen.set(!!document.fullscreenElement);
     }
 }
