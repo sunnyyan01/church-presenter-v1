@@ -1,7 +1,8 @@
 <main style="background-image: url('background.svg');">
     <div class="slide-inner" [class.hidden]="slideshowDispMode() == 'blank'">
-        @if (slideshowDispMode() == 'media' && media().subtype == "video") {
+        @if (media().subtype == 'video') {
             <video-player
+                [class.invisible]="slideshowDispMode() != 'media'"
                 [media]="media()"
                 [playbackRequest]="playbackRequest()"
                 (playbackTimerChange)="onPlaybackTimerChange($event)"

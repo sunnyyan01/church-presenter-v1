@@ -44,7 +44,7 @@ export class YoutubePlayer {
     }
 
     cueVideo(media: YoutubeMedia) {
-        if (!media) return;
+        if (media?.subtype != "youtube") return;
         if (this.player?.getVideoUrl().includes(media.videoId)) return;
 
         let startSeconds = media.start ? parseFloat(media.start) : undefined;

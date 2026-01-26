@@ -460,12 +460,18 @@ export class Playlist {
                 curItem['subtype'] = subtype;
 
                 for (let arg of args) {
+                    arg = arg.replace("<br>", "\n");
                     if (arg.includes("=")) {
                         let [key, val] = arg.split("=");
-                        curItem[key] = val.replace("<br>", "\n");
+                        curItem[key] = val;
                     } else {
-                        let key = positionalArgs[positionalsMatched++];
-                        curItem[key] = arg.replace("<br>", "\n");
+                        if (positionalsMatched >= positionalArgs.length) {
+                            const key = positionalArgs.at(-1)!;
+                            curItem[key] += "," + arg;
+                        } else {
+                            let key = positionalArgs[positionalsMatched++];
+                            curItem[key] = arg;
+                        }
                     }
                 }
 

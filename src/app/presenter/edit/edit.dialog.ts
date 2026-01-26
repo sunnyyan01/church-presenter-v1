@@ -5,6 +5,8 @@ import { EditDialogInput, EditDialogOutput } from '../../classes/edit';
 import { FilePickerService } from '../file-picker/file-picker.service';
 import { BlobServiceClient } from '@azure/storage-blob';
 import { nextSunday } from '../../classes/utils';
+import { bibleLookup } from '../../api/bible';
+import { ToastsService } from '../toasts/toasts.service';
 
 @Component({
     selector: 'edit-dialog',
@@ -21,6 +23,7 @@ export class EditDialog {
     loading = signal<boolean>(false);
 
     fp = inject(FilePickerService);
+    toasts = inject(ToastsService);
 
     constructor() {
         effect(() => {
@@ -66,7 +69,7 @@ export class EditDialog {
             { blobHTTPHeaders: { blobContentType: "application/json" } }
         );
 
-        alert("Saved successfully");
+        this.toasts.createToast("success", "Saved successfully");
     }
 
     async autoBible() {
@@ -74,22 +77,14 @@ export class EditDialog {
         let bibleSlide = this.slide() as BibleSlide;
         let loc = bibleSlide.location;
         let version = bibleSlide.version;
-        let url = (
-            // sessionStorage.getItem("serverlessMode") === "true"
-            true
-                ? "https://churchpresenterapi.azurewebsites.net/api/bible-lookup"
-                : "/api/bible-lookup"
-        )
-        let search = new URLSearchParams({ loc, version });
-        let resp = await fetch(url + "?" + search.toString());
-        let text = await resp.text();
-        this.loading.set(false);
-        if (resp.ok) {
+        try {
+            let text = await bibleLookup(loc, version);
             this.onChange("subslides", [text]);
-        } else {
-            alert("Error: " + text);
-            throw new Error(text);
+        } catch (e: any) {
+            this.toasts.createToast("error", e.message);
+            throw e;
         }
+        this.loading.set(false);
     }
 
     async autoDate() {
