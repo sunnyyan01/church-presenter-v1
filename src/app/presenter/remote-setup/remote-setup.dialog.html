@@ -1,4 +1,16 @@
 <div class="dialog-inner">
+    <h1>Remote Control Setup</h1>
+    <div class="sas-url">
+        <p>
+            Password:
+            @if (password()) {
+                <span class="conn-str-status provided">Provided</span>
+            } @else {
+                <span class="conn-str-status">Not Provided</span>
+            }
+        </p>
+        <a (click)="changePassword()">Change</a>
+    </div>
     @if (qrSrc()) {
         <p id="prompt1">Scan this QR code</p>
         <img [src]="qrSrc()" />

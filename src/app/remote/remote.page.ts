@@ -23,12 +23,12 @@ export class RemotePage {
     }
 
     remoteEvent(type: string) {
-        this.client.sendToGroup("remote", JSON.stringify({
+        let eventData = {
             origin: "remote",
             dest: "presenter",
             message: type,
-        }))
-        console.log(type);
+        };
+        this.client.sendToGroup("remote", eventData, "json");
     }
 
     changeSlideshowDispMode(mode: SlideshowDispMode) {
