@@ -1,35 +1,29 @@
 import { Component, signal } from "@angular/core";
 import { SlideshowDispMode } from "../classes/slideshow";
+import { WebPubSubClient } from "@azure/web-pubsub-client";
 
 @Component({
     styleUrl: 'remote.page.css',
     templateUrl: './remote.page.html',
 })
 export class RemotePage {
-    ws: WebSocket;
+    client: WebPubSubClient;
     connectionStatus = signal<string>("unconnected");
     slideshowDispMode = signal<SlideshowDispMode | "">("");
 
     constructor() {
-        let { hostname, protocol } = window.location;
-        let wsProtocol = protocol == "http:" ? "ws" : "wss";
-        this.ws = new WebSocket(`${wsProtocol}://${hostname}:3000/ws/remote`);
-        this.ws.addEventListener("open", e => {
+        const clientUrl = new URL(window.location.toString()).searchParams.get("clientUrl");
+        this.client = new WebPubSubClient(clientUrl!);
+
+        this.client.on("connected", () => {
             this.connectionStatus.set("connected");
-        });
-        this.ws.addEventListener("message", e => {
-            let {origin, message} = JSON.parse(e.data);
-            if (message.type === "error") {
-                
-            }
-        });
-        this.ws.addEventListener("close", e => {
-            this.connectionStatus.set("disconnected");
         })
+        this.client.start();
+        this.client.joinGroup("remote");
     }
 
     remoteEvent(type: string) {
-        this.ws.send(JSON.stringify({
+        this.client.sendToGroup("remote", JSON.stringify({
             origin: "remote",
             dest: "presenter",
             message: type,
