@@ -5,13 +5,25 @@
     justify-content: center;
     width: 500px;
     height: 400px;
+    padding: 20px;
     border: 2px solid grey;
     border-radius: 20px;
     background-color: #292C79;
 }
 
+.password-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
 a {
     color: white;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .button {

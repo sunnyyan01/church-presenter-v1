@@ -124,7 +124,6 @@ export class PresenterPage {
     }
 
     prevSlide() {
-        console.log(this.playlist);
         let [prevSlideId, prevSubslideIdx] = this.playlist()?.prevSlide(
             this.curSlideId(), this.curSubslideIdx()
         )!;

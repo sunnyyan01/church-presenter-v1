@@ -1,10 +1,11 @@
-import { Component, HostListener, input, model, output, signal } from "@angular/core";
+import { Component, HostListener, inject, input, model, output, signal } from "@angular/core";
 import { Playlist, PlaylistItem } from "../../classes/playlist";
 import { EditDialogInput, EditDialogOutput } from "../../classes/edit";
 import { ContextMenu } from "../context-menu/context-menu.component";
 import { EditDialog } from "../edit/edit.dialog";
 import { MediaComponent } from "./media.component";
 import { PlaybackRequest, PlaybackStatus } from "../../classes/slideshow";
+import { RemoteService } from "../remote-setup/remote.service";
 
 @Component({
     selector: 'media-section',
@@ -23,6 +24,15 @@ export class MediaSection {
     contextMenuPos = signal<[number, number]>([0,0]);
 
     editDialogInput = signal<EditDialogInput | null>(null);
+
+    remoteService = inject(RemoteService);
+
+    constructor() {
+        this.remoteService.addListener("prev-media", this.prevMedia.bind(this));
+        this.remoteService.addListener("next-media", this.nextMedia.bind(this));
+        this.remoteService.addListener("play-pause", this.playPause.bind(this));
+        this.remoteService.addListener("stop", this.stop.bind(this));
+    }
 
     onMediaSelect(e: string) {
         this.curMediaId.set(e);
@@ -117,8 +127,8 @@ export class MediaSection {
 
     @HostListener("window:keydown.control.F11", ["$event"])
     @HostListener("window:keydown.MediaTrackPrevious", ["$event"])
-    nextMedia(e: KeyboardEvent | MouseEvent) {
-        e.preventDefault();
+    nextMedia(e?: KeyboardEvent | MouseEvent) {
+        e?.preventDefault();
         let nextMediaId = this.playlist()?.nextMedia(this.curMediaId());
         if (nextMediaId)
             this.curMediaId.set(nextMediaId);
@@ -126,8 +136,8 @@ export class MediaSection {
 
     @HostListener("window:keydown.control.F9", ["$event"])
     @HostListener("window:keydown.MediaTrackPrevious", ["$event"])
-    prevMedia(e: KeyboardEvent | MouseEvent) {
-        e.preventDefault();
+    prevMedia(e?: KeyboardEvent | MouseEvent) {
+        e?.preventDefault();
         let prevMediaId = this.playlist()?.prevMedia(this.curMediaId());
         if (prevMediaId)
             this.curMediaId.set(prevMediaId);

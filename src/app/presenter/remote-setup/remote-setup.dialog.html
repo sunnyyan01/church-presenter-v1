@@ -1,6 +1,6 @@
 <div class="dialog-inner">
     <h1>Remote Control Setup</h1>
-    <div class="sas-url">
+    <div class="password-area">
         <p>
             Password:
             @if (password()) {
@@ -11,12 +11,11 @@
         </p>
         <a (click)="changePassword()">Change</a>
     </div>
-    @if (qrSrc()) {
+    @if (remoteUrl()) {
         <p id="prompt1">Scan this QR code</p>
-        <img [src]="qrSrc()" />
-        <p><span id="prompt2">or open this link: </span> <a [href]="remoteUrl()">{{remoteUrl()}}</a></p>
+        <a [href]="remoteUrl()"><img [src]="qrSrc()" /></a>
     } @else {
-        <p>Please wait</p>
+        <p>Please set the password</p>
     }
     <div class="button icon-button" (click)="closeDialog.emit()">
         <img src="icons/close.svg">

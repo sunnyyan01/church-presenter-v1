@@ -1,9 +1,10 @@
-import { Component, effect, HostListener, model, output, signal } from "@angular/core";
+import { Component, effect, HostListener, inject, model, output, signal } from "@angular/core";
 import { Playlist, PlaylistItem, Slide } from "../../classes/playlist";
 import { EditDialogInput, EditDialogOutput } from "../../classes/edit";
 import { ContextMenu } from "../context-menu/context-menu.component";
 import { EditDialog } from "../edit/edit.dialog";
 import { SlideComponent } from "./slide.component";
+import { RemoteService } from "../remote-setup/remote.service";
 
 @Component({
     selector: 'slides-section',
@@ -22,6 +23,13 @@ export class SlidesSection {
     slideContextMenuPos = signal<[number, number]>([0,0]);
 
     editSlideInput = signal<EditDialogInput | null>(null);
+
+    remoteService = inject(RemoteService);
+
+    constructor() {
+        this.remoteService.addListener("prev-slide", this.prevSlide.bind(this));
+        this.remoteService.addListener("next-slide", this.nextSlide.bind(this));
+    }
 
     onSlideSelect(e: [string, number]) {
         let [slideId, subslideIdx] = e;
@@ -118,11 +126,11 @@ export class SlidesSection {
     @HostListener("window:keydown.control.arrowdown", ["$event"])
     @HostListener("window:keydown.arrowright", ["$event"])
     @HostListener("window:keydown.control.arrowright", ["$event"])
-    nextSlide(e: KeyboardEvent | MouseEvent) {
-        e.preventDefault();
+    nextSlide(e?: KeyboardEvent | MouseEvent) {
+        e?.preventDefault();
 
         let [nextSlideId, nextSubslideIdx] = this.playlist()?.nextSlide(
-            this.curSlideId(), this.curSubslideIdx(), e.ctrlKey
+            this.curSlideId(), this.curSubslideIdx(), e?.ctrlKey
         )!;
         if (nextSlideId) {
             this.curSlideId.set(nextSlideId);
@@ -134,11 +142,11 @@ export class SlidesSection {
     @HostListener("window:keydown.control.arrowup", ["$event"])
     @HostListener("window:keydown.arrowleft", ["$event"])
     @HostListener("window:keydown.control.arrowleft", ["$event"])
-    prevSlide(e: KeyboardEvent | MouseEvent) {
-        e.preventDefault();
+    prevSlide(e?: KeyboardEvent | MouseEvent) {
+        e?.preventDefault();
 
         let [prevSlideId, prevSubslideIdx] = this.playlist()?.prevSlide(
-            this.curSlideId(), this.curSubslideIdx(), e.ctrlKey
+            this.curSlideId(), this.curSubslideIdx(), e?.ctrlKey
         )!;
         if (prevSlideId) {
             this.curSlideId.set(prevSlideId);
