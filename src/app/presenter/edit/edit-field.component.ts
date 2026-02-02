@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input, output, signal } from "@angular/core";
-import { CONSTRUCTORS } from "../../classes/playlist";
-import { FilePickerService } from "../file-picker/file-picker.service";
+import { CONSTRUCTORS } from "@app/classes/playlist";
+import { FilePickerService } from "@app/services/file-picker.service";
 
 const FRIENDLY_NAMES: Record<string, string> = {
     location: "Location",

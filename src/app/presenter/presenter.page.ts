@@ -1,8 +1,8 @@
 import { Component, signal, effect } from '@angular/core';
+import { PlaybackRequest, PlaybackStatus, SlideshowDispMode } from '@app/classes/slideshow';
 import { PlaylistSection } from './playlist.section';
 import { PreviewSection } from './preview.section';
 import { Playlist } from '../classes/playlist';
-import { PlaybackRequest, PlaybackStatus, SlideshowDispMode } from '../classes/slideshow';
 import { AboutSection } from "./about.section";
 import { FilePicker } from "./file-picker/file-picker.dialog";
 import { Toasts } from './toasts/toasts.component';
@@ -85,27 +85,6 @@ export class PresenterPage {
                 )
             }
         }
-
-        /*
-        if (sessionStorage.getItem("serverlessMode") === "true") {
-            let { protocol, hostname } = window.location;
-            let wsProtocol = protocol == "http:" ? "ws" : "wss";
-            try {
-                this.ws = new WebSocket(`${wsProtocol}://${hostname}:3000/ws/presenter`);
-                this.ws.addEventListener("open", e => {
-                    this.wsStatus.set("connected");
-                });
-                this.ws.addEventListener("message", e => {
-                    let {origin, message} = JSON.parse(e.data);
-                    console.log(e.data);
-                    this.REMOTE_HANDLERS[message].bind(this)();
-                });
-                this.ws.addEventListener("close", e => {
-                    this.wsStatus.set("disconnected");
-                })
-            } catch {}
-        }
-        */
     }
 
     onSlideUpdate(slideId: string) {

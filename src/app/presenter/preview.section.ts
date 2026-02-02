@@ -1,6 +1,6 @@
 import { Component, ElementRef, model, signal, ViewChild } from "@angular/core";
+import { SlideshowDispMode } from "@app/classes/slideshow";
 import { ControlsSection } from "./controls.section";
-import { SlideshowDispMode } from "../classes/slideshow";
 
 @Component({
     selector: 'preview-section',

@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, effect, input, output, signal, ViewChild } from "@angular/core";
-import { bibleLookup } from "../../api/bible";
-import { nextSunday, TextReader } from "../../classes/utils";
-import { ToastComponent } from "../toasts/toast.component";
+import { bibleLookup } from "@app/api/bible";
+import { nextSunday, TextReader } from "@app/classes/utils";
+import { ToastComponent } from "@presenter/toasts/toast.component";
 
 @Component({
     selector: 'new-playlist-dialog',

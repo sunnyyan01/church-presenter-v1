@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Media } from '../../classes/playlist';
+import { Media } from '@app/classes/playlist';
 
 @Component({
     selector: 'media',

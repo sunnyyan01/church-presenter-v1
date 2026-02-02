@@ -1,12 +1,12 @@
 import { Component, computed, effect, HostListener, inject, input, output, signal } from '@angular/core';
-import { BibleSlide, CONSTRUCTORS } from '../../classes/playlist';
-import { EditField } from './edit-field.component';
-import { EditDialogInput, EditDialogOutput } from '../../classes/edit';
-import { FilePickerService } from '../file-picker/file-picker.service';
 import { BlobServiceClient } from '@azure/storage-blob';
-import { nextSunday } from '../../classes/utils';
-import { bibleLookup } from '../../api/bible';
-import { ToastsService } from '../toasts/toasts.service';
+import { BibleSlide, CONSTRUCTORS } from '@app/classes/playlist';
+import { EditDialogInput, EditDialogOutput } from '@app/classes/edit';
+import { nextSunday } from '@app/classes/utils';
+import { bibleLookup } from '@app/api/bible';
+import { ToastsService } from '@services/toasts.service';
+import { FilePickerService } from '@services/file-picker.service';
+import { EditField } from './edit-field.component';
 
 @Component({
     selector: 'edit-dialog',

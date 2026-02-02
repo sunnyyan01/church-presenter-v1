@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { ImageSlide } from '../../classes/playlist';
+import { ImageSlide } from '@app/classes/playlist';
 
 @Component({
   selector: 'image-template',

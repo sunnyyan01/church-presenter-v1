@@ -1,10 +1,10 @@
-import { Component, effect, HostListener, inject, model, output, signal } from "@angular/core";
-import { Playlist, PlaylistItem, Slide } from "../../classes/playlist";
-import { EditDialogInput, EditDialogOutput } from "../../classes/edit";
-import { ContextMenu } from "../context-menu/context-menu.component";
-import { EditDialog } from "../edit/edit.dialog";
+import { Component, HostListener, inject, model, output, signal } from "@angular/core";
+import { Playlist, PlaylistItem } from "@app/classes/playlist";
+import { EditDialogInput, EditDialogOutput } from "@app/classes/edit";
+import { ContextMenu } from "@app/presenter/context-menu/context-menu.component";
+import { EditDialog } from "@app/presenter/edit/edit.dialog";
 import { SlideComponent } from "./slide.component";
-import { RemoteService } from "../remote-setup/remote.service";
+import { RemoteService } from "@app/services/remote.service";
 
 @Component({
     selector: 'slides-section',

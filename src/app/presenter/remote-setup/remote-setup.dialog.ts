@@ -1,6 +1,5 @@
-import { Component, computed, effect, inject, output, signal } from "@angular/core";
-import { WebPubSubClientCredential } from "@azure/web-pubsub-client";
-import { RemoteService } from "./remote.service";
+import { Component, computed, inject, output, signal } from "@angular/core";
+import { RemoteService } from "@services/remote.service";
 
 @Component({
     selector: 'remote-setup-dialog',
@@ -18,10 +17,10 @@ export class RemoteSetupDialog {
     });
     closeDialog = output<void>();
 
-    changePassword() {
+    async changePassword() {
         let newPassword = window.prompt("Enter the password:") || "";
         this.password.set(newPassword);
-        this.remoteService.password = newPassword;
+        await this.remoteService.setPassword(newPassword);
         this.remoteUrl.set(this.remoteService.remoteUrl);
     }
 }

@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Slide } from '../../classes/playlist';
+import { Slide } from '@app/classes/playlist';
 
 @Component({
     selector: 'slide',

@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Slide, WelcomeSlide } from '../../classes/playlist';
+import { WelcomeSlide } from '@app/classes/playlist';
 
 @Component({
   selector: 'welcome-template',

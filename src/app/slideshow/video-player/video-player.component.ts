@@ -1,7 +1,7 @@
-import { afterRender, Component, computed, effect, ElementRef, input, output, signal, ViewChild } from '@angular/core';
-import { Slide, VideoMedia } from '../../classes/playlist';
-import { timeConvert } from '../../classes/utils';
-import { PlaybackRequest, PlaybackState } from '../../classes/slideshow';
+import { Component, computed, effect, ElementRef, input, output, ViewChild } from '@angular/core';
+import { VideoMedia } from '@app/classes/playlist';
+import { timeConvert } from '@app/classes/utils';
+import { PlaybackRequest, PlaybackState } from '@app/classes/slideshow';
 
 @Component({
     selector: 'video-player',

@@ -1,9 +1,8 @@
-import { Component, ElementRef, input, model, output, signal, ViewChild } from "@angular/core";
-import { Playlist } from "../classes/playlist";
-import { PlaybackRequest, PlaybackStatus } from "../classes/slideshow";
+import { Component, input, model, output } from "@angular/core";
+import { Playlist } from "@app/classes/playlist";
+import { PlaybackRequest, PlaybackStatus } from "@app/classes/slideshow";
 import { SlidesSection } from "./slides/slides.section";
 import { MediaSection } from "./media/media.section";
-import { NewPlaylistDialog } from "./new-playlist/new-playlist.dialog";
 import { PlaylistBtns } from "./playlist-btns/playlist-btns.component";
 
 @Component({

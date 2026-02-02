@@ -1,5 +1,5 @@
-import { Component, computed, input } from '@angular/core';
-import { SongSlide, TitleSlide } from '../../classes/playlist';
+import { Component, input } from '@angular/core';
+import { SongSlide } from '@app/classes/playlist';
 
 @Component({
   selector: 'song-template',

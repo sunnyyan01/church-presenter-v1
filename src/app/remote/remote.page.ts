@@ -1,6 +1,6 @@
 import { Component, signal } from "@angular/core";
-import { SlideshowDispMode } from "../classes/slideshow";
 import { WebPubSubClient } from "@azure/web-pubsub-client";
+import { SlideshowDispMode } from "@app/classes/slideshow";
 
 @Component({
     styleUrl: 'remote.page.css',

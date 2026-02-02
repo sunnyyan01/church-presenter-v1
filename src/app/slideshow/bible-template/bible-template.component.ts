@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { BibleSlide } from '../../classes/playlist';
+import { BibleSlide } from '@app/classes/playlist';
 
 @Component({
   selector: 'bible-template',

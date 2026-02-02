@@ -1,5 +1,5 @@
 import { Component, computed, HostListener, signal } from '@angular/core';
-import { Slide, Media, BlankMedia, BlankSlide } from '../classes/playlist';
+import { Slide, Media, BlankMedia, BlankSlide } from '@app/classes/playlist';
 import { WelcomeTemplateComponent } from './welcome-template/welcome-template.component';
 import { BibleTemplateComponent } from './bible-template/bible-template.component';
 import { SongTemplateComponent } from './song-template/song-template.component';

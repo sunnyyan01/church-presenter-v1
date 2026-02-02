@@ -1,36 +1,40 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { WebPubSubClient } from "@azure/web-pubsub-client";
+import { ToastsService } from "./toasts.service";
 
 @Injectable({
     providedIn: 'root',
 })
 export class RemoteService {
-    private _password;
-    private _clientUrl = "";
+    password;
+    clientUrl = "";
     service: WebPubSubClient | null = null;
     listeners: Record<string, Array<Function>> = {};
+    
+    private toastService = inject(ToastsService);
 
     constructor() {
-        this._password = localStorage.getItem("remote_password") || "";
-        if (this._password) {
+        this.password = localStorage.getItem("remote_password") || "";
+        if (this.password) {
             this.generateClientUrl().then(() => this.createClient());
         }
     }
 
-    async generateClientUrl() {
+    private async generateClientUrl() {
         let resp = await fetch(
             "https://churchpresenterapi.azurewebsites.net/api/pubsub-token",
-            {headers: {"Authorization": this._password}}
+            {headers: {"Authorization": this.password}}
         );
         if (resp.ok) {
-            this._clientUrl = await resp.text();
+            this.clientUrl = await resp.text();
         } else {
-            throw new Error(await resp.text());
+            this.clientUrl = "";
+            this.toastService.createToast("error", "Failed to connect to remote server: " + await resp.text());
         }
     }
 
-    createClient() {
-        this.service = new WebPubSubClient(this._clientUrl);
+    private createClient() {
+        this.service = new WebPubSubClient(this.clientUrl);
         this.service.start();
         this.service.joinGroup("remote");
         this.service.on("group-message", e => {
@@ -42,29 +46,23 @@ export class RemoteService {
         })
     }
 
-    get password() {
-        return this._password;
-    }
-    set password(val: string) {
-        this._password = val;
-        localStorage.setItem("remote_password", this._password);
+    async setPassword(val: string) {
+        this.password = val;
+        localStorage.setItem("remote_password", this.password);
         if (!val) return;
         this.generateClientUrl().then(() => this.createClient());
     }
 
-    get clientUrl() {
-        return this._clientUrl;
-    }
-    set clientUrl(val: string) {
-        this._password = "";
-        this._clientUrl = val;
+    async setClientUrl(val: string) {
+        this.password = "";
+        this.clientUrl = val;
         this.createClient();
     }
 
     get remoteUrl() {
-        if (!this._clientUrl) return "";
+        if (!this.clientUrl) return "";
         let url = new URL("/remote", window.origin);
-        url.searchParams.set("clientUrl", this._clientUrl);
+        url.searchParams.set("clientUrl", this.clientUrl);
         return url.toString();
     }
 

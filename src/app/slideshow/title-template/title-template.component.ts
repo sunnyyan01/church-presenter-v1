@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { TitleSlide } from '../../classes/playlist';
+import { TitleSlide } from '@app/classes/playlist';
 
 @Component({
   selector: 'title-template',

@@ -1,11 +1,11 @@
 import { Component, HostListener, inject, input, model, output, signal } from "@angular/core";
-import { Playlist, PlaylistItem } from "../../classes/playlist";
-import { EditDialogInput, EditDialogOutput } from "../../classes/edit";
-import { ContextMenu } from "../context-menu/context-menu.component";
-import { EditDialog } from "../edit/edit.dialog";
+import { Playlist, PlaylistItem } from "@app/classes/playlist";
+import { EditDialogInput, EditDialogOutput } from "@app/classes/edit";
+import { PlaybackRequest, PlaybackStatus } from "@app/classes/slideshow";
+import { ContextMenu } from "@presenter/context-menu/context-menu.component";
+import { EditDialog } from "@presenter/edit/edit.dialog";
 import { MediaComponent } from "./media.component";
-import { PlaybackRequest, PlaybackStatus } from "../../classes/slideshow";
-import { RemoteService } from "../remote-setup/remote.service";
+import { RemoteService } from "@services/remote.service";
 
 @Component({
     selector: 'media-section',

@@ -15,7 +15,11 @@
         <p id="prompt1">Scan this QR code</p>
         <a [href]="remoteUrl()"><img [src]="qrSrc()" /></a>
     } @else {
-        <p>Please set the password</p>
+        @if (password()) {
+            <p>Please set the correct password</p>
+        } @else {
+            <p>Please set the password</p>
+        }
     }
     <div class="button icon-button" (click)="closeDialog.emit()">
         <img src="icons/close.svg">

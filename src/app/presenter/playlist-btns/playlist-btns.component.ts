@@ -1,9 +1,9 @@
 import { Component, ElementRef, HostListener, inject, input, model, output, signal, ViewChild } from "@angular/core";
-import { NewPlaylistDialog } from "../new-playlist/new-playlist.dialog";
-import { Playlist } from "../../classes/playlist";
-import { FilePickerService } from "../file-picker/file-picker.service";
 import { BlobServiceClient } from "@azure/storage-blob";
-import { ToastsService } from "../toasts/toasts.service";
+import { Playlist } from "@app/classes/playlist";
+import { ToastsService } from "@services/toasts.service";
+import { FilePickerService } from "@services/file-picker.service";
+import { NewPlaylistDialog } from "@presenter/new-playlist/new-playlist.dialog";
 
 @Component({
     selector: 'playlist-btns',

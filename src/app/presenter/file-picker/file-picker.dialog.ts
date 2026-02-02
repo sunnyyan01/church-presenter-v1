@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, output, signal } from "@angular/core";
+import { Component, computed, effect, signal } from "@angular/core";
 import { BlobServiceClient } from "@azure/storage-blob";
 
 const FOLDER_NAMES: Record<string, string> = {
