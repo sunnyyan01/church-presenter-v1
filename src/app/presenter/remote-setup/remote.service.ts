@@ -6,19 +6,27 @@ import { WebPubSubClient } from "@azure/web-pubsub-client";
 })
 export class RemoteService {
     private _password;
-    private _clientUrl: string;
+    private _clientUrl = "";
     service: WebPubSubClient | null = null;
     listeners: Record<string, Array<Function>> = {};
 
     constructor() {
         this._password = localStorage.getItem("remote_password") || "";
-        this._clientUrl = this._password ? this.generateClientUrl() : "";
-        if (this._clientUrl) this.createClient();
+        if (this._password) {
+            this.generateClientUrl().then(() => this.createClient());
+        }
     }
 
-    generateClientUrl() {
-        // TODO
-        return this._password;
+    async generateClientUrl() {
+        let resp = await fetch(
+            "https://churchpresenterapi.azurewebsites.net/api/pubsub-token",
+            {headers: {"Authorization": this._password}}
+        );
+        if (resp.ok) {
+            this._clientUrl = await resp.text();
+        } else {
+            throw new Error(await resp.text());
+        }
     }
 
     createClient() {
@@ -40,8 +48,8 @@ export class RemoteService {
     set password(val: string) {
         this._password = val;
         localStorage.setItem("remote_password", this._password);
-        this._clientUrl = this.generateClientUrl();
-        this.createClient();
+        if (!val) return;
+        this.generateClientUrl().then(() => this.createClient());
     }
 
     get clientUrl() {
