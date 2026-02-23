@@ -38,7 +38,7 @@
             <image-template [slide]="$any(slide())" />
         }
 
-        <div class="button text-button" [class.hidden]="fullscreen()" (click)="enterFullscreen()">
+        <div class="button text-button" id="fullscreen-btn" (click)="enterFullscreen()">
             Fullscreen
         </div>
     </div>

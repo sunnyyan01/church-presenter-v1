@@ -12,6 +12,7 @@ h2 {
     overflow-y: auto;
     scrollbar-color: grey #292C79;
     padding-right: 2px;
+    scroll-padding: 100px;
 }
 
 context-menu {

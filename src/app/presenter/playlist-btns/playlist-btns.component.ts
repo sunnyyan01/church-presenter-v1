@@ -68,7 +68,7 @@ export class PlaylistBtns {
                 this.playlistSubmit.emit(Playlist.fromText(text, fileName));
             } catch (e: any) {
                 console.error(e);
-                throw new Error(`Error parsing playlist line: ${e.message}`)
+                this.toastService.createToast("error", `Error parsing playlist: ${e.message}`);
             }
         } else if (file.type == "application/json") {
             this.playlistSubmit.emit(

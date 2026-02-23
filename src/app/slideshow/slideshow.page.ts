@@ -24,7 +24,6 @@ export class SlideshowPage {
     media = computed(() => Media.fromRecord(this.mediaRecord()));
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     slideshowDispMode = signal<SlideshowDispMode>("slide");
-    fullscreen = signal<boolean>(false);
 
     constructor() {
         this.slideshowBc = new BroadcastChannel("slideshow");
@@ -62,10 +61,5 @@ export class SlideshowPage {
             // @ts-ignore
             screen: secondary,
         })
-    }
-
-    @HostListener("document:fullscreenchange")
-    onFullscreenChange() {
-        this.fullscreen.set(!!document.fullscreenElement);
     }
 }

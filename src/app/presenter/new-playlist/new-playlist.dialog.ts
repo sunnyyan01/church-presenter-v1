@@ -38,14 +38,14 @@ export class NewPlaylistDialog {
         let {value, selectionStart, selectionEnd} = this.textarea.nativeElement;
         let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd, "\n");
         let line = value.slice(lineStart, lineEnd);
-        let match = /^1,[^,]+,([^,]+)/.exec(line);
+        let match = /^1,[^,]*,([^,]+)/.exec(line);
         let match2 = /version=(.+)(,|$)/.exec(line);
 
         if (!match) {
             this.localErrorMessage.set("Slide type is not 1 (bible)");
             return;
         };
-        if (line.match("，|：")) {
+        if (match[1].match(/，|：/)) {
             this.localErrorMessage.set("Chinese punctuation detected");
             return;
         }
@@ -70,7 +70,6 @@ export class NewPlaylistDialog {
             let match = /^1,[^,]+,([^,]+)/.exec(line);
             let match2 = /version=(.+?)(,|$)/.exec(line);
             if (match) {
-                console.log(match);
                 let text = await bibleLookup(match[1], match2 ? match2[1] : "");
                 reader.write("S");
                 reader.write(
