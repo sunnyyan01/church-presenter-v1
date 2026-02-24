@@ -1,7 +1,13 @@
 <div class="template subtitle-template">
     <h1>{{slide().title}}</h1>
+    @if (slide().title_tr) {
+        <h1 class="translation">{{slide().title_tr}}</h1>
+    }
     @if (slide().subtitle) {
         <div class="divider"></div>
         <h2>{{slide().subtitle}}</h2>
+        @if (slide().subtitle_tr) {
+            <h2 class="translation">{{slide().subtitle_tr}}</h2>
+        }
     }
 </div>

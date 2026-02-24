@@ -12,11 +12,17 @@ h1 {
     text-align: center;
     white-space: pre;
 }
+h1.translation {
+    font-size: 8vh;
+}
 
 h2 {
     font-size: 12vh;
     text-align: center;
     white-space: pre;
+}
+h2.translation {
+    font-size: 7vh;
 }
 
 .divider {

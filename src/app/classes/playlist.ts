@@ -89,7 +89,9 @@ export class BibleSlide extends Slide {
     toTitleSlide() {
         return new TitleSlide({
             title: this.title,
+            title_tr: this.title_tr,
             subtitle: this.location,
+            subtitle_tr: this.location_tr,
         })
     }
 }
@@ -127,11 +129,15 @@ export class SongSlide extends Slide {
 export class TitleSlide extends Slide {
     title = "";
     subtitle = "";
+    title_tr = "";
+    subtitle_tr = "";
 
     constructor(data: Record<string, any>) {
         super(data);
         this.title = data['title'] || "";
+        this.title_tr = data['title_tr'] || "";
         this.subtitle = data['subtitle'] || "";
+        this.subtitle_tr = data['subtitle_tr'] || "";
         if (!this.preview) this.resetPreview();
     }
 

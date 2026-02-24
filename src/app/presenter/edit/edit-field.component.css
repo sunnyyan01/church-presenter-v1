@@ -26,6 +26,8 @@ td.value-field > * {
 
 textarea {
     resize: none;
+    background-color: #292C79;
+    color: white;
 }
 select {
     background-color: #292C79;

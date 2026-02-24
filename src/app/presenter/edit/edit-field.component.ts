@@ -4,7 +4,6 @@ import { FilePickerService } from "@app/services/file-picker.service";
 
 const FRIENDLY_NAMES: Record<string, string> = {
     location: "Location",
-    location_tr: "Translated Location",
     preview: "Preview",
     subslides: "Subslides",
     subtitle: "Subtitle",
@@ -32,7 +31,20 @@ const AUTO_FIELDS: Record<string, string> = {
     imageSrc: 'Open',
     videoSrc: 'Open',
     subtitleSrc: 'Open',
+    title_tr: 'Auto',
 }
+const TITLE_TRANSLATIONS: Array<[RegExp, string]> = [
+    [/宣召(经文)?/, "Call to Worship"],
+    [/奉献(经文)?/, "Offering Verse"],
+    [/祝福([/与和]差遣)?/, "Benediction"],
+    [/欢迎[/与和]报告/, "Welcome & Announcements"],
+    [/回应诗歌/, "Response Song"],
+    [/差遣诗歌/, "Final Song"],
+    [/诗歌/, "Song"],
+    [/(主日)?奉献/, "Offering"],
+    [/(祈祷)|(祷告)/, "Prayer"],
+    [/证道/, "Message"],
+]
 
 @Component({
     selector: '[edit-field]',
@@ -46,7 +58,12 @@ export class EditField {
 
     field = input.required<[string, any]>();
     key = computed(() => this.field()[0]);
-    friendlyKey = computed(() => FRIENDLY_NAMES[this.key()]);
+    friendlyKey = computed(() => {
+        if (this.key().endsWith("_tr")) {
+            return "Translated " + FRIENDLY_NAMES[this.key().replace(/_tr$/, "")];
+        }
+        return FRIENDLY_NAMES[this.key()];
+    });
     val = signal<any>(null);
     isHidden = computed(() => HIDDEN_FIELDS.includes(this.field()[0]));
     autoLabel = computed(() => AUTO_FIELDS[this.field()[0]]);
@@ -56,8 +73,6 @@ export class EditField {
 
     constructor() {
         effect(() => {
-            if (this.field()[0] == 'subtype')
-                console.log(this.field()[1]);
             this.val.set(this.field()[1]);
         })
     }
@@ -104,6 +119,23 @@ export class EditField {
         this.valChange.emit("https://churchpresenterpublic.blob.core.windows.net/user-files/" + file);
     }
 
+    autoTranslate() {
+        let {subtype} = this.slide();
+        let originalKey = this.key().replace(/_tr$/, "");
+        let original = this.slide()[originalKey];
+
+        for (let [regex, translated] of TITLE_TRANSLATIONS) {
+            if (original.match(regex)) {
+                this.valChange.emit(translated);
+                return;
+            }
+        }
+
+        if (subtype == "bible") {
+            this.valChange.emit("Bible Reading");
+        }
+    }
+
     auto() {
         switch(this.key()) {
             case "preview":
@@ -117,6 +149,9 @@ export class EditField {
             case "subtitleSrc":
             case "videoSrc":
                 this.openFilePicker();
+                break;
+            case "title_tr":
+                this.autoTranslate();
                 break;
         }
     }
