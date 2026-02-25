@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, input, output, signal } from "@angular/core";
 import { CONSTRUCTORS } from "@app/classes/playlist";
+import { translateBibleLoc } from "@app/classes/utils";
 import { FilePickerService } from "@app/services/file-picker.service";
 
 const FRIENDLY_NAMES: Record<string, string> = {
@@ -32,6 +33,7 @@ const AUTO_FIELDS: Record<string, string> = {
     videoSrc: 'Open',
     subtitleSrc: 'Open',
     title_tr: 'Auto',
+    location_tr: 'Auto',
 }
 const TITLE_TRANSLATIONS: Array<[RegExp, string]> = [
     [/宣召(经文)?/, "Call to Worship"],
@@ -124,6 +126,13 @@ export class EditField {
         let originalKey = this.key().replace(/_tr$/, "");
         let original = this.slide()[originalKey];
 
+        if (originalKey == "location") {
+            this.valChange.emit(
+                original.split(";").map((l: string) => translateBibleLoc(l, false)).join(";")
+            );
+            return;
+        }
+
         for (let [regex, translated] of TITLE_TRANSLATIONS) {
             if (original.match(regex)) {
                 this.valChange.emit(translated);
@@ -151,6 +160,7 @@ export class EditField {
                 this.openFilePicker();
                 break;
             case "title_tr":
+            case "location_tr":
                 this.autoTranslate();
                 break;
         }

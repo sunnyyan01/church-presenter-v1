@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, effect, input, output, signal, ViewChild } from "@angular/core";
 import { bibleLookup } from "@app/api/bible";
-import { nextSunday, TextReader } from "@app/classes/utils";
+import { nextSunday, TextReader, translateBibleLoc } from "@app/classes/utils";
 import { ToastComponent } from "@presenter/toasts/toast.component";
 
 @Component({
@@ -40,6 +40,7 @@ export class NewPlaylistDialog {
         let line = value.slice(lineStart, lineEnd);
         let match = /^1,[^,]*,([^,]+)/.exec(line);
         let match2 = /version=(.+)(,|$)/.exec(line);
+        let doTranslation = line.match(/,translate(,|$)/);
 
         if (!match) {
             this.localErrorMessage.set("Slide type is not 1 (bible)");
@@ -51,8 +52,17 @@ export class NewPlaylistDialog {
         }
         
         try {
-            let text = await bibleLookup(match[1], match2 ? match2[1] : "")
-            let toReplace = line + "\nS\n  " + text.trim().replaceAll("\n", "\n  ") + "\nE";
+            let results = await bibleLookup(match[1], match2 ? match2[1] : "")
+            let toReplace = line + "\nS\n  ";
+            if (results.length == 1) {
+                toReplace += results[0].text;
+            } else {
+                toReplace += results.map(result => (
+                    (doTranslation ? translateBibleLoc(result.loc, true) : result.loc)
+                    + "\n" + result.text
+                )).join("N\n");
+            }
+            toReplace += "\nE";
             this.textarea.nativeElement.setRangeText(toReplace, lineStart, lineEnd);
             let newEnd = lineStart + toReplace.length;
             this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);
@@ -69,12 +79,18 @@ export class NewPlaylistDialog {
             if (reader.peek() == "S") continue;
             let match = /^1,[^,]+,([^,]+)/.exec(line);
             let match2 = /version=(.+?)(,|$)/.exec(line);
+            let doTranslation = line.match(/,translate(,|$)/);
             if (match) {
-                let text = await bibleLookup(match[1], match2 ? match2[1] : "");
+                let results = await bibleLookup(match[1], match2 ? match2[1] : "");
                 reader.write("S");
-                reader.write(
-                    ...text.trim().split("\n").map(line => "  " + line)
-                );
+                if (results.length == 1) {
+                    reader.write(results[0].text);
+                } else {
+                    reader.write(results.map(result => (
+                        (doTranslation ? translateBibleLoc(result.loc, true) : result.loc)
+                        + "\n" + result.text
+                    )).join("N\n"));
+                }
                 reader.write("E");
             }
         }

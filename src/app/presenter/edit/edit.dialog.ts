@@ -2,7 +2,7 @@ import { Component, computed, effect, HostListener, inject, input, output, signa
 import { BlobServiceClient } from '@azure/storage-blob';
 import { BibleSlide, CONSTRUCTORS } from '@app/classes/playlist';
 import { EditDialogInput, EditDialogOutput } from '@app/classes/edit';
-import { nextSunday } from '@app/classes/utils';
+import { nextSunday, translateBibleLoc } from '@app/classes/utils';
 import { bibleLookup } from '@app/api/bible';
 import { ToastsService } from '@services/toasts.service';
 import { FilePickerService } from '@services/file-picker.service';
@@ -76,10 +76,19 @@ export class EditDialog {
         this.loading.set(true);
         let bibleSlide = this.slide() as BibleSlide;
         let loc = bibleSlide.location;
+        let doTranslation = !!bibleSlide.location_tr;
         let version = bibleSlide.version;
         try {
             let text = await bibleLookup(loc, version);
-            this.onChange("subslides", [text]);
+            if (text.length == 1) {
+                this.onChange("subslides", [text[0].text]);
+            } else {
+                this.onChange("subslides", text.map(x => (
+                    doTranslation
+                    ? translateBibleLoc(x.loc, true) + "\n" + x.text
+                    : x.loc + "\n" + x.text
+                )));
+            }
         } catch (e: any) {
             this.toasts.createToast("error", e.message);
             throw e;
