@@ -85,6 +85,8 @@ export class PlaylistBtns {
     async openCloudPlaylist() {
         this.contextMenuOpen.set("");
 
+        if (!this.confirmBeforeDiscard()) return;
+
         let file = await this.fp.openFilePicker("playlists", "open") as string;
         if (!file) return;
         let resp = await fetch(
@@ -163,7 +165,7 @@ export class PlaylistBtns {
     closePlaylist() {
         if (!this.confirmBeforeDiscard()) return;
 
-        this.playlist.set(new Playlist());
+        this.playlistSubmit.emit(new Playlist());
         this.fileInput.nativeElement.value = "";
     }
 }

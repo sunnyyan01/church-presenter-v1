@@ -77,6 +77,7 @@ export class SlidesSection {
     @HostListener("window:keydown.control.e", ["$event"])
     openEditDialog(e?: KeyboardEvent, id?: string) {
         if (e) e.preventDefault();
+        if (!id && !this.curSlideId()) return;
 
         this.editSlideInput.set({
             mode: "edit",

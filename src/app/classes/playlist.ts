@@ -270,14 +270,14 @@ export const CONSTRUCTORS: Record<string, any> = {
     mediablank: BlankMedia,
 }
 
-export const TEMPLATES: Array<[string, string, Array<string>]> = [
-    ["slide", "welcome", ["year", "month", "day"]],
-    ["slide", "bible", ["title", "location"]],
-    ["slide", "song", ["title", "name"]],
-    ["slide", "title", ["title", "subtitle"]],
-    ["slide", "image", ["imageSrc"]],
-    ["media", "youtube", ["videoId"]],
-    ["media", "video", ["videoSrc"]],
+export const TEMPLATES: Array<[string, string, Array<string>, number]> = [
+    ["slide", "welcome", ["year", "month", "day"], 3],
+    ["slide", "bible", ["title", "location"], 1],
+    ["slide", "song", ["title", "name"], 1],
+    ["slide", "title", ["title", "subtitle"], 1],
+    ["slide", "image", ["imageSrc"], 1],
+    ["media", "youtube", ["videoId"], 1],
+    ["media", "video", ["videoSrc"], 1],
 ]
 
 export class Playlist {
@@ -459,7 +459,7 @@ export class Playlist {
                     throw new Error(`Invalid slide type ${template}`);
                 }
 
-                let [type, subtype, positionalArgs] = TEMPLATES[templateNum];
+                let [type, subtype, positionalArgs, mandatoryArgs] = TEMPLATES[templateNum];
                 let positionalsMatched = 0;
 
                 curItem['type'] = type;
@@ -467,7 +467,7 @@ export class Playlist {
 
                 for (let arg of args) {
                     arg = arg.replaceAll("<br>", "\n");
-                    if (arg.includes("=")) {
+                    if (arg.includes("=") && positionalsMatched >= mandatoryArgs) {
                         let [key, val] = arg.split("=");
                         curItem[key] = val;
                     } else {

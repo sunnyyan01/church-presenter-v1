@@ -84,6 +84,7 @@ export class MediaSection {
     @HostListener("window:keydown.control.shift.e", ["$event"])
     openEditDialog(e?: KeyboardEvent, id?: string) {
         if (e) e.preventDefault();
+        if (!id && !this.curMediaId()) return;
 
         this.editDialogInput.set({
             mode: "edit",
