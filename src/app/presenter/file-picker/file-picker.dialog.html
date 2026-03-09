@@ -1,11 +1,13 @@
 <div class="dialog-inner" [class.hidden]="!open()">
     <h1>{{friendlyFolderName()}}</h1>
-    <div class="sas-url">
-        <p>
-            SAS URL:
-            <span class="sas-status" [attr.data-colour]="sasColour()">{{sasStatus()}}</span>
-        </p>
-        <a (click)="changeSas()">Change</a>
+    <div class="toolbar">
+        <div class="button icon-button" (click)="changeSas()">
+            <img src="icons/key.svg">
+            <div class="status-dot" [style.backgroundColor]="sasColour()"></div>
+        </div>
+        <div class="button icon-button" (click)="refresh()">
+            <img src="icons/refresh.svg">
+        </div>
     </div>
     <div class="files">
         @for (file of files(); track file) {

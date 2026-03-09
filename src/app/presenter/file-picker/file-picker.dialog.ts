@@ -24,8 +24,7 @@ export class FilePicker {
     selected = signal<string>("");
 
     sasUrl = signal<string>(localStorage.getItem("sas_url") || "");
-    sasStatus = signal<string>("Not provided");
-    sasColour = signal<string>("white");
+    sasColour = signal<string>("red");
 
     constructor() {
         this.bc = new BroadcastChannel("file-picker");
@@ -37,30 +36,30 @@ export class FilePicker {
             this.open.set(true);
         })
 
-        effect(async () => {
-            if (!this.folder()) return;
-
-            let files = [];
-            let serviceClient = new BlobServiceClient("https://churchpresenterpublic.blob.core.windows.net");
-            let containerClient = serviceClient.getContainerClient(this.folder());
-            for await (let blob of containerClient.listBlobsFlat()) {
-                files.push(blob.name);
-            }
-            this.files.set(files);
-        })
+        effect(this.refresh.bind(this));
 
         effect(() => {
             if (this.sasUrl()) {
                 let expiry = new Date(new URL(this.sasUrl()).searchParams.get("se") as string).getTime();
                 let now = Date.now();
                 let toExpiry = (expiry - now) / (1000 * 60 * 60 * 24);
-                this.sasStatus.set(`Provided, expires in ${toExpiry.toFixed(0)} days`);
-                this.sasColour.set(toExpiry < 14 ? "white" : "yellow");
+                this.sasColour.set(toExpiry < 14 ? "yellow" : "lime");
             } else {
-                this.sasStatus.set("Not provided");
-                this.sasColour.set(this.action() == "open" ? "white" : "red");
+                this.sasColour.set(this.action() == "open" ? "transparent" : "red");
             }
         })
+    }
+
+    async refresh() {
+        if (!this.folder()) return;
+
+        let files = [];
+        let serviceClient = new BlobServiceClient("https://churchpresenterpublic.blob.core.windows.net");
+        let containerClient = serviceClient.getContainerClient(this.folder());
+        for await (let blob of containerClient.listBlobsFlat()) {
+            files.push(blob.name);
+        }
+        this.files.set(files);
     }
 
     changeSas() {

@@ -75,13 +75,9 @@ export class PresenterPage {
                     media: this.playlist()?.media.byId(this.curMediaId()),
                     playbackRequest: this.playbackRequest(),
                 })
-            }
-            if (e.data.timeDisplay) {
+            } else {
                 this.playbackStatus.update(
-                    old => {
-                        old.timeDisplay = e.data.timeDisplay;
-                        return old;
-                    }
+                    old => ({ ...old, ...e.data })
                 )
             }
         }
