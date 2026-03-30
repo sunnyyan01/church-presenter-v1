@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, input, model, output, signal, ViewChild } from "@angular/core";
+import { Component, effect, ElementRef, HostListener, inject, input, model, output, signal, ViewChild } from "@angular/core";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { Playlist } from "@app/classes/playlist";
 import { ToastsService } from "@services/toasts.service";
@@ -26,6 +26,13 @@ export class PlaylistBtns {
     newPlaylistDialogErr = signal<string>("");
 
     contextMenuOpen = signal<string>("");
+
+    @HostListener('window:beforeunload', ['$event'])
+    onBeforeUnload(e: Event) {
+        if (this.playlist()?.modified || this.newPlaylistDialogOpen()) {
+            e.preventDefault();
+        }
+    }
 
     @HostListener('document:click', ['$event'])
     onClickOut(e: MouseEvent) {
@@ -112,7 +119,9 @@ export class PlaylistBtns {
         if (e) {
             try {
                 this.newPlaylistDialogErr.set("");
-                this.playlistSubmit.emit(Playlist.fromText(e));
+                let playlist = Playlist.fromText(e);
+                playlist.modified = true;
+                this.playlistSubmit.emit(playlist);
             } catch (err: any) {
                 this.newPlaylistDialogErr.set(err.message);
                 throw err;

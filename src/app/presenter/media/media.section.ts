@@ -78,7 +78,7 @@ export class MediaSection {
     }
 
     openMediaExternally(id: string) {
-        window.open(this.playlist()?.media.byId(id).externalOpenUrl);
+        window.open(this.playlist()?.media.byId(id).externalOpenUrl, "external-media");
     }
     
     @HostListener("window:keydown.control.shift.e", ["$event"])
