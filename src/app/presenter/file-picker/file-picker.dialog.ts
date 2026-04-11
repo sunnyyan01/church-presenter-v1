@@ -67,6 +67,24 @@ export class FilePicker {
         localStorage.setItem("sas_url", this.sasUrl());
     }
 
+    async deleteSelection() {
+        if (!this.selected() || !this.files().includes(this.selected())) {
+            return;
+        }
+        if (!this.sasUrl()) {
+            alert("Can't save without a SAS URL");
+            return;
+        }
+
+        let fileName = this.selected();
+        let serviceClient = new BlobServiceClient(localStorage.getItem("sas_url") as string);
+        let containerClient = serviceClient.getContainerClient(this.folder());
+        let blobClient = containerClient.getBlockBlobClient(fileName);
+        await blobClient.delete();
+        this.files.update(old => old.filter(file => file != fileName));
+        this.selected.set("");
+    }
+
     onClose() {
         if (!this.selected()) {
             alert(

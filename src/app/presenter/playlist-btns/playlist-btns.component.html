@@ -8,6 +8,7 @@
     <input #fileInput class="hidden" type="file" accept=".txt,.json" (change)="openPlaylist($event)" />
     <div
         class="button icon-button toggle-button"
+        title="Open Playlist"
         [attr.data-active]="contextMenuOpen() == 'open'"
         (click)="showOpenContextMenu()"
     >
@@ -26,15 +27,16 @@
             </div>
         </div>
     }
-    <div class="button icon-button" (click)="newPlaylist()">
-        <img src="icons/write.svg" title="Write Playlist">
+    <div class="button icon-button"  title="Write Playlist" (click)="newPlaylist()">
+        <img src="icons/write.svg">
     </div>
     <div
         class="button icon-button toggle-button"
+        title="Save Playlist"
         [attr.data-active]="contextMenuOpen() == 'save'"
         (click)="showSaveContextMenu()"
     >
-        <img src="icons/save.svg" title="Save Playlist">
+        <img src="icons/save.svg">
     </div>
     @if (contextMenuOpen() == 'save') {
         <div
@@ -49,7 +51,7 @@
             </div>
         </div>
     }
-    <div class="button icon-button" (click)="closePlaylist()">
-        <img src="icons/close-square.svg" title="Close Playlist">
+    <div class="button icon-button" title="Close Playlist" (click)="closePlaylist()">
+        <img src="icons/close-square.svg">
     </div>
 </div>

@@ -1,12 +1,15 @@
 <div class="dialog-inner" [class.hidden]="!open()">
     <h1>{{friendlyFolderName()}}</h1>
     <div class="toolbar">
-        <div class="button icon-button" (click)="changeSas()">
+        <div class="button icon-button" (click)="changeSas()" title="Change SAS URL">
             <img src="icons/key.svg">
             <div class="status-dot" [style.backgroundColor]="sasColour()"></div>
         </div>
-        <div class="button icon-button" (click)="refresh()">
+        <div class="button icon-button" (click)="refresh()" title="Refresh">
             <img src="icons/refresh.svg">
+        </div>
+        <div class="button icon-button" (click)="deleteSelection()" title="Delete selection">
+            <img src="icons/bin.svg">
         </div>
     </div>
     <div class="files">
