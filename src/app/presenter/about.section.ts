@@ -1,4 +1,9 @@
-import { Component } from "@angular/core";
+import { Component, effect, signal } from "@angular/core";
+
+interface VersionInfo {
+    num: string;
+    date: string;
+}
 
 @Component({
     selector: 'about-section',
@@ -19,24 +24,18 @@ import { Component } from "@angular/core";
 })
 export class AboutSection {
     year = new Date().getFullYear();
-    version = '';
-    versionDate = '';
+    version = signal<VersionInfo | null>(null);
 
     constructor() {
-        // this.checkVersion();
+        effect(() => this.checkVersion());
     }
 
     async checkVersion() {
-        // if (sessionStorage.getItem("serverlessMode") === "true") return;
-
-        let resp = await fetch("/api/update/check");
-        if (!resp.ok) return;
-        let { curVersion, latestVersion } = await resp.json();
-        this.version = curVersion.version;
-        this.versionDate = new Date(curVersion.date).toLocaleDateString(
-            undefined, { day: "numeric", month: "short", "year": "numeric" }
-        );
+        let resp = await fetch("https://api.github.com/repos/sunnyyan01/church-presenter-v1/commits/master");
+        let json = await resp.json();
+        this.version.set({
+            num: json.commit.message.split(" - ")[0],
+            date: json.commit.committer.date.split("T")[0],
+        })
     }
-
-    openUpdater() { }
 }

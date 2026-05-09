@@ -1,8 +1,8 @@
 <div class="about-links">
     <span>
         Church Presenter
-        @if ( version ) {
-            {{version}} ({{versionDate}})
+        @if ( version() ) {
+            {{version()?.num}} ({{version()?.date}})
         }
         © Sunny Yan {{year}}
     </span>

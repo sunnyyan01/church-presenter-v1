@@ -34,6 +34,7 @@ const AUTO_FIELDS: Record<string, string> = {
     subtitleSrc: 'Open',
     title_tr: 'Auto',
     location_tr: 'Auto',
+    videoId: 'Format',
 }
 const TITLE_TRANSLATIONS: Array<[RegExp, string]> = [
     [/宣召(经文)?/, "Call to Worship"],
@@ -70,6 +71,7 @@ export class EditField {
     isHidden = computed(() => HIDDEN_FIELDS.includes(this.field()[0]));
     autoLabel = computed(() => AUTO_FIELDS[this.field()[0]]);
     loading = signal<boolean>(false);
+    invalid = signal<boolean>(false);
 
     valChange = output<any>();
 
@@ -77,6 +79,13 @@ export class EditField {
         effect(() => {
             this.val.set(this.field()[1]);
         })
+        effect(() => {
+            this.val();
+            if (this.key() == "videoId") {
+                this.invalid.set(this.val().length != 11);
+            }
+        })
+        
     }
 
     onChange(e: Event) {
@@ -101,24 +110,24 @@ export class EditField {
 
     autoPreview() {
         let slide = new CONSTRUCTORS[this.slide()['type'] + this.slide()['subtype']](this.slide());
-        this.valChange.emit(slide.resetPreview());
+        return slide.resetPreview();
     }
 
-    autoTimeConvert() {
+    autoTimeConvert(): number | void {
         let timeFields = this.val().split(":");
         if (timeFields.length === 3) {
             let [hour, min, sec] = timeFields;
-            this.valChange.emit(hour * 3600 + min * 60 + parseFloat(sec));
+            return hour * 3600 + min * 60 + parseFloat(sec);
         } else if (timeFields.length === 2) {
             let [min, sec] = timeFields;
-            this.valChange.emit(min * 60 + parseFloat(sec));
+            return min * 60 + parseFloat(sec);
         }
     }
 
     async openFilePicker() {
         let file = await this.fp.openFilePicker("user-files", "open");
         if (!file) return;
-        this.valChange.emit("https://churchpresenterpublic.blob.core.windows.net/user-files/" + file);
+        return "https://churchpresenterpublic.blob.core.windows.net/user-files/" + file;
     }
 
     autoTranslate() {
@@ -127,42 +136,55 @@ export class EditField {
         let original = this.slide()[originalKey];
 
         if (originalKey == "location") {
-            this.valChange.emit(
+            return (
                 original.split(";").map((l: string) => translateBibleLoc(l, false)).join(";")
             );
-            return;
         }
 
         for (let [regex, translated] of TITLE_TRANSLATIONS) {
             if (original.match(regex)) {
-                this.valChange.emit(translated);
-                return;
+                return translated;
             }
         }
 
         if (subtype == "bible") {
-            this.valChange.emit("Bible Reading");
+            return "Bible Reading";
+        }
+    }
+
+    autoVideoId(): string | void {
+        let url = new URL(this.val());
+        if (url.pathname == "/watch") {
+            return url.searchParams.get("v")!;
+        } else if (url.pathname.startsWith("/embed/")) {
+            return url.pathname.split("/")[2];
+        } else if (url.hostname == "youtu.be") {
+            return url.pathname.slice(1);
+        }
+    }
+
+    autoSwitch() {
+        switch(this.key()) {
+            case "preview":
+                return this.autoPreview();
+            case "start":
+            case "end":
+                return this.autoTimeConvert();
+            case "imageSrc":
+            case "subtitleSrc":
+            case "videoSrc":
+                return this.openFilePicker();
+            case "title_tr":
+            case "location_tr":
+                return this.autoTranslate();
+            case "videoId":
+                return this.autoVideoId();
         }
     }
 
     auto() {
-        switch(this.key()) {
-            case "preview":
-                this.autoPreview();
-                break;
-            case "start":
-            case "end":
-                this.autoTimeConvert();
-                break;
-            case "imageSrc":
-            case "subtitleSrc":
-            case "videoSrc":
-                this.openFilePicker();
-                break;
-            case "title_tr":
-            case "location_tr":
-                this.autoTranslate();
-                break;
-        }
+        let newVal = this.autoSwitch();
+        if (newVal != undefined)
+            this.valChange.emit(newVal);
     }
 }

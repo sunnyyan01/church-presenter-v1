@@ -43,15 +43,13 @@
         <div
             class="text-input"
             contenteditable="plaintext-only"
+            [attr.data-key]="key()"
+            [attr.data-invalid]="invalid()"
             (blur)="onChange($event)"
-            [innerHTML]="val()"
+            [innerText]="val()"
         >
         </div>
     }
-    <div class="loading-backdrop" [class.hidden]="!loading()">
-        <div class="loading-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-        <p>Please wait...</p>
-    </div>
 </td>
 @if (autoLabel()) {
     <td class="auto-field">
