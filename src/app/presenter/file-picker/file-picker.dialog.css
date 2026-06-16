@@ -1,15 +1,13 @@
 .dialog-inner {
     display: flex;
-    position: relative;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
     width: 500px;
-    height: 500px;
-    padding: 20px;
-    background-color: #292C79;
-    border: 2px solid white;
-    border-radius: 20px;
-    z-index: 3;
+    height: 600px;
+}
+
+h1 {
+    text-align: center;
 }
 
 .icon-button {
@@ -25,9 +23,7 @@
 }
 
 .files {
-    height: 400px;
-    width: 100%;
-    align-self: flex-start;
+    flex: 1;
 }
 .file {
     align-self: flex-start;
@@ -50,15 +46,15 @@ input {
     background-color: #292C79;
     border-color: white;
     color: white;
-    width: 100%;
+    font-size: 16px;
 }
 
 .buttons {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
 }
 .buttons .button {
-    margin: 10px;
     width: 150px;
-    text-transform: capitalize;
 }

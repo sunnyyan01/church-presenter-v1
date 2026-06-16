@@ -1,10 +1,12 @@
 <main>
     <file-picker />
-    <playlist-section #playlistSection [(playlist)]="playlist" [(curSlideId)]="curSlideId"
-        [(curSubslideIdx)]="curSubslideIdx" [(curMediaId)]="curMediaId" [(playbackRequest)]="playbackRequest"
-        [playbackStatus]="playbackStatus()" (slideUpdate)="onSlideUpdate($event)"
-        (mediaUpdate)="onMediaUpdate($event)" />
-    <preview-section [(slideshowDispMode)]="slideshowDispMode" />
+    <div class="main-row">
+        <playlist-section #playlistSection [(playlist)]="playlist" [(curSlideId)]="curSlideId"
+            [(curSubslideIdx)]="curSubslideIdx" [(curMediaId)]="curMediaId" [(playbackRequest)]="playbackRequest"
+            [playbackStatus]="playbackStatus()" (slideUpdate)="onSlideUpdate($event)"
+            (mediaUpdate)="onMediaUpdate($event)" />
+        <preview-section [(slideshowDispMode)]="slideshowDispMode" />
+    </div>
     <about-section />
     <toasts />
 </main>

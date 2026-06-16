@@ -9,8 +9,6 @@ h2 {
 }
 
 .media-list {
-    overflow-y: auto;
-    scrollbar-color: grey #292C79;
     padding-right: 2px;
 }
 
@@ -61,10 +59,6 @@ edit-dialog {
 }
 
 @media (width < 800px) {
-    edit-dialog {
-        left: 0px;
-    }
-
     .controls {
         display: none;
     }

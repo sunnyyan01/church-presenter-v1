@@ -1,35 +1,41 @@
 main {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     padding: 0px 5px;
+    box-sizing: border-box;
+    width: 100vw;
     height: 100vh;
 
     background-color: #292C79;
     color: white;
 }
 
-playlist-section, preview-section {
+.main-row {
     display: flex;
-    flex-direction: column;
-    width: calc(50% - 6px);
-    height: 95vh;
-    margin: 3px;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+}
+
+playlist-section, preview-section {
+    width: 50%;
+    height: 100%;
 }
 about-section {
-    margin-top: auto;
-    margin-bottom: 10px;
+    margin: 5px 0px;
 }
 
 file-picker {
     position: absolute;
-    left: calc((100vw - 500px) / 2);
-    top: calc((100vh - 500px) / 2);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
 }
 
 @media (max-aspect-ratio: 1/1) {
     playlist-section {
-        width: 100vw;
+        width: 100%;
     }
     preview-section {
         display: none;

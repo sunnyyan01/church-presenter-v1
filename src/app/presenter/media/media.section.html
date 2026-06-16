@@ -15,7 +15,7 @@
             (close)="onCloseEditDialog($event)"
         />
     }
-    <div class="media-list">
+    <div class="media-list scrollable">
         @for (item of playlist()?.media; track item.id) {
             <media
                 [attr.data-id]="item.id"

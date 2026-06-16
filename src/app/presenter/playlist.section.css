@@ -8,7 +8,6 @@ section {
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: 100%;
     height: 60px;
 }
 
@@ -20,14 +19,16 @@ playlist-setup {
     margin: auto;
 }
 
-div.row {
-    height: calc(100% - 60px);
+.row {
+    flex-grow: 1;
+    min-height: 0;
 }
 
 slides-section {
-    width: calc(60% - 5px);
-    margin-right: 10px;
+    width: 60%;
+    padding-right: 5px;
 }
 media-section {
-    width: calc(40% - 5px);
+    width: 40%;
+    padding-right: 5px;
 }

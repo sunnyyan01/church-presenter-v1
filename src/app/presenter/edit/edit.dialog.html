@@ -28,8 +28,7 @@
             <img src="icons/calendar.svg" title="Auto date">
         </div>
     </div>
-    <div class="table">
-    <table>
+    <table class="table">
     <tbody>
         @for (field of slideEntries().values(); track field[0]) {
             <tr edit-field [field]="field" [slide]="$any(slide())" (valChange)="onChange(field[0], $event)">
@@ -37,13 +36,12 @@
         }
     </tbody>
     </table>
-    </div>
     <div class="buttons">
-        <div class="button text-button large primary" (click)="onSave()">
-            Save
-        </div>
         <div class="button text-button large secondary" (click)="onClose()">
             Cancel
+        </div>
+        <div class="button text-button large primary" (click)="onSave()">
+            Save
         </div>
     </div>
 </div>

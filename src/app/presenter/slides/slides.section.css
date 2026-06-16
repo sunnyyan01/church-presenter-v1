@@ -10,9 +10,9 @@ h2 {
 
 .slides {
     overflow-y: auto;
-    scrollbar-color: grey #292C79;
     padding-right: 2px;
-    scroll-padding: 100px;
+    flex-grow: 1;
+    min-height: 0;
 }
 
 context-menu {
@@ -39,9 +39,7 @@ edit-dialog {
 .controls {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     align-self: center;
-    margin-top: auto;
 }
 .controls .button {
     margin: 0px 5px;
@@ -50,10 +48,6 @@ edit-dialog {
 }
 
 @media (width < 800px) {
-    edit-dialog {
-        left: 0px;
-    }
-
     .controls {
         display: none;
     }
