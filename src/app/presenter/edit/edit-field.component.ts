@@ -50,7 +50,7 @@ const TITLE_TRANSLATIONS: Array<[RegExp, string]> = [
 ]
 
 @Component({
-    selector: '[edit-field]',
+    selector: 'edit-field',
     templateUrl: './edit-field.component.html',
     styleUrl: './edit-field.component.css',
 })

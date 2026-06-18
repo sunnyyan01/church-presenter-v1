@@ -46,15 +46,8 @@ input {
     background-color: #292C79;
     border-color: white;
     color: white;
+    border: 1px solid grey;
+    padding: 3px;
     font-size: 16px;
-}
-
-.buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-.buttons .button {
-    width: 150px;
+    border-radius: 5px;
 }

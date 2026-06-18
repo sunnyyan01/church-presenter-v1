@@ -12,14 +12,23 @@ h1 {
 .table {
     flex: 1;
     overflow: auto;
+    display: grid;
+    grid-template-columns: max-content 9fr 1fr;
+}
+edit-field {
+    display: grid;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-template-columns: subgrid;
+    margin: 3px 0px;
+    align-items: center;
+}
+edit-field:empty {
+    margin: 0;
 }
 
-.buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-.buttons .button {
-    width: 150px;
+@media (max-aspect-ratio: 1/1) {
+    .table {
+        grid-template-columns: min-content 9fr 1fr;
+    }
 }

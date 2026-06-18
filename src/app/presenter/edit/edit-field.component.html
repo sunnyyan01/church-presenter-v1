@@ -1,6 +1,6 @@
 @if (!isHidden()) {
-<th class="key-field">{{friendlyKey()}}</th>
-<td class="value-field">
+<div class="key-field">{{friendlyKey()}}</div>
+<div class="value-field">
     @if (key() == 'subtype') {
         @if (slide()['type'] == "slide") {
             <select [(value)]="val" (change)="onChange($event)">
@@ -50,12 +50,10 @@
         >
         </div>
     }
-</td>
+</div>
 @if (autoLabel()) {
-    <td class="auto-field">
-        <div class="button text-button secondary" (click)="auto()">
-            {{autoLabel()}}
-        </div>
-    </td>
+    <div class="auto-button button text-button secondary" (click)="auto()">
+        {{autoLabel()}}
+    </div>
 }
 }

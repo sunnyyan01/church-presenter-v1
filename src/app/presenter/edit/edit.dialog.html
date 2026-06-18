@@ -28,14 +28,14 @@
             <img src="icons/calendar.svg" title="Auto date">
         </div>
     </div>
-    <table class="table">
-    <tbody>
+    <div class="table">
         @for (field of slideEntries().values(); track field[0]) {
-            <tr edit-field [field]="field" [slide]="$any(slide())" (valChange)="onChange(field[0], $event)">
-            </tr>
+            <edit-field
+                [field]="field" [slide]="$any(slide())"
+                (valChange)="onChange(field[0], $event)"
+            />
         }
-    </tbody>
-    </table>
+    </div>
     <div class="buttons">
         <div class="button text-button large secondary" (click)="onClose()">
             Cancel

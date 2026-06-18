@@ -1,18 +1,24 @@
-th.key-field {
+.key-field {
+    grid-column: 1;
     text-align: left;
-    width: 20%;
+    font-weight: bold;
+    margin: auto 0px; /* centre vertically */
 }
-td.value-field {
-    position: relative;
+.value-field {
+    grid-column: 2;
     padding: 0px 10px;
 }
-td.value-field > * {
+.value-field > * {
     box-sizing: border-box;
     width: 100%;
     border-radius: 5px;
 }
-td.auto-field {
-    width: 10%;
+.auto-button {
+    grid-column: 3;
+    height: 23px;
+    padding: auto;
+    box-sizing: border-box;
+    font-weight: normal;
 }
 
 .text-input {
@@ -30,24 +36,10 @@ td.auto-field {
     font-family: monospace;
 }
 
-textarea {
-    resize: none;
-    background-color: #292C79;
-    color: white;
-    scrollbar-color: grey #292C79;
-    scroll-padding: 100px;
-}
 select {
     background-color: #292C79;
     color: white;
     height: 23px;
-}
-
-td.auto-field .button {
-    height: 23px;
-    padding: auto;
-    box-sizing: border-box;
-    font-weight: normal;
 }
 
 .loading-backdrop {

@@ -113,6 +113,16 @@ h1 {
     border-bottom-right-radius: 16px;
 }
 
+textarea {
+    resize: none;
+    background-color: #292C79;
+    color: white;
+    scrollbar-color: grey #292C79;
+    scroll-padding: 100px;
+    border-radius: 10px;
+    padding: 4px;
+}
+
 .toolbar {
     display: flex;
     flex-direction: row;
@@ -135,6 +145,22 @@ h1 {
     border: 2px solid white;
     border-radius: 20px;
     z-index: 3;
+}
+.dialog-inner h1 {
+    text-align: center;
+}
+.dialog-inner .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+.dialog-inner .buttons .button {
+    width: 100px;
+    margin-right: 10px;
+}
+.dialog-inner .buttons .button:last-child {
+    margin-right: 0px;
 }
 
 .scrollable {
