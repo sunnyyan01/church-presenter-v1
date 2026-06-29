@@ -1,4 +1,5 @@
 <new-playlist-dialog
+    class="dialog-outer"
     [class.hidden]="!newPlaylistDialogOpen()"
     [errorMessage]="newPlaylistDialogErr()"
     (submit)="onNewPlaylistSubmit($event)"
@@ -16,8 +17,8 @@
     </div>
     @if (contextMenuOpen() == 'open') {
         <div
-            class="context-menu open-context-menu"
-            #openContextMenu
+            class="dropdown open-dropdown"
+            #openDropdown
         >
             <div class="button text-button" (click)="openPlaylistFileSelector()">
                 Open local file
@@ -40,8 +41,8 @@
     </div>
     @if (contextMenuOpen() == 'save') {
         <div
-            class="context-menu save-context-menu"
-            #saveContextMenu
+            class="dropdown save-dropdown"
+            #saveDropdown
         >
             <div class="button text-button" (click)="savePlaylist($event)">
                 Save locally

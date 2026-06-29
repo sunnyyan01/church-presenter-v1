@@ -25,6 +25,7 @@ export class YoutubePlayer {
             switch (this.playbackRequest().state) {
                 case "play":
                     this.player?.playVideo();
+                    this.playbackTimerChange.emit("Playing");
                     break;
                 case "pause":
                     this.player?.pauseVideo();
@@ -54,6 +55,7 @@ export class YoutubePlayer {
                 videoId: media.videoId,
                 startSeconds, endSeconds
             });
+            this.playbackTimerChange.emit("");
         } else {
             this.player = new YT.Player('youtube-player', {
                 events: {
@@ -64,17 +66,23 @@ export class YoutubePlayer {
                             videoId: media.videoId,
                             startSeconds, endSeconds
                         });
-                        // console.log("cued");
+                        this.playbackTimerChange.emit("");
                     },
                     onStateChange: (e: any) => {
-                        if (e.data === YT.PlayerState.PLAYING) {
-                            this.playbackTimerInterval = setInterval(() => {
-                                let cur = timeConvert( this.player.getCurrentTime() );
-                                let len = timeConvert( this.player.getDuration() );
-                                this.playbackTimerChange.emit(`${cur} / ${len}`);
-                            }, 1000)
-                        } else if (this.playbackTimerInterval) {
-                            clearInterval(this.playbackTimerInterval);
+                        switch (e.data) {
+                            case YT.PlayerState.PLAYING:
+                                this.playbackTimerInterval = setInterval(() => {
+                                    let cur = timeConvert( this.player.getCurrentTime() );
+                                    let len = timeConvert( this.player.getDuration() );
+                                    this.playbackTimerChange.emit(`${cur} / ${len}`);
+                                }, 1000);
+                                break;
+                            case YT.PlayerState.CUED:
+                                this.playbackTimerChange.emit("Ready");
+                                break;
+                            default:
+                                if (this.playbackTimerInterval)
+                                    clearInterval(this.playbackTimerInterval);
                         }
                     },
                     onApiChange: this.onPlayerApiChange.bind(this),

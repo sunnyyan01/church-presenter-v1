@@ -83,32 +83,40 @@ h1 {
     flex-direction: row;
 }
 
-.context-menu {
+.dropdown {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid white;
+    border-radius: 20px;
+    background-color: #292C79;
+    padding: 2px;
+    box-shadow: 1px 1px gray;
     z-index: 2;
 }
-.context-menu > * {
+.dropdown > * {
     border-bottom: 1px solid white;
     border-radius: 0px;
     height: 25px;
     line-height: 25px;
     padding: 5px;
 }
-.context-menu > *:first-child {
+.dropdown > *:first-child {
     border-radius: 20px 20px 0px 0px;
 }
-.context-menu > *:last-child {
+.dropdown > *:last-child {
     border-radius: 0px 0px 20px 20px;
     border-bottom: none;
 }
-.context-menu .button:hover {
+.dropdown .button:hover {
     background-color: white;
     color: #292C79;
 }
-.context-menu button:first-child {
+.dropdown button:first-child {
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 }
-.context-menu button:last-child {
+.dropdown button:last-child {
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
 }
@@ -134,6 +142,13 @@ textarea {
     aspect-ratio: 1/1;
 }
 
+.dialog-outer {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
 .dialog-inner {
     position: relative;
     box-sizing: border-box;

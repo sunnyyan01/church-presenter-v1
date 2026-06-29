@@ -1,6 +1,6 @@
 <section class="controls-section">
     @if (remoteSetupDialogOpen()) {
-        <remote-setup-dialog (closeDialog)="closeRemoteQr()" />
+        <remote-setup-dialog class="dialog-outer" (closeDialog)="closeRemoteQr()" />
     }
     <div class="disp-mode">
         <span>Display: </span>

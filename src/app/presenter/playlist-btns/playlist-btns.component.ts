@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, HostListener, inject, input, model, output, signal, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostListener, inject, model, output, signal, ViewChild } from "@angular/core";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { Playlist } from "@app/classes/playlist";
 import { ToastsService } from "@services/toasts.service";
@@ -13,8 +13,8 @@ import { NewPlaylistDialog } from "@presenter/new-playlist/new-playlist.dialog";
 })
 export class PlaylistBtns {
     @ViewChild("fileInput") fileInput!: ElementRef<HTMLInputElement>;
-    @ViewChild("openContextMenu") openContextMenu!: ElementRef<HTMLDivElement>;
-    @ViewChild("saveContextMenu") saveContextMenu!: ElementRef<HTMLDivElement>;
+    @ViewChild("openDropdown") openDropdown!: ElementRef<HTMLDivElement>;
+    @ViewChild("saveDropdown") saveDropdown!: ElementRef<HTMLDivElement>;
     fp = inject(FilePickerService);
     toastService = inject(ToastsService);
     
@@ -36,13 +36,13 @@ export class PlaylistBtns {
 
     @HostListener('document:click', ['$event'])
     onClickOut(e: MouseEvent) {
-        if (this.contextMenuOpen() == "open" && this.openContextMenu) {
-            if (!this.openContextMenu.nativeElement.contains(e.target as Node | null)) {
+        if (this.contextMenuOpen() == "open" && this.openDropdown) {
+            if (!this.openDropdown.nativeElement.contains(e.target as Node | null)) {
                 this.contextMenuOpen.set("");
             }
         }
-        if (this.contextMenuOpen() == "save" && this.saveContextMenu) {
-            if (!this.saveContextMenu.nativeElement.contains(e.target as Node | null)) {
+        if (this.contextMenuOpen() == "save" && this.saveDropdown) {
+            if (!this.saveDropdown.nativeElement.contains(e.target as Node | null)) {
                 this.contextMenuOpen.set("");
             }
         }

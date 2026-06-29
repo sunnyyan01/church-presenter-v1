@@ -9,16 +9,14 @@ interface VersionInfo {
     selector: 'about-section',
     templateUrl: './about.section.html',
     styles: `
-    div.about-links {
-        display: flex;
-    }
-    div.about-links > * {
-        padding: 0px 5px;
+    a {
         color: white;
-        border-left: 1px solid white;
     }
-    div.about-links > *:first-child {
-        border: none;
+    .about > *::after {
+        content: " | ";
+    }
+    .about > *:last-child::after {
+        content: "";
     }
     `,
 })

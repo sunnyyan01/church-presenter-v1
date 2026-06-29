@@ -1,6 +1,7 @@
 <section>
     <h2>Slides</h2>
     <context-menu
+        class="dropdown"
         [class.hidden]="slideContextMenuOpen() == ''"
         [style.left.px]="slideContextMenuPos()[0]"
         [style.top.px]="slideContextMenuPos()[1]"
@@ -11,6 +12,7 @@
     />
     @if (editSlideInput()) {
         <edit-dialog
+            class="dialog-outer"
             [editIn]="$any(editSlideInput())"
             (close)="onCloseEditDialog($event)"
         />

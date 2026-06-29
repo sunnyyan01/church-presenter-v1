@@ -1,6 +1,7 @@
 <section>
     <h2>Media</h2>
     <context-menu
+        class="dropdown"
         [class.hidden]="contextMenuOpen() == ''"
         [style.left.px]="contextMenuPos()[0]"
         [style.top.px]="contextMenuPos()[1]"
@@ -11,6 +12,7 @@
     />
     @if (editDialogInput()) {
         <edit-dialog
+            class="dialog-outer"
             [editIn]="$any(editDialogInput())"
             (close)="onCloseEditDialog($event)"
         />

@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, model, output, signal } from "@angular/core";
+import { Component, HostListener, inject, model, signal } from "@angular/core";
 import { SlideshowDispMode } from "@app/classes/slideshow";
 import { RemoteSetupDialog } from "./remote-setup/remote-setup.dialog";
 import { RemoteService } from "@services/remote.service";

@@ -24,37 +24,21 @@
     object-fit: contain;
 }
 
-.context-menu {
-    position: absolute;
+.dropdown {
     top: 60px;
     width: 140px;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    border: 1px solid white;
-    border-radius: 20px;
     border-top-right-radius: 0px;
-    border: 1px solid grey;
-    background-color: #292C79;
-    padding: 2px;
-    box-shadow: 1px 1px gray;
-    z-index: 2;
 }
-.context-menu .button {
+.dropdown .button {
     text-transform: none;
 }
+.dropdown .button:first-child {
+    border-top-right-radius: 0px;
+}
 
-.open-context-menu {
+.open-dropdown {
     right: calc(62px * 3 - 2px);
 }
-.save-context-menu {
+.save-dropdown {
     right: 60px;
-}
-
-new-playlist-dialog {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
 }

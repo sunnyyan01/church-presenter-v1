@@ -12,27 +12,6 @@ h2 {
     padding-right: 2px;
 }
 
-context-menu {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    border: 1px solid white;
-    border-radius: 20px;
-    background-color: #292C79;
-    padding: 2px;
-    box-shadow: 1px 1px gray;
-    z-index: 2;
-}
-
-edit-dialog {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-}
-
 .controls {
     display: flex;
     flex-direction: row;
