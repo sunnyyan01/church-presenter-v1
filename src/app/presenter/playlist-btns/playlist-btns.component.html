@@ -17,7 +17,7 @@
     </div>
     @if (contextMenuOpen() == 'open') {
         <div
-            class="dropdown open-dropdown"
+            class="dropdown-outer dropdown-inner open-dropdown"
             #openDropdown
         >
             <div class="button text-button" (click)="openPlaylistFileSelector()">
@@ -41,7 +41,7 @@
     </div>
     @if (contextMenuOpen() == 'save') {
         <div
-            class="dropdown save-dropdown"
+            class="dropdown-outer dropdown-inner save-dropdown"
             #saveDropdown
         >
             <div class="button text-button" (click)="savePlaylist($event)">

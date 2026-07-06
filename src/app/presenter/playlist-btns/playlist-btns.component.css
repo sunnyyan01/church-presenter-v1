@@ -24,15 +24,15 @@
     object-fit: contain;
 }
 
-.dropdown {
+.dropdown-inner {
     top: 60px;
     width: 140px;
     border-top-right-radius: 0px;
 }
-.dropdown .button {
+.dropdown-inner .button {
     text-transform: none;
 }
-.dropdown .button:first-child {
+.dropdown-inner .button:first-child {
     border-top-right-radius: 0px;
 }
 

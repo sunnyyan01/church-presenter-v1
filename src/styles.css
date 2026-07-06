@@ -83,7 +83,7 @@ h1 {
     flex-direction: row;
 }
 
-.dropdown {
+.dropdown-outer {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -94,29 +94,29 @@ h1 {
     box-shadow: 1px 1px gray;
     z-index: 2;
 }
-.dropdown > * {
+.dropdown-inner > * {
     border-bottom: 1px solid white;
     border-radius: 0px;
     height: 25px;
     line-height: 25px;
     padding: 5px;
 }
-.dropdown > *:first-child {
+.dropdown-inner > *:first-child {
     border-radius: 20px 20px 0px 0px;
 }
-.dropdown > *:last-child {
+.dropdown-inner > *:last-child {
     border-radius: 0px 0px 20px 20px;
     border-bottom: none;
 }
-.dropdown .button:hover {
+.dropdown-inner .button:hover {
     background-color: white;
     color: #292C79;
 }
-.dropdown button:first-child {
+.dropdown-inner button:first-child {
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 }
-.dropdown button:last-child {
+.dropdown-inner button:last-child {
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
 }
