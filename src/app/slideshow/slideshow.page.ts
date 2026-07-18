@@ -24,6 +24,8 @@ export class SlideshowPage {
     media = computed(() => Media.fromRecord(this.mediaRecord()));
     playbackRequest = signal<PlaybackRequest>(new PlaybackRequest());
     slideshowDispMode = signal<SlideshowDispMode>("slide");
+    showSlide = computed<boolean>(() => ["slide", "both"].includes(this.slideshowDispMode()));
+    showMedia = computed<boolean>(() => ["media", "both"].includes(this.slideshowDispMode()));
 
     constructor() {
         this.slideshowBc = new BroadcastChannel("slideshow");

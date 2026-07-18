@@ -98,6 +98,10 @@ export class FilePicker {
             alert(`Unknown file ${this.selected()}`)
             return;
         }
+        if (this.action() == "save" && this.files().includes(this.selected())) {
+            let c = confirm(`Are you sure you want to overwrite existing file ${this.selected()}?`)
+            if (!c) return;
+        }
         if (this.action() == "save" && !this.sasUrl()) {
             alert("Can't save without a SAS URL");
             return;

@@ -147,24 +147,6 @@ export class TitleSlide extends Slide {
     }
 }
 
-export class ImageSlide extends Slide {
-    imageSrc = "";
-
-    constructor(data: Record<string, any>) {
-        super(data);
-        this.imageSrc = data['imageSrc'] || "";
-        if (!this.preview) this.resetPreview();
-    }
-
-    override resetPreview() {
-        if (!this.imageSrc) return "";
-
-        let url = new URL(this.imageSrc);
-        this.preview = url.pathname.split("/").at(-1);
-        return this.preview;
-    }
-}
-
 export class BlankSlide extends Slide {
     constructor() {
         super({"type": "slide", "subtype": "blank"});
@@ -179,12 +161,14 @@ export abstract class Media extends PlaylistItem {
     id = "";
     idx = -1;
     preview = "";
+    contrastColor = "";
 
     constructor(data: Record<string,any>) {
         super(data);
         this.id = data['id'];
         this.idx = data['idx'];
         this.preview = data['preview'] || '';
+        this.contrastColor = data['contrastColor'] || "white";
     }
 
     abstract resetPreview(): string;
@@ -221,6 +205,7 @@ export class VideoMedia extends Media {
     start;
     end;
     subtitleSrc;
+    objectFit;
 
     constructor(data: Record<string, any>) {
         super(data);
@@ -228,6 +213,7 @@ export class VideoMedia extends Media {
         this.start = data['start'] || "";
         this.end = data['end'] || "";
         this.subtitleSrc = data['subtitleSrc'] || "";
+        this.objectFit = data['objectFit'] || "contain";
         if (!this.preview) this.resetPreview();
     }
 
@@ -239,6 +225,30 @@ export class VideoMedia extends Media {
         if (!this.videoSrc) return "";
 
         let url = new URL(this.videoSrc);
+        this.preview = url.pathname.split("/").at(-1) as string;
+        return this.preview;
+    }
+}
+
+export class ImageMedia extends Media {
+    imageSrc = "";
+    objectFit;
+
+    constructor(data: Record<string, any>) {
+        super(data);
+        this.imageSrc = data['imageSrc'] || "";
+        this.objectFit = data['objectFit'] || "contain";
+        if (!this.preview) this.resetPreview();
+    }
+
+    override get externalOpenUrl() {
+        return this.imageSrc;
+    }
+
+    override resetPreview() {
+        if (!this.imageSrc) return "";
+
+        let url = new URL(this.imageSrc);
         this.preview = url.pathname.split("/").at(-1) as string;
         return this.preview;
     }
@@ -263,10 +273,10 @@ export const CONSTRUCTORS: Record<string, any> = {
     slidebible: BibleSlide,
     slidesong: SongSlide,
     slidetitle: TitleSlide,
-    slideimage: ImageSlide,
     slideblank: BlankSlide,
     mediayoutube: YoutubeMedia,
     mediavideo: VideoMedia,
+    mediaimage: ImageMedia,
     mediablank: BlankMedia,
 }
 
@@ -275,7 +285,7 @@ export const TEMPLATES: Array<[string, string, Array<string>, number]> = [
     ["slide", "bible", ["title", "location"], 1],
     ["slide", "song", ["title", "name"], 1],
     ["slide", "title", ["title", "subtitle"], 1],
-    ["slide", "image", ["imageSrc"], 1],
+    ["media", "image", ["imageSrc"], 1],
     ["media", "youtube", ["videoId"], 1],
     ["media", "video", ["videoSrc"], 1],
 ]

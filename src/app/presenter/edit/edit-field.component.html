@@ -9,13 +9,13 @@
                 <option value="bible">Bible</option>
                 <option value="song">Song</option>
                 <option value="title">Title</option>
-                <option value="image">Image</option>
             </select>
         } @else if (slide()['type'] == 'media') {
             <select [(value)]="val" (change)="onChange($event)">
                 <option value="">(Select one)</option>
                 <option value="youtube">Youtube</option>
                 <option value="video">Video</option>
+                <option value="image">Image</option>
             </select>
         }
         
@@ -38,6 +38,11 @@
             <option value="">None</option>
             <option value="en">English</option>
             <option value="zh">Chinese</option>
+        </select>
+    } @else if (key() == 'objectFit') {
+        <select [(value)]="val" (change)="onChange($event)">
+            <option value="fill">Fill</option>
+            <option value="contain">Contain</option>
         </select>
     } @else {
         <div

@@ -23,6 +23,8 @@ const FRIENDLY_NAMES: Record<string, string> = {
     imageSrc: "Image URL",
     videoSrc: "Video URL",
     subtitleSrc: "Subtitle URL",
+    objectFit: "Object Fit",
+    contrastColor: "Contrast Colour",
 }
 const HIDDEN_FIELDS: Array<string> = ['id', 'idx', 'type', ]
 const AUTO_FIELDS: Record<string, string> = {
@@ -163,7 +165,7 @@ export class EditField {
         }
     }
 
-    autoSwitch() {
+    async autoSwitch() {
         switch(this.key()) {
             case "preview":
                 return this.autoPreview();
@@ -173,7 +175,7 @@ export class EditField {
             case "imageSrc":
             case "subtitleSrc":
             case "videoSrc":
-                return this.openFilePicker();
+                return await this.openFilePicker();
             case "title_tr":
             case "location_tr":
                 return this.autoTranslate();
@@ -182,8 +184,8 @@ export class EditField {
         }
     }
 
-    auto() {
-        let newVal = this.autoSwitch();
+    async auto() {
+        let newVal = await this.autoSwitch();
         if (newVal != undefined)
             this.valChange.emit(newVal);
     }

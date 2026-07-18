@@ -168,7 +168,7 @@ export class PlaylistBtns {
             new Blob([content!]),
             {blobHTTPHeaders: {blobContentType: type}}
         );
-        this.toastService.createToast("success", "Saved successfully");
+        this.toastService.createToast("success", `${name} saved successfully`);
     }
 
     closePlaylist() {

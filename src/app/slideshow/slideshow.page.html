@@ -1,19 +1,24 @@
 <main style="background-image: url('background.svg');">
-    <div class="slide-inner" [class.hidden]="slideshowDispMode() == 'blank'">
+    <div class="media-content" [class.invisible]="!showMedia()">
         @if (media().subtype == 'video') {
             <video-player
-                [class.invisible]="slideshowDispMode() != 'media'"
                 [media]="media()"
                 [playbackRequest]="playbackRequest()"
                 (playbackTimerChange)="onPlaybackTimerChange($event)"
             />
         }
+        @if (media().subtype == "image") {
+            <image-template [media]="$any(media())" />
+        }
         <youtube-player
             [media]="media()"
-            [class.invisible]="slideshowDispMode() != 'media' || media().subtype != 'youtube'"
+            [class.invisible]="media().subtype != 'youtube'"
             [playbackRequest]="playbackRequest()"
             (playbackTimerChange)="onPlaybackTimerChange($event)"
         />
+    </div>
+    
+    <div class="slide-content" [class.hidden]="!showSlide()" [style.color]="media().contrastColor">
         @if (slide().subtype == "welcome") {
             <welcome-template [slide]="$any(slide())" />
         }
@@ -34,12 +39,9 @@
         @if (slide().subtype == "title") {
             <title-template [slide]="$any(slide())" />
         }
-        @if (slide().subtype == "image") {
-            <image-template [slide]="$any(slide())" />
-        }
+    </div>
 
-        <div class="button text-button" id="fullscreen-btn" (click)="enterFullscreen()">
-            Fullscreen
-        </div>
+    <div class="button text-button" id="fullscreen-btn" (click)="enterFullscreen()">
+        Fullscreen
     </div>
 </main>

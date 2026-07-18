@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { ImageSlide } from '@app/classes/playlist';
+import { ImageMedia } from '@app/classes/playlist';
 
 @Component({
   selector: 'image-template',
@@ -8,10 +8,9 @@ import { ImageSlide } from '@app/classes/playlist';
     .image-template img {
         width: 100vw;
         height: 100vh;
-        object-fit: contain;
     }
   `
 })
 export class ImageTemplateComponent {
-  slide = input.required<ImageSlide>();
+  media = input.required<ImageMedia>();
 }

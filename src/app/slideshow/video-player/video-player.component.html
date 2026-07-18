@@ -1,4 +1,4 @@
-<video #player [src]="videoSrc()">
+<video #player [src]="videoSrc()" [style.objectFit]="media().objectFit">
     @if (media().subtitleSrc) {
         <track default [src]="media().subtitleSrc">
     }

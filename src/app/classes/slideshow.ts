@@ -1,4 +1,4 @@
-export type SlideshowDispMode = "blank" | "slide" | "media";
+export type SlideshowDispMode = "blank" | "slide" | "media" | "both";
 export type PlaybackState = "play" | "pause" | "stop";
 export class PlaybackRequest {
     state: PlaybackState = "stop";
