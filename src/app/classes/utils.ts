@@ -111,10 +111,18 @@ export class OrderedDict<T extends ObjectWithId> {
         item.id = curId.toString();
         if (!item.idx) item.idx = this.order.length;
         this.dict[curId] = item;
-        if (item.idx) {
-            this.order.splice(item.idx, 0, item.id);
+        if (item.idx == -1) {
+            this.order.unshift(item.id);
+            item.idx = 0;
         } else {
-            this.order.push(item.id);
+            this.order.splice(item.idx, 0, item.id);
+        }
+
+        // Update idxs
+        for (let i = item.idx + 1; i < this.order.length; i++) {
+            let id = this.order[i];
+            if (!this.dict[id]) console.log(i);
+            this.dict[id].idx = i;
         }
     }
 
