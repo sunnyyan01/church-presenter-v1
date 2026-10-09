@@ -50,6 +50,10 @@ export class YoutubePlayer {
         let startSeconds = media.start ? parseFloat(media.start) : undefined;
         let endSeconds = media.end ? parseFloat(media.end) : undefined;
 
+        if (!YT.Player) {
+            setTimeout(() => this.cueVideo(media), 1000);
+            return;
+        }
         if (this.playerReady) {
             this.player.cueVideoById({
                 videoId: media.videoId,
@@ -96,7 +100,6 @@ export class YoutubePlayer {
     }
 
     onPlayerApiChange() {
-        console.log(this.player);
         if (!this.subtitles() || !this.player?.getOptions('captions').includes("tracklist"))
             return;
         let track = this.player.getOption("captions", "tracklist").find(
