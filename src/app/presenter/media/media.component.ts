@@ -1,5 +1,5 @@
-import { Component, input, output } from '@angular/core';
-import { Media } from '@app/classes/playlist';
+import { Component, computed, input, output } from '@angular/core';
+import { Media, MEDIA_ICONS } from '@app/classes/playlist';
 
 @Component({
     selector: 'media',
@@ -11,6 +11,8 @@ export class MediaComponent {
     selected = input<boolean>(false);
 
     select = output<void>();
+
+    subtypeIcon = computed(() => MEDIA_ICONS[this.data().subtype] || "")
 
     handleMediaClick() {
         this.select.emit();

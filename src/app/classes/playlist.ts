@@ -58,74 +58,6 @@ export class WelcomeSlide extends Slide {
     }
 }
 
-export class BibleSlide extends Slide {
-    title = "";
-    title_tr = "";
-    location = "";
-    location_tr = "";
-    version = "";
-    subslides: Array<string>;
-
-    constructor(data: Record<string, any>) {
-        super(data);
-        this.title = data['title'] || "";
-        this.title_tr = data['title_tr'] || "";
-        this.location = data['location'] || "";
-        this.location_tr = data['location_tr'] || "";
-        this.version = data['version'] || "";
-        this.subslides = data['subslides'] || [];
-        if (!this.preview) this.resetPreview();
-    }
-
-    override get subslideCount(): number {
-        return this.subslides.length;
-    }
-
-    resetPreview() {
-        this.preview = dashJoin(this.title, this.location);
-        return this.preview;
-    }
-
-    toTitleSlide() {
-        return new TitleSlide({
-            title: this.title,
-            title_tr: this.title_tr,
-            subtitle: this.location,
-            subtitle_tr: this.location_tr,
-        })
-    }
-}
-
-export class SongSlide extends Slide {
-    title = "";
-    name = "";
-    subslides: Array<string>;
-
-    constructor(data: Record<string, any>) {
-        super(data);
-        this.title = data['title'] || "";
-        this.name = data['name'] || "";
-        this.subslides = data['subslides'] || [];
-        if (!this.preview) this.resetPreview();
-    }
-
-    override get subslideCount(): number {
-        return this.subslides.length;
-    }
-
-    override resetPreview() {
-        this.preview = dashJoin(this.title, this.name);
-        return this.preview;
-    }
-
-    toTitleSlide() {
-        return new TitleSlide({
-            title: this.title,
-            subtitle: this.name,
-        })
-    }
-}
-
 export class TitleSlide extends Slide {
     title = "";
     subtitle = "";
@@ -144,6 +76,22 @@ export class TitleSlide extends Slide {
     override resetPreview() {
         this.preview = dashJoin(this.title, this.subtitle);
         return this.preview;
+    }
+}
+
+export class ContentSlide extends TitleSlide {
+    subslides: Array<string>;
+    textAlign: string;
+
+    constructor(data: Record<string, any>) {
+        super(data);
+        this.subslides = data['subslides'] || [];
+        this.textAlign = data['textAlign'] || "left";
+        if (!this.preview) this.resetPreview();
+    }
+
+    override get subslideCount(): number {
+        return this.subslides.length;
     }
 }
 
@@ -224,9 +172,13 @@ export class VideoMedia extends Media {
     override resetPreview() {
         if (!this.videoSrc) return "";
 
-        let url = new URL(this.videoSrc);
-        this.preview = url.pathname.split("/").at(-1) as string;
-        return this.preview;
+        try {
+            let url = new URL(this.videoSrc);
+            this.preview = url.pathname.split("/").at(-1) as string;
+            return this.preview;
+        } catch {
+            return this.videoSrc;
+        }
     }
 }
 
@@ -248,9 +200,13 @@ export class ImageMedia extends Media {
     override resetPreview() {
         if (!this.imageSrc) return "";
 
-        let url = new URL(this.imageSrc);
-        this.preview = url.pathname.split("/").at(-1) as string;
-        return this.preview;
+        try {
+            let url = new URL(this.imageSrc);
+            this.preview = url.pathname.split("/").at(-1) as string;
+            return this.preview;
+        } catch {
+            return this.imageSrc;
+        }
     }
 }
 
@@ -270,8 +226,7 @@ export class BlankMedia extends Media {
 
 export const CONSTRUCTORS: Record<string, any> = {
     slidewelcome: WelcomeSlide,
-    slidebible: BibleSlide,
-    slidesong: SongSlide,
+    slidecontent: ContentSlide,
     slidetitle: TitleSlide,
     slideblank: BlankSlide,
     mediayoutube: YoutubeMedia,
@@ -282,13 +237,25 @@ export const CONSTRUCTORS: Record<string, any> = {
 
 export const TEMPLATES: Array<[string, string, Array<string>, number]> = [
     ["slide", "welcome", ["year", "month", "day"], 3],
-    ["slide", "bible", ["title", "location"], 1],
-    ["slide", "song", ["title", "name"], 1],
+    ["slide", "content", ["title", "subtitle"], 1],
+    ["slide", "content", ["title", "subtitle"], 1],
     ["slide", "title", ["title", "subtitle"], 1],
     ["media", "image", ["imageSrc"], 1],
-    ["media", "youtube", ["videoId"], 1],
+    ["media", "youtube", ["videoId", "preview"], 1],
     ["media", "video", ["videoSrc"], 1],
 ]
+
+export const SLIDE_ICONS: Record<string, string> = {
+    welcome: "icons/calendar.svg",
+    content: "icons/content.svg",
+    title: "icons/title.svg",
+}
+
+export const MEDIA_ICONS: Record<string, string> = {
+    youtube: "icons/yt-video.svg",
+    video: "icons/video.svg",
+    image: "icons/image.svg",
+}
 
 export class Playlist {
     slides: OrderedDict<Slide> = new OrderedDict<Slide>();
@@ -396,6 +363,9 @@ export class Playlist {
                 t => t[0] == item['type'] && t[1] == item['subtype']
             );
 
+            delete item['type'];
+            delete item['subtype'];
+
             let args = [ templateNum.toString() ];
 
             // Positional args
@@ -479,6 +449,7 @@ export class Playlist {
                     arg = arg.replaceAll("<br>", "\n");
                     if (arg.includes("=") && positionalsMatched >= mandatoryArgs) {
                         let [key, val] = arg.split("=");
+                        if (key == 'type' || key == 'subtype') continue;
                         curItem[key] = val;
                     } else {
                         if (positionalsMatched >= positionalArgs.length) {

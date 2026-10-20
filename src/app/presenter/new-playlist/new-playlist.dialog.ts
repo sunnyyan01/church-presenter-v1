@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, effect, input, output, signal, ViewChild } from "@angular/core";
 import { bibleLookup } from "@app/api/bible";
-import { nextSunday, TextReader, translateBibleLoc } from "@app/classes/utils";
+import { TEMPLATES } from "@app/classes/playlist";
+import { nextSunday, translateBibleLoc } from "@app/classes/utils";
 import { ToastComponent } from "@presenter/toasts/toast.component";
 
 @Component({
@@ -31,13 +32,12 @@ export class NewPlaylistDialog {
         return [start, end];
     }
 
-    @HostListener("keydown.control.b", ["$event"])
-    async autoBibleIndividual(e: KeyboardEvent) {
-        e.preventDefault();
-        
+    @HostListener("keydown.control.b")
+    async autoBible() {
         let {value, selectionStart, selectionEnd} = this.textarea.nativeElement;
         let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd, "\n");
         let line = value.slice(lineStart, lineEnd);
+        
         let match = /^1,[^,]*,([^,]+)/.exec(line);
         let match2 = /version=(.+)(,|$)/.exec(line);
         let doTranslation = line.match(/,translate(,|$)/);
@@ -52,7 +52,7 @@ export class NewPlaylistDialog {
         }
         
         try {
-            let results = await bibleLookup(match[1], match2 ? match2[1] : "")
+            let results = await bibleLookup(match[1], match2 ? match2[1] : "CUVMPS")
             let toReplace = line + "\nS\n  ";
             if (results.length == 1) {
                 toReplace += results[0].text;
@@ -68,76 +68,57 @@ export class NewPlaylistDialog {
             this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);
         } catch (e: any) {
             this.localErrorMessage.set(e.message);
+            return;
         }
     }
 
-    async autoBible() {
-        let input = this.textarea.nativeElement.value;
-        let reader = new TextReader(input);
-        while (reader.canRead) {
-            let line = reader.read();
-            if (reader.peek() == "S") continue;
-            let match = /^1,[^,]+,([^,]+)/.exec(line);
-            let match2 = /version=(.+?)(,|$)/.exec(line);
-            let doTranslation = line.match(/,translate(,|$)/);
-            if (match) {
-                let results = await bibleLookup(match[1], match2 ? match2[1] : "");
-                reader.write("S");
-                if (results.length == 1) {
-                    reader.write(results[0].text);
-                } else {
-                    reader.write(results.map(result => (
-                        (doTranslation ? translateBibleLoc(result.loc, true) : result.loc)
-                        + "\n" + result.text
-                    )).join("N\n"));
-                }
-                reader.write("E");
-            }
-        }
-        this.textarea.nativeElement.value = reader.toString();
-    }
-
-    @HostListener("keydown.control.`", ["$event"])
-    @HostListener("keydown.control.1", ["$event"])
-    @HostListener("keydown.control.2", ["$event"])
-    @HostListener("keydown.control.3", ["$event"])
-    @HostListener("keydown.control.4", ["$event"])
-    @HostListener("keydown.control.5", ["$event"])
-    autoType(e: KeyboardEvent) {
-        e.preventDefault();
-        
-        let template = e.key == '`' ? '0' : e.key;
-        
+    @HostListener("keydown.control.`", ["0", "true"])
+    @HostListener("keydown.control.1", ["1", "true"])
+    @HostListener("keydown.control.2", ["2", "true"])
+    @HostListener("keydown.control.3", ["3", "true"])
+    @HostListener("keydown.control.4", ["4", "true"])
+    @HostListener("keydown.control.5", ["5", "true"])
+    async autoType(type: number, fromKeyboard?: boolean) {        
         let {value, selectionStart, selectionEnd} = this.textarea.nativeElement;
         let [lineStart, lineEnd] = this.extendSelection(value, selectionStart, selectionEnd, "\n");
         let line = value.slice(lineStart, lineEnd);
         
-        if (template == '0' && !line) {
-            let [year, month, day] = nextSunday();
-            line = `0,${year},${month},${day}`;
-        } else {
-            let match = /^[0-9],/.exec(line);
-            if (match) {
-                line = line.replace(/^[0-9],/, template + ",");
+        if (line) {
+            // Simple change of slide type
+            if (line.match(/^[0-9],/)) {
+                line = line.replace(/^[0-9],/, `${type},`);
             } else {
-                line = template + "," + line;
+                let parts = line.split(/[ :，：]+/, TEMPLATES[type][2].length);
+                parts.unshift(type.toString());
+                line = parts.join(",");
             }
+        } else {
+            line = `${type},`;
         }
 
-        if (template == '5') { // Youtube link handling
-            let url = new URL(line.replace(/^5,/,""))
-            if (url.pathname == "/watch") {
-                line = "5," + url.searchParams.get("v");
-            } else if (url.pathname.startsWith("/embed/")) {
-                line = "5," + url.pathname.split("/")[2];
-            } else if (url.hostname == "youtu.be") {
-                line = "5," + url.pathname.slice(1);
-            }
+        if (line == "0,") {
+            let [year, month, day] = nextSunday();
+            line = `0,${year},${month},${day}`;
+        } else if (type == 5) {
+            try {
+                let url = new URL(line.replace(/^5,/,""))
+                if (url.pathname == "/watch") {
+                    line = "5," + url.searchParams.get("v");
+                } else if (url.pathname.startsWith("/embed/")) {
+                    line = "5," + url.pathname.split("/")[2];
+                } else if (url.hostname == "youtu.be") {
+                    line = "5," + url.pathname.slice(1);
+                }
+            } catch {}
         }
 
         this.textarea.nativeElement.setRangeText(line, lineStart, lineEnd);
         let newEnd = lineStart + line.length;
         this.textarea.nativeElement.setSelectionRange(newEnd, newEnd);
+
+        if (!fromKeyboard) {
+            this.textarea.nativeElement.focus();
+        }
     }
 
     @HostListener("keydown.control.,", ["$event"])

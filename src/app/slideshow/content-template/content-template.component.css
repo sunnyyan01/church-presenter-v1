@@ -6,30 +6,36 @@
     align-items: center;
     white-space: pre;
 }
-.bible-template .left {
+.content-template .left {
     margin-left: 10%;
 }
-.bible-template .right {
+.content-template .right {
     text-align: right;
 }
-.bible-template h2 {
+.content-template h2 {
     font-size: 12vh;
 }
-.bible-template h3 {
+.content-template h3 {
     font-size: 10vh;
 }
-.bible-template h5 {
+.content-template h5 {
     font-size: 6vh;
 }
 
-.bible-template {
+.content-template {
     width: 100%;
 }
 
-.bible-template p {
+.content-template p {
     width: 100%;
     white-space: pre-line;
     overflow-y: auto;
     scrollbar-width: 0px;
     font-size: 8vh;
+}
+.content-template p[data-text-align=center] {
+    text-align: center;
+}
+.content-template p[data-text-align=right] {
+    text-align: right;
 }

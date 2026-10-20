@@ -1,5 +1,5 @@
-import { Component, effect, ElementRef, inject, input, output } from '@angular/core';
-import { Slide } from '@app/classes/playlist';
+import { Component, computed, effect, ElementRef, inject, input, output } from '@angular/core';
+import { Slide, SLIDE_ICONS } from '@app/classes/playlist';
 
 @Component({
     selector: 'slide',
@@ -15,6 +15,8 @@ export class SlideComponent {
 
     select = output<[string, number]>();
     playbackEvent = output<string>();
+
+    subtypeIcon = computed(() => SLIDE_ICONS[this.data().subtype] || "")
 
     constructor() {
         effect(() => {

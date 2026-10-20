@@ -2,8 +2,10 @@
     class="slide" [class.selected]="selected() >= 0"
     (click)="handleSlideClick()"
 >
-    <h4>{{data().subtype}}</h4>
-    <h2>{{data().preview}}</h2>
+    <div class="title">
+        <img class="type-icon" [src]="subtypeIcon()">
+        <h2>{{data().preview}}</h2>
+    </div>
     @for (subslide of $any(data()).subslides; track subslide) {
         <p
             (click)="handleSubslideClick($event, $index + 1)"

@@ -4,7 +4,6 @@ import { translateBibleLoc } from "@app/classes/utils";
 import { FilePickerService } from "@app/services/file-picker.service";
 
 const FRIENDLY_NAMES: Record<string, string> = {
-    location: "Location",
     preview: "Preview",
     subslides: "Subslides",
     subtitle: "Subtitle",
@@ -12,8 +11,6 @@ const FRIENDLY_NAMES: Record<string, string> = {
     subtype: "Subtype",
     title: "Title",
     title_tr: "Translated Title",
-    name: "Name",
-    version: "Version",
     year: "Year",
     month: "Month",
     day: "Day",
@@ -25,6 +22,7 @@ const FRIENDLY_NAMES: Record<string, string> = {
     subtitleSrc: "Subtitle URL",
     objectFit: "Object Fit",
     contrastColor: "Contrast Colour",
+    textAlign: "Text Align",
 }
 const HIDDEN_FIELDS: Array<string> = ['id', 'idx', 'type', ]
 const AUTO_FIELDS: Record<string, string> = {
@@ -35,12 +33,13 @@ const AUTO_FIELDS: Record<string, string> = {
     videoSrc: 'Open',
     subtitleSrc: 'Open',
     title_tr: 'Auto',
-    location_tr: 'Auto',
+    subtitle_tr: 'Auto',
     videoId: 'Format',
 }
 const TITLE_TRANSLATIONS: Array<[RegExp, string]> = [
     [/宣召(经文)?/, "Call to Worship"],
     [/奉献(经文)?/, "Offering Verse"],
+    [/经/, "Bible Reading"],
     [/祝福([/与和]差遣)?/, "Benediction"],
     [/欢迎[/与和]报告/, "Welcome & Announcements"],
     [/回应诗歌/, "Response Song"],
@@ -137,7 +136,7 @@ export class EditField {
         let originalKey = this.key().replace(/_tr$/, "");
         let original = this.slide()[originalKey];
 
-        if (originalKey == "location") {
+        if (originalKey == "subtitle") {
             return (
                 original.split(";").map((l: string) => translateBibleLoc(l, false)).join(";")
             );
@@ -147,10 +146,6 @@ export class EditField {
             if (original.match(regex)) {
                 return translated;
             }
-        }
-
-        if (subtype == "bible") {
-            return "Bible Reading";
         }
     }
 

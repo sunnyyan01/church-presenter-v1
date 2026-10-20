@@ -16,3 +16,16 @@
 .media > * {
     margin: 0px;
 }
+
+.media .title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.media .type-icon {
+    height: 30px;
+    width: 30px;
+    filter: invert(98%) sepia(1%) saturate(417%) hue-rotate(281deg) brightness(117%) contrast(100%);
+    color: white;
+    margin-right: 5px;
+}

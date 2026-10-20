@@ -22,18 +22,11 @@
         @if (slide().subtype == "welcome") {
             <welcome-template [slide]="$any(slide())" />
         }
-        @if (slide().subtype == "bible") {
+        @if (slide().subtype == "content") {
             @if (subslideIdx() == 0) {
-                <title-template [slide]="$any(slide()).toTitleSlide()" />
+                <title-template [slide]="$any(slide())" />
             } @else {
-                <bible-template [slide]="$any(slide())" [subslideIdx]="subslideIdx()" />
-            }
-        }
-        @if (slide().subtype == "song") {
-            @if (subslideIdx() == 0) {
-                <title-template [slide]="$any(slide()).toTitleSlide()" />
-            } @else {
-                <song-template [slide]="$any(slide())" [subslideIdx]="subslideIdx()" />
+                <content-template [slide]="$any(slide())" [subslideIdx]="subslideIdx()" />
             }
         }
         @if (slide().subtype == "title") {

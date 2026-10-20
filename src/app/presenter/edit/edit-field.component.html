@@ -6,7 +6,7 @@
             <select [(value)]="val" (change)="onChange($event)">
                 <option value="">(Select one)</option>
                 <option value="welcome">Welcome</option>
-                <option value="bible">Bible</option>
+                <option value="content">Content</option>
                 <option value="song">Song</option>
                 <option value="title">Title</option>
             </select>
@@ -19,13 +19,6 @@
             </select>
         }
         
-    } @else if (key() == 'version') {
-        <select [(value)]="val" (change)="onChange($event)">
-            <option selected>(default)</option>
-            <option value="CUVMPS">Chinese Union Version (Modern Punct., Simplified) (CUVMPS)</option>
-            <option value="CUVMPT">Chinese Union Version (Modern Punct., Traditional) (CUVMPT)</option>
-            <option value="NIV">New Intl Version (NIV)</option>
-        </select>
     } @else if (key() == 'subslides') {
         <textarea
             rows="15"

@@ -1,17 +1,16 @@
 import { Component, computed, HostListener, signal } from '@angular/core';
 import { Slide, Media, BlankMedia, BlankSlide } from '@app/classes/playlist';
 import { WelcomeTemplateComponent } from './welcome-template/welcome-template.component';
-import { BibleTemplateComponent } from './bible-template/bible-template.component';
-import { SongTemplateComponent } from './song-template/song-template.component';
 import { TitleTemplateComponent } from './title-template/title-template.component';
 import { YoutubePlayer } from './youtube-player/youtube-player.component';
 import { PlaybackRequest, SlideshowDispMode } from '../classes/slideshow';
 import { VideoPlayer } from "./video-player/video-player.component";
 import { ImageTemplateComponent } from "./image-template/image-template.component";
+import { ContentTemplateComponent } from './content-template/content-template.component';
 
 @Component({
     selector: 'slideshow-page',
-    imports: [WelcomeTemplateComponent, BibleTemplateComponent, SongTemplateComponent, TitleTemplateComponent, YoutubePlayer, VideoPlayer, ImageTemplateComponent],
+    imports: [WelcomeTemplateComponent, ContentTemplateComponent, TitleTemplateComponent, YoutubePlayer, VideoPlayer, ImageTemplateComponent],
     templateUrl: './slideshow.page.html',
     styleUrl: './slideshow.page.css'
 })

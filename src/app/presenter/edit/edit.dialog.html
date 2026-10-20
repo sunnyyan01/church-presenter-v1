@@ -14,12 +14,34 @@
             <img src="icons/save.svg" title="Save to library">
         </div>
         <div
-            class="button icon-button"
-            [class.hidden]="slide()['subtype'] != 'bible'"
-            (click)="autoBible()"
+            class="button icon-button toggle-button"
+            [class.hidden]="slide()['subtype'] != 'content'"
+            [attr.data-active]="autoBibleMenuOpen()"
+            (click)="openAutoBibleMenu()"
         >
             <img src="icons/book.svg" title="Auto bible lookup">
         </div>
+        @if (autoBibleMenuOpen()) {
+            <div
+                class="dropdown-outer dropdown-inner"
+                #autoBibleMenu
+            >
+                <label for="version-input">
+                    Version:
+                    <input
+                        id="version-input" list="common-versions"
+                        [(value)]="autoBibleVersion" (change)="changeAutoBibleVersion($event)"
+                        placeholder="CUVMPS"
+                    >
+                </label>
+                <datalist id="common-versions">
+                    <option value="CUVMPS">Chinese Union Version (Modern Punct., Simplified)</option>
+                    <option value="CUVMPT">Chinese Union Version (Modern Punct., Traditional)</option>
+                    <option value="NIV">New International Version</option>
+                </datalist>
+                <div class="button text-button" (click)="autoBible()">Go</div>
+            </div>
+        }
         <div
             class="button icon-button"
             [class.hidden]="slide()['subtype'] != 'welcome'"

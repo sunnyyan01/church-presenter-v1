@@ -2,7 +2,20 @@
     <h1>New Playlist</h1>
 
     <div class="toolbar">
-        <div class="button icon-button" (click)="autoBible()" title="Auto Bible Lookup">
+        <div class="button icon-button" (click)="autoType(0)" title="Set slide type to welcome">
+            <img src="icons/calendar.svg">
+        </div>
+        <div class="button icon-button" (click)="autoType(1)" title="Set slide type to content">
+            <img src="icons/content.svg">
+        </div>
+        <div class="button icon-button" (click)="autoType(3)" title="Set slide type to title">
+            <img src="icons/title.svg">
+        </div>
+        <div class="button icon-button" (click)="autoType(5)" title="Set slide type to youtube">
+            <img src="icons/video.svg">
+        </div>
+        <div class="divider"></div>
+        <div class="button icon-button" (click)="autoBible()" title="Bible Lookup">
             <img src="icons/book.svg">
         </div>
     </div>

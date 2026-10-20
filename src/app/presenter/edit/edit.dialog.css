@@ -9,6 +9,40 @@ h1 {
     text-align: center;
 }
 
+.toolbar {
+    position: relative;
+}
+.toolbar .toggle-button[data-active=true] {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.dropdown-inner {
+    top: 47px;
+    border-top-right-radius: 0px;
+    padding: 3px;
+}
+.dropdown-inner label {
+    border: none;
+}
+.dropdown-inner input {
+    border: 1px solid grey;
+    background-color: #292C79;
+    color: white;
+    border-radius: 5px;
+    padding: 1px 3px;
+    font-size: 14px;
+    width: 80px;
+    height: 24px;
+}
+.dropdown-inner .button {
+    border-bottom-left-radius: 0px;
+    padding: 5px 10px;
+    align-self: flex-end;
+}
+.dropdown-inner .button:first-child {
+    border-top-right-radius: 0px;
+}
+
 .table {
     flex: 1;
     overflow: auto;

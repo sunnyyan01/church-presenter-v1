@@ -1,6 +1,6 @@
-import { Component, computed, effect, HostListener, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostListener, inject, input, output, signal, ViewChild } from '@angular/core';
 import { BlobServiceClient } from '@azure/storage-blob';
-import { BibleSlide, CONSTRUCTORS } from '@app/classes/playlist';
+import { ContentSlide, CONSTRUCTORS } from '@app/classes/playlist';
 import { EditDialogInput, EditDialogOutput } from '@app/classes/edit';
 import { nextSunday, translateBibleLoc } from '@app/classes/utils';
 import { bibleLookup } from '@app/api/bible';
@@ -21,6 +21,10 @@ export class EditDialog {
     close = output<EditDialogOutput | null>();
 
     loading = signal<boolean>(false);
+    
+    @ViewChild("autoBibleMenu") autoBibleMenu!: ElementRef<HTMLDivElement>;
+    autoBibleMenuOpen = signal<boolean>(false);
+    autoBibleVersion = signal<string>("");
 
     fp = inject(FilePickerService);
     toasts = inject(ToastsService);
@@ -37,6 +41,15 @@ export class EditDialog {
                 });
             }
         })
+    }
+
+    @HostListener('document:click', ['$event'])
+    onClickOut(e: MouseEvent) {
+        if (this.autoBibleMenuOpen() && this.autoBibleMenu) {
+            if (!this.autoBibleMenu.nativeElement.contains(e.target as Node | null)) {
+                this.autoBibleMenuOpen.set(false);
+            }
+        }
     }
 
     async loadFromLibrary() {
@@ -72,12 +85,20 @@ export class EditDialog {
         this.toasts.createToast("success", "Saved successfully");
     }
 
+    openAutoBibleMenu() {
+        this.autoBibleMenuOpen.set(true);
+    }
+    changeAutoBibleVersion(e: Event) {
+        let target = e.target as HTMLInputElement;
+        this.autoBibleVersion.set(target.value);
+    }
+
     async autoBible() {
         this.loading.set(true);
-        let bibleSlide = this.slide() as BibleSlide;
-        let loc = bibleSlide.location;
-        let doTranslation = !!bibleSlide.location_tr;
-        let version = bibleSlide.version;
+        let bibleSlide = this.slide() as ContentSlide;
+        let loc = bibleSlide.subtitle;
+        let doTranslation = !!bibleSlide.subtitle_tr;
+        let version = this.autoBibleVersion();
         try {
             let text = await bibleLookup(loc, version);
             if (text.length == 1) {

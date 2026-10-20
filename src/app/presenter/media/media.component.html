@@ -2,6 +2,8 @@
     class="media" [class.selected]="selected()"
     (click)="handleMediaClick()"
 >
-    <h4>{{data().subtype}}</h4>
-    <h2>{{data().preview}}</h2>
+    <div class="title">
+        <img class="type-icon" [src]="subtypeIcon()">
+        <h2>{{data().preview}}</h2>
+    </div>
 </div>

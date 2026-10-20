@@ -50,7 +50,7 @@ h1 {
     box-shadow: none;
 }
 .icon-button.toggle-button[data-active=true] {
-    border-color: grey;
+    border-color: white;
     transform: translate(3px,3px);
     box-shadow: none;
 }
@@ -136,6 +136,12 @@ textarea {
     flex-direction: row;
     justify-content: center;
     margin-bottom: 5px;
+}
+.toolbar .divider {
+    background-color: grey;
+    width: 2px;
+    height: 80%;
+    margin: auto 3px;
 }
 .toolbar .button {
     width: 25px;

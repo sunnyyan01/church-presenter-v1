@@ -1,0 +1,13 @@
+<div id="content-template" class="template content-template">
+    <div class="top-bar">
+        <h2 class="left">{{slide().title}}</h2>
+        <h3 class="right">{{slide().subtitle}}</h3>
+    </div>
+    <div class="top2-bar">
+        <h5 class="left">{{slide().title_tr}}</h5>
+        <h5 class="right">{{slide().subtitle_tr}}</h5>
+    </div>
+    <p class="scrollable" [attr.data-text-align]="slide().textAlign">
+        {{slide().subslides[subslideIdx() - 1]}}
+    </p>
+</div>
